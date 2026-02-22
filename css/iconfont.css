@@ -130,6 +130,15 @@
 .icon-github:before {
   content: '\e619';
 }
+.icon-bilibili:before {
+  content: '\e603';
+}
+.icon-zhihu:before {
+  content: '\e62e';
+}
+.icon-email:before {
+  content: '\e63c';
+}
 .sidebar-toc-btn:before {
   font-family: 'iconfont';
   content: '\e633';

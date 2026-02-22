@@ -140,6 +140,16 @@
 .icon-github:before {
   content: '\f09b';
 }
+.icon-bilibili:before {
+  content: '\e3d9';
+}
+.icon-zhihu:before {
+  content: '\f63f';
+}
+.icon-email:before {
+  content: '\f0e0';
+  font-weight: 900;
+}
 .sidebar-toc-btn:before {
   font-family: var(--font-icon);
   content: '\f0e8';
