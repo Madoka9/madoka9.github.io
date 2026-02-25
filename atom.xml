@@ -10,7 +10,37 @@
   <rights>All rights reserved 2026, OnricYF</rights>
   <subtitle>xxx</subtitle>
   <title>YF's Blogs</title>
-  <updated>2026-02-23T05:04:39.572Z</updated>
+  <updated>2026-02-25T14:13:14.169Z</updated>
+  <entry>
+    <author>
+      <name>OnricYF</name>
+    </author>
+    <category term="图形学" scheme="http://example.com/categories/%E5%9B%BE%E5%BD%A2%E5%AD%A6/"/>
+    <category term="杂记" scheme="http://example.com/categories/%E5%9B%BE%E5%BD%A2%E5%AD%A6/%E6%9D%82%E8%AE%B0/"/>
+    <category term="Three.js" scheme="http://example.com/categories/%E5%9B%BE%E5%BD%A2%E5%AD%A6/%E6%9D%82%E8%AE%B0/Three-js/"/>
+    <category term="图形学" scheme="http://example.com/tags/%E5%9B%BE%E5%BD%A2%E5%AD%A6/"/>
+    <category term="渲染" scheme="http://example.com/tags/%E6%B8%B2%E6%9F%93/"/>
+    <content>
+      <![CDATA[<h2 id="创建场景"><a href="#创建场景" class="headerlink" title="创建场景"></a>创建场景</h2><p>要使用自定义的Shader，需要先创建好场景（scene）、相机（camera）和渲染器（renderer）。具体流程参考：<br><a href="https://threejs.org/manual/#zh/creating-a-scene">创建场景 - three.js manual</a></p><h2 id="添加Mesh"><a href="#添加Mesh" class="headerlink" title="添加Mesh"></a>添加Mesh</h2><p>可以通过SphereGeometry()、BoxGeometry()等创建预制的模型，也可以通过MeshLoader导入自定义模型。<br>更多接口参考：<br><a href="https://threejs.org/docs/#BoxGeometry">BoxGeometry – three.js docs</a></p><h3 id="定义Geometry"><a href="#定义Geometry" class="headerlink" title="定义Geometry"></a>定义Geometry</h3><p>这里先定义一个球体</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">const Radius = 1.0;</span><br><span class="line">const geometry = new THREE.SphereGeometry(Radius, 128, 64);</span><br></pre></td></tr></table></figure><h3 id="创建材质"><a href="#创建材质" class="headerlink" title="创建材质"></a>创建材质</h3><p>要使这个球体在场景中显示，需要调用Mesh(geo, mat)来创建对应Object并添加到场景中。因此，定义好Geometry之后还需要创建一个材质。</p><p>three.js库提供了多种预制的材质，如：MeshPhongMaterial()、MeshToon Material()。具体参考：<a href="https://threejs.org/docs/#Material">Material – three.js docs</a></p><p>要使用自定义的Shader，需要调用ShaderMaterial()来创建材质，需要传入uniforms和定义的vertexShader、fragmentShader的字符串。原理和UE的材质系统类似，会将这两端字符串插入到TempShader文件进行编译。</p><p>这里可以单独创建个.js文件来写Shader（three.js使用的是GLSL，具体写法不多赘述）：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">const VertexShader = `</span><br><span class="line"></span><br><span class="line">uniform float uRadius;</span><br><span class="line"></span><br><span class="line">varying vec2 vUv;</span><br><span class="line"></span><br><span class="line">varying vec3 vPosition;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">void main() &#123;</span><br><span class="line"></span><br><span class="line">  vec3 pos = position;</span><br><span class="line">//</span><br><span class="line">// ... ...</span><br><span class="line">//</span><br><span class="line">  gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">`;</span><br><span class="line"></span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">const FragmentShader = `</span><br><span class="line"></span><br><span class="line">  varying vec2 vUv;</span><br><span class="line"></span><br><span class="line">  uniform float uRadius;  </span><br><span class="line"></span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">  void main() &#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> // ... ...</span><br><span class="line"></span><br><span class="line">  gl_FragColor = vec4(vec3(color), 1.0);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">`;</span><br></pre></td></tr></table></figure><p>声名好后就可以通过ShaderMaterial()创建了：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">const Material = new THREE.ShaderMaterial(&#123;</span><br><span class="line"></span><br><span class="line">  uniforms: &#123;</span><br><span class="line"></span><br><span class="line">    uRadius: &#123; value: Radius &#125;,</span><br><span class="line">    </span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  vertexShader: VertexShader,</span><br><span class="line"></span><br><span class="line">  fragmentShader: FragmentShader</span><br><span class="line"></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure><h4 id="纹理采样"><a href="#纹理采样" class="headerlink" title="纹理采样"></a>纹理采样</h4><p>要传入纹理，需要先通过TextureLoader()来声名一个纹理加载器，并通过加载器的Load()方法加载纹理。</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">const textureLoader = new THREE.TextureLoader();</span><br><span class="line"></span><br><span class="line">const Texture = textureLoader.load(&#x27;Textures/uv_map_reference.jpg&#x27;);</span><br></pre></td></tr></table></figure><p>加载好后作为uniform传入材质:</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">const Material = new THREE.ShaderMaterial(&#123;</span><br><span class="line"></span><br><span class="line">  uniforms: &#123;</span><br><span class="line"></span><br><span class="line">    uTexture: &#123; value: Texture &#125;,</span><br><span class="line"></span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  vertexShader: VertexShader,</span><br><span class="line"></span><br><span class="line">  fragmentShader: FragmentShader</span><br><span class="line"></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure><p>之后可以在Shader中通过texture2D()来采样:</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">uniform sampler2D uTexture;</span><br><span class="line"></span><br><span class="line">void main()</span><br><span class="line">&#123;</span><br><span class="line">//... ...</span><br><span class="line">vec4 texColor = texture2D(uTexture, vUv);</span><br><span class="line">//...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h3 id="创建MeshObject"><a href="#创建MeshObject" class="headerlink" title="创建MeshObject"></a>创建MeshObject</h3><p>定义好MeshGeometry信息和材质后，就可以通过Mesh()来创建对应Mesh的Object了，然后通过scene.add(mesh)；添加到场景中。</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">const mesh = new THREE.Mesh(geometry, yinYangMaterial);</span><br><span class="line"></span><br><span class="line">scene.add(mesh);</span><br></pre></td></tr></table></figure>]]>
+    </content>
+    <id>http://example.com/2026/02/25/ThreeJs/Three.js%20-%20%E4%BD%BF%E7%94%A8%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84Shader/</id>
+    <link href="http://example.com/2026/02/25/ThreeJs/Three.js%20-%20%E4%BD%BF%E7%94%A8%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84Shader/"/>
+    <published>2026-02-25T13:16:14.074Z</published>
+    <summary>
+      <![CDATA[<h2 id="创建场景"><a href="#创建场景" class="headerlink" title="创建场景"></a>创建场景</h2><p>要使用自定义的Shader，需要先创建好场景（scene）、相机（camera）和渲染器（renderer）。具体流程参考：]]>
+    </summary>
+    <title>Three.js - 使用自定义的Shader</title>
+    <updated>2026-02-25T14:13:14.169Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>OnricYF</name>
+    </author>
+    <id>http://example.com/2026/02/25/2026-02-25/</id>
+    <link href="http://example.com/2026/02/25/2026-02-25/"/>
+    <published>2026-02-25T13:14:59.027Z</published>
+    <updated>2026-02-25T13:14:59.027Z</updated>
+  </entry>
   <entry>
     <author>
       <name>OnricYF</name>
@@ -20,8 +50,8 @@
     <content>
       <![CDATA[<h2 id="ThreeJs-学习文档"><a href="#ThreeJs-学习文档" class="headerlink" title="ThreeJs 学习文档"></a>ThreeJs 学习文档</h2><p><a href="https://threejs.org/manual/#zh/creating-a-scene">创建场景 - three.js manual</a></p><h3 id="接口查询"><a href="#接口查询" class="headerlink" title="接口查询"></a>接口查询</h3><p><a href="https://threejs.org/docs/">https://threejs.org/docs/</a></p>]]>
     </content>
-    <id>http://example.com/2026/02/23/ThreejsLearning/</id>
-    <link href="http://example.com/2026/02/23/ThreejsLearning/"/>
+    <id>http://example.com/2026/02/23/ThreeJs/ThreejsLearning/</id>
+    <link href="http://example.com/2026/02/23/ThreeJs/ThreejsLearning/"/>
     <published>2026-02-23T03:47:06.100Z</published>
     <summary>
       <![CDATA[<h2 id="ThreeJs-学习文档"><a href="#ThreeJs-学习文档" class="headerlink" title="ThreeJs 学习文档"></a>ThreeJs 学习文档</h2><p><a href="https://threejs.org/m]]>
@@ -65,6 +95,24 @@
     </summary>
     <title>基础坐标空间</title>
     <updated>2026-02-22T14:38:19.959Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>OnricYF</name>
+    </author>
+    <category term="杂记" scheme="http://example.com/categories/%E6%9D%82%E8%AE%B0/"/>
+    <category term="Others" scheme="http://example.com/tags/Others/"/>
+    <content>
+      <![CDATA[<h2 id="长音符号：ー"><a href="#长音符号：ー" class="headerlink" title="长音符号：ー"></a>长音符号：<strong>ー</strong></h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">在日语中，用片假名拼写的 “air” 通常是 **エア**，如果后面带有横线（**ー**），它的意思是 **长音符号**。</span><br><span class="line"></span><br><span class="line">具体解释如下：</span><br><span class="line"></span><br><span class="line">1. **表示长音**：在日语片假名中，横线“ー”用于表示前一个音的拖长。因此，“エア”实际发音是两个音节（e-a），但为了模仿英语“air”中“a”部分的发音长度，有时在书写或特定复合词中会写成“エアー”，将“a”音拖长一拍。</span><br><span class="line">    </span><br><span class="line">2. **发音区别**：</span><br><span class="line">    </span><br><span class="line">    - **エア**：发音接近“e-a”，两个音节之间没有明显的拖长。</span><br><span class="line">        </span><br><span class="line">    - **エアー**：发音接近“e-a-”，即最后一个“a”音要拖长一拍。</span><br><span class="line">        </span><br><span class="line"></span><br><span class="line">**总结**：  </span><br><span class="line">如果你看到的单词是 **エアー**，后面的横线是 **长音符号**，用来把尾音拖长，使其更贴近英语的发音感觉。</span><br></pre></td></tr></table></figure>]]>
+    </content>
+    <id>http://example.com/2026/02/22/%E6%97%A5%E8%AF%AD%E6%9D%82%E8%AE%B0/</id>
+    <link href="http://example.com/2026/02/22/%E6%97%A5%E8%AF%AD%E6%9D%82%E8%AE%B0/"/>
+    <published>2026-02-22T14:22:10.000Z</published>
+    <summary>
+      <![CDATA[<h2 id="长音符号：ー"><a href="#长音符号：ー" class="headerlink" title="长音符号：ー"></a>长音符号：<strong>ー</strong></h2><figure class="highlight plaintext"><tab]]>
+    </summary>
+    <title>日语杂记</title>
+    <updated>2026-02-24T14:07:45.249Z</updated>
   </entry>
   <entry>
     <author>
