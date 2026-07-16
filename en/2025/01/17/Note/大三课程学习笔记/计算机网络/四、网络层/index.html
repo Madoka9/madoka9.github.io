@@ -1,0 +1,700 @@
+  <!DOCTYPE html>
+  <html lang="en"  
+      data-theme-mode="auto"
+  >
+  <head>
+  <meta charset="utf-8">
+  
+  
+  
+  <script>window.REIMU_CONFIG = {};window.REIMU_CONFIG.icon_font = '4552607_4k4bc36ef96';window.REIMU_CONFIG.clipboard_tips = {"success":{"zh-CN":"复制成功 (*^▽^*)","en":"Copy successfully (*^▽^*)"},"fail":{"zh-CN":"复制失败 (ﾟ⊿ﾟ)ﾂ","en":"Copy failed (ﾟ⊿ﾟ)ﾂ"},"copyright":{"enable":false,"count":50,"license_type":"by-nc-sa"}};window.REIMU_CONFIG.clipboard_tips.copyright.content = '本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！';window.REIMU_CONFIG.code_block = {"expand":true};window.REIMU_CONFIG.base = 'http://example.com';window.REIMU_CONFIG.i18n_languages = ["en"];</script>
+  <title>
+    计算机网络 - 1.网络层的作用 | YF&#39;s Blog
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic|Noto Serif SC:400,400italic,700,700italic&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic|Noto Serif SC:400,400italic,700,700italic&display=swap" media="print" onload="this.media='all'">
+    <link rel="preload" href="//at.alicdn.com/t/c/font_4552607_4k4bc36ef96.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+    
+<link rel="stylesheet" href="/css/loader.css">
+
+    <meta name="description" content="1.网络层的作用提供点到点的服务 单位：分组网络层的目的是实现两个端系统之间的数据透明传输，具体功能包括寻址和路由选择，连接的建立，保持和终止等。它提供的服务使传输层不需要了解网络中的数据传输和交换技术。 2.网际层协议IP-ARP地址解析协议根据IP地址获取物理地址 -RARP反地址解析协议-ICMP网际控制报文协议通过ICMP传输控制消息，控制消息是指网络通不通，主机是否可达，路由是否可用等网">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机网络 - 1.网络层的作用">
+<meta property="og:url" content="http://example.com/en/2025/01/17/Note/%E5%A4%A7%E4%B8%89%E8%AF%BE%E7%A8%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E5%9B%9B%E3%80%81%E7%BD%91%E7%BB%9C%E5%B1%82/index.html">
+<meta property="og:site_name" content="YF&#39;s Blog">
+<meta property="og:description" content="1.网络层的作用提供点到点的服务 单位：分组网络层的目的是实现两个端系统之间的数据透明传输，具体功能包括寻址和路由选择，连接的建立，保持和终止等。它提供的服务使传输层不需要了解网络中的数据传输和交换技术。 2.网际层协议IP-ARP地址解析协议根据IP地址获取物理地址 -RARP反地址解析协议-ICMP网际控制报文协议通过ICMP传输控制消息，控制消息是指网络通不通，主机是否可达，路由是否可用等网">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020230205162241.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020230205163121.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020230205170103.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020230205170253.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020230205172542.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020230205172915.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020230205173650.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020230205173659.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020230211161500.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020230211161509.png">
+<meta property="article:published_time" content="2025-01-17T14:04:11.000Z">
+<meta property="article:modified_time" content="2026-07-16T03:38:25.206Z">
+<meta property="article:author" content="OnricYF">
+<meta property="article:tag" content="大三课程学习笔记">
+<meta property="article:tag" content="计算机网络">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/blog/Pasted%20image%2020230205162241.png">
+    <link rel="alternate" href="/atom.xml" title="YF's Blog" type="application/atom+xml">
+    <link rel="shortcut icon" href="/images/favicon.ico">
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.css" integrity="sha384-IfxC36XL/toUyJ939C73PcgMuRzAZuIzZxE38drsmO5p6jD7ei+Zx/1oA/0l8ysE" crossorigin="anonymous">
+    
+<script src="https://npm.webcache.cn/pace-js@1.2.4/pace.min.js" integrity="sha384-k6YtvFUEIuEFBdrLKJ3YAUbBki333tj1CSUisai5Cswsg9wcLNaPzsTHDswp4Az8" crossorigin="anonymous"></script>
+
+    
+<link rel="stylesheet" href="https://npm.webcache.cn/@reimujs/aos@0.1.2/dist/aos.css" integrity="sha384-GMRP93c6Hkz9JVKGAuRR3nTS7M07RwPgTFenXiosjq2VbVgvdDNcz1g6Mkj8AONa" crossorigin="anonymous">
+
+    <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://npm.webcache.cn/aplayer@1.10.1/dist/APlayer.min.css" integrity="sha384-tLMkTWh2pfXNWGFlUS0w1TFtRG5xZ9lPWFOooj+vDDLIL+xBGQU/voDBY5XE2lVh" crossorigin="anonymous">
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+  <body>
+      <div id='loader'>
+    <div class="loading-left-bg loading-bg"></div>
+    <div class="loading-right-bg loading-bg"></div>
+    <div class="spinner-box">
+      <div class="loading-taichi rotate">
+          <svg width="150" height="150" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="https://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
+            <path d="M303.5 432A80 80 0 0 1 291.5 592A80 80 0 0 1 303.5 432z" fill="var(--red-1, #ff5252)" />
+            <path d="M512 65A447 447 0 0 1 512 959L512 929A417 417 0 0 0 512 95A417 417 0 0 0 512 929L512 959A447 447 0 0 1 512 65z 
+           M512 95A417 417 0 0 1 929 512A208.5 208.5 0 0 1 720.5 720.5L720.5 592A80 80 0 0 0 720.5 432A80 80 0 0 0 720.5 592L720.5 720.5A208.5 208.5 0 0 1 512 512A208.5 208.5 0 0 0 303.5 303.5A208.5 208.5 0 0 0 95 512A417 417 0 0 1 512 95z" fill="var(--red-1, #ff5252)" />
+          </svg>
+      </div>
+      <div class="loading-word">Loading...</div>
+    </div>
+  </div>
+  </div>
+  <script>
+    var time = null;
+    var loaderEl = document.getElementById('loader');
+    var startLoading = () => {
+      time = Date.now();
+      loaderEl.classList.remove("loading");
+    }
+    var hideLoader = () => {
+      document.body.style.overflow = 'auto';
+      loader.classList.add('loading');
+    };
+
+    var endLoading = () => {
+      if (!time) {
+        hideLoader();
+      } else {
+        if (Date.now() - time > 500) {
+          time = null;
+          hideLoader();
+        } else {
+          setTimeout(endLoading, 500 - (Date.now() - time));
+          time = null;
+        }
+      }
+    }
+    window.addEventListener('DOMContentLoaded', endLoading);
+    loaderEl.addEventListener('click', endLoading);
+  </script>
+<div id="copy-tooltip"></div>
+<div id="heatmap-tooltip"></div>
+
+
+    <div id="container">
+      <div id="wrap">
+        <div id="header-nav">
+  <nav id="main-nav" aria-label="Primary navigation">
+        <a class="main-nav-link-wrap" href="/en/">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Home</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/archives">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Archives</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/about">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">About</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/friend">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Friend</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/portfolio">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Portfolio</span>
+        </span>
+    <a id="main-nav-toggle" class="nav-icon" aria-label="Toggle navigation" role="button"></a>
+  </nav>
+  <nav id="sub-nav" aria-label="Secondary navigation">
+  </nav>
+    <nav id="i18n-nav" aria-label="Language selection">
+      <div class="custom-dropdown">
+        <div class="select-selected" id="select-selected" role="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Language menu">
+          <span id="nav-language-btn" class="nav-icon" style="padding: 0 20px 0 0"></span>
+          <span id="selected-lang">English</span>
+        </div>
+        <ul class="select-items" id="select-items" role="listbox" aria-label="Languages">
+            <li data-value="zh-CN" role="option" aria-selected="false">简体中文</li>
+            <li data-value="en" role="option" class="selected" aria-selected="true">English</li>
+        </ul>
+      </div>
+      <script>
+        var selectSelected = document.getElementById("select-selected");
+        var selectedLang = document.getElementById("selected-lang");
+        var selectItems = document.getElementById("select-items");
+        var selectOptions = selectItems.querySelectorAll("li");
+
+        selectSelected.addEventListener("click", () => {
+          selectItems.classList.toggle("show");
+          var expanded = selectSelected.getAttribute("aria-expanded") === "true";
+          selectSelected.setAttribute("aria-expanded", (!expanded).toString());
+        });
+
+        selectOptions.forEach((item) => {
+          item.addEventListener("click", () => {
+            const langMap = {};
+              langMap['zh-CN'] = '/2025/01/17/Note/大三课程学习笔记/计算机网络/四、网络层/';
+              langMap['en'] = '/en/2025/01/17/Note/大三课程学习笔记/计算机网络/四、网络层/';
+            selectedLang.textContent = item.textContent;
+            selectItems.classList.remove("show");
+            selectOptions.forEach((option) => {
+              option.classList.remove("selected");
+            });
+            item.classList.add("selected");
+            window.location = langMap[item.dataset.value];
+          });
+        });
+
+        document.addEventListener("click", (event) => {
+          if (!event.target.closest(".custom-dropdown")) {
+            selectItems.classList.remove("show");
+            selectSelected.setAttribute("aria-expanded", "false");
+          }
+        });
+      </script>
+    </nav>
+</div>
+<header id="header" aria-label="Site header">
+        <picture>
+        </picture>
+          <img  fetchpriority="high" src="/images/banner.webp" alt="计算机网络 - 1.网络层的作用">
+  <div id="header-outer">
+    <div id="header-title">
+          <span id="logo">
+            <h1 data-aos="slide-up">计算机网络 - 1.网络层的作用</h1>
+          </span>
+        <h2 id="subtitle-wrap" data-aos="slide-down">
+        </h2>
+    </div>
+  </div>
+</header>
+
+        <div id="content" aria-label="Page content"  class="sidebar-right" >
+          <aside id="sidebar" aria-label="Sidebar">
+  <div class="sidebar-wrapper-container sticky">
+  <div class="sidebar-wrapper">
+    <div class="sidebar-wrap" data-aos="fade-up">
+          <div class="sidebar-toc-sidebar"><h3 class="toc-title">Contents</h3>
+<div class="sidebar-toc-wrapper toc-div-class" >
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E7%BD%91%E7%BB%9C%E5%B1%82%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">1.</span> <span class="toc-text">1.网络层的作用</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E7%BD%91%E9%99%85%E5%B1%82%E5%8D%8F%E8%AE%AEIP"><span class="toc-number">2.</span> <span class="toc-text">2.网际层协议IP</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ARP%E5%9C%B0%E5%9D%80%E8%A7%A3%E6%9E%90%E5%8D%8F%E8%AE%AE"><span class="toc-number">2.1.</span> <span class="toc-text">-ARP地址解析协议</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RARP%E5%8F%8D%E5%9C%B0%E5%9D%80%E8%A7%A3%E6%9E%90%E5%8D%8F%E8%AE%AE"><span class="toc-number">2.2.</span> <span class="toc-text">-RARP反地址解析协议</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ICMP%E7%BD%91%E9%99%85%E6%8E%A7%E5%88%B6%E6%8A%A5%E6%96%87%E5%8D%8F%E8%AE%AE"><span class="toc-number">2.3.</span> <span class="toc-text">-ICMP网际控制报文协议</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IGMP%E7%BD%91%E9%99%85%E7%BB%84%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE"><span class="toc-number">2.4.</span> <span class="toc-text">-IGMP网际组管理协议</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-IP%E5%9C%B0%E5%9D%80"><span class="toc-number">3.</span> <span class="toc-text">3.IP地址</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-IP%E5%9C%B0%E5%9D%80%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="toc-number">3.1.</span> <span class="toc-text">3.1  IP地址的概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%84%E6%88%90%EF%BC%9A"><span class="toc-number">3.1.1.</span> <span class="toc-text">组成：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IP%E5%9C%B0%E5%9D%80%E5%92%8CMAC%E5%9C%B0%E5%9D%80%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">3.1.2.</span> <span class="toc-text">IP地址和MAC地址的区别</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-IP%E5%9C%B0%E5%9D%80%E7%9A%84%E7%BB%84%E6%88%90"><span class="toc-number">3.2.</span> <span class="toc-text">3.2  IP地址的组成</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%9C%B0%E5%9D%80-%E4%B8%BB%E6%9C%BA%E5%8F%B7"><span class="toc-number">3.2.1.</span> <span class="toc-text">主机地址&#x2F;主机号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E5%9C%B0%E5%9D%80-%E7%BD%91%E7%BB%9C%E5%8F%B7"><span class="toc-number">3.2.2.</span> <span class="toc-text">网络地址&#x2F;网络号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81"><span class="toc-number">3.2.3.</span> <span class="toc-text">子网掩码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-IP%E5%9C%B0%E5%9D%80%E7%9A%84%E5%88%86%E7%B1%BB"><span class="toc-number">3.3.</span> <span class="toc-text">3.3  IP地址的分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-1A%E7%B1%BB"><span class="toc-number">3.3.1.</span> <span class="toc-text">3.3.1A类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-2B%E7%B1%BB"><span class="toc-number">3.3.2.</span> <span class="toc-text">3.3.2B类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-3C%E7%B1%BB"><span class="toc-number">3.3.3.</span> <span class="toc-text">3.3.3C类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-4D%E7%B1%BB"><span class="toc-number">3.3.4.</span> <span class="toc-text">3.3.4D类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-5E%E7%B1%BB"><span class="toc-number">3.3.5.</span> <span class="toc-text">3.3.5E类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-6%E7%89%B9%E6%AE%8A%E5%9C%B0%E5%9D%80"><span class="toc-number">3.3.6.</span> <span class="toc-text">3.3.6特殊地址</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%90%E7%BD%91%E5%88%92%E5%88%86%EF%BC%88CIDR%EF%BC%89"><span class="toc-number">3.4.</span> <span class="toc-text">子网划分（CIDR）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E9%A2%98"><span class="toc-number">3.4.1.</span> <span class="toc-text">例题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IP%E5%88%86%E7%89%87"><span class="toc-number">3.5.</span> <span class="toc-text">IP分片</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-IPv6"><span class="toc-number">4.</span> <span class="toc-text">4.  IPv6</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-1%E8%B7%AF%E7%94%B1"><span class="toc-number">4.1.</span> <span class="toc-text">4.1路由</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%AF%E7%94%B1%E5%99%A8"><span class="toc-number">4.1.1.</span> <span class="toc-text">路由器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E8%BD%AC%E5%8F%91"><span class="toc-number">4.1.2.</span> <span class="toc-text">数据转发</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%AF%E7%94%B1%E8%A1%A8"><span class="toc-number">4.1.3.</span> <span class="toc-text">路由表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E5%85%B3"><span class="toc-number">4.1.4.</span> <span class="toc-text">网关</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%AF%E7%94%B1%E8%8E%B7%E5%8F%96%E6%96%B9%E5%BC%8F"><span class="toc-number">4.1.5.</span> <span class="toc-text">路由获取方式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2%E8%B7%AF%E7%94%B1%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F"><span class="toc-number">4.2.</span> <span class="toc-text">4.2路由的配置方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1"><span class="toc-number">4.2.1.</span> <span class="toc-text">静态路由</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1"><span class="toc-number">4.2.2.</span> <span class="toc-text">动态路由</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE"><span class="toc-number">4.2.3.</span> <span class="toc-text">动态路由协议</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#RPI"><span class="toc-number">4.2.3.1.</span> <span class="toc-text">RPI</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#OSPF"><span class="toc-number">4.2.3.2.</span> <span class="toc-text">OSPF</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#BGP"><span class="toc-number">4.2.3.3.</span> <span class="toc-text">BGP</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#IS-IS"><span class="toc-number">4.2.3.4.</span> <span class="toc-text">IS-IS</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%86%85%E9%83%A8%E7%BD%91%E5%85%B3%E5%8D%8F%E8%AE%AE"><span class="toc-number">4.2.3.5.</span> <span class="toc-text">内部网关协议</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#RIP%E5%92%8COSPF%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">4.2.3.5.1.</span> <span class="toc-text">RIP和OSPF的区别</span></a></li></ol></li></ol></li></ol></li></ol></li></ol>
+</div>
+</div>
+          <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/avatar.webp" data-sizes="auto" alt="OnricYF" class="lazyload">
+  <div class="sidebar-author-name">OnricYF</div>
+  <div class="sidebar-description">TRASH ARTIST</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>Post</div>
+    <div class="sidebar-state-number">144</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>Category</div>
+    <div class="sidebar-state-number">33</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>Tag</div>
+    <div class="sidebar-state-number">82</div>
+  </div>
+</div>
+<div class="sidebar-social" >
+    <div class="icon-email sidebar-social-icon">
+      <a href=mailto:a1521070145@gmail.com itemprop="url" target="_blank" aria-label="email" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-github sidebar-social-icon">
+      <a href=https://github.com/Madoka9 itemprop="url" target="_blank" aria-label="github" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-bilibili sidebar-social-icon">
+      <a href=https://space.bilibili.com/5862963 itemprop="url" target="_blank" aria-label="bilibili" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-zhihu sidebar-social-icon">
+      <a href=https://www.zhihu.com/people/lan-mei-sheng-dai-77 itemprop="url" target="_blank" aria-label="zhihu" rel="noopener nofollow noreferrer"></a>
+    </div>
+</div>
+<div class="sidebar-menu">
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/" aria-label="Home"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Home</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/archives" aria-label="Archives"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Archives</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/about" aria-label="About"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">About</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/friend" aria-label="Friend"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Friend</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/portfolio" aria-label="Portfolio"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Portfolio</div>
+      </div>
+</div>
+</div>
+          <div class="sidebar-btn-wrapper" style="position:static">
+            <div class="sidebar-toc-btn current"></div>
+            <div class="sidebar-common-btn"></div>
+          </div>
+    </div>
+  </div>
+      <meting-js
+        theme="var(--color-link)"
+        id="385907592"
+        server="netease"
+        type="playlist"
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        class="aplayer-after-sidebar"
+      ></meting-js>
+  <div class="sidebar-widget">
+  </div>
+  </div>
+</aside>
+
+          <section id="main" aria-label="Main content"><article id="post-Note/大三课程学习笔记/计算机网络/四、网络层" class="h-entry article" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner" data-aos="fade-up">
+    <div class="article-meta">
+      <div class="article-date">
+  <span class="article-date-link icon-calendar" data-aos="zoom-in">
+    <time datetime="2025-01-17T14:04:11.000Z" itemprop="datePublished">2025-01-17</time>
+    <time style="display: none;" id="post-update-time">2026-07-16</time>
+  </span>
+</div>
+
+    </div>
+    
+    <div class="hr-line"></div>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+        <h1 id="1-网络层的作用"><a href="#1-网络层的作用" class="headerlink" title="1.网络层的作用"></a>1.网络层的作用</h1><p>提供点到点的服务 单位：分组<br>网络层的目的是实现两个端系统之间的数据透明传输，具体功能包括寻址和路由选择，连接的建立，保持和终止等。它提供的服务使传输层不需要了解网络中的数据传输和交换技术。</p>
+<h1 id="2-网际层协议IP"><a href="#2-网际层协议IP" class="headerlink" title="2.网际层协议IP"></a>2.网际层协议IP</h1><h2 id="ARP地址解析协议"><a href="#ARP地址解析协议" class="headerlink" title="-ARP地址解析协议"></a>-ARP地址解析协议</h2><p>根据IP地址获取物理地址</p>
+<h2 id="RARP反地址解析协议"><a href="#RARP反地址解析协议" class="headerlink" title="-RARP反地址解析协议"></a>-RARP反地址解析协议</h2><h2 id="ICMP网际控制报文协议"><a href="#ICMP网际控制报文协议" class="headerlink" title="-ICMP网际控制报文协议"></a>-ICMP网际控制报文协议</h2><p>通过ICMP传输控制消息，控制消息是指网络通不通，主机是否可达，路由是否可用等网络本身的消息。</p>
+<h2 id="IGMP网际组管理协议"><a href="#IGMP网际组管理协议" class="headerlink" title="-IGMP网际组管理协议"></a>-IGMP网际组管理协议</h2><p>适用于管理协议多播组成员的一种通信协议。IP主机和相邻路由器利用IGMP来创建多播组的组成员。组播方式解决了单播情况下数据的重复拷贝及带宽的重复占用，也解决了广播方式下带宽资源的浪费</p>
+<h1 id="3-IP地址"><a href="#3-IP地址" class="headerlink" title="3.IP地址"></a>3.IP地址</h1><h2 id="3-1-IP地址的概念"><a href="#3-1-IP地址的概念" class="headerlink" title="3.1  IP地址的概念"></a>3.1  IP地址的概念</h2><p>IP地址使IP协议提供的一种统一的地址格式，他为互联网上的每一个网络和每一台主机分配一个逻辑地址，以此来屏蔽物理地址的差异。</p>
+<h3 id="组成："><a href="#组成：" class="headerlink" title="组成："></a>组成：</h3><pre><code>一个IP地址由4个字节，32位组成，一般用点分十进制的方式表现，
+</code></pre>
+<p><img src="/images/blog/Pasted%20image%2020230205162241.png"></p>
+<h3 id="IP地址和MAC地址的区别"><a href="#IP地址和MAC地址的区别" class="headerlink" title="IP地址和MAC地址的区别"></a>IP地址和MAC地址的区别</h3><ul>
+<li><mark style="background: #FF5582A6;">IP地址是一个逻辑地址</mark> ，<mark style="background: #FF5582A6;">MAC地址是物理地址</mark> </li>
+<li>MAC地址是唯一的但是IP地址不受唯一的</li>
+<li>MAC地址主要是工作在第二层，IP地址在网际层</li>
+<li>MAC地址是48位，IP地址一般是32位（v6是128位）</li>
+<li>IP地址的分配取决于网络拓扑，MAC地址分配取决于制造商</li>
+</ul>
+<h2 id="3-2-IP地址的组成"><a href="#3-2-IP地址的组成" class="headerlink" title="3.2  IP地址的组成"></a>3.2  IP地址的组成</h2><p><mark style="background: #FF5582A6;">主机地址</mark> 和<mark style="background: #FF5582A6;">网络地址</mark> 组成的</p>
+<h3 id="主机地址-主机号"><a href="#主机地址-主机号" class="headerlink" title="主机地址&#x2F;主机号"></a>主机地址&#x2F;主机号</h3><p>标识某一台设备的地址</p>
+<h3 id="网络地址-网络号"><a href="#网络地址-网络号" class="headerlink" title="网络地址&#x2F;网络号"></a>网络地址&#x2F;网络号</h3><p>标识某一网段的地址</p>
+<h3 id="子网掩码"><a href="#子网掩码" class="headerlink" title="子网掩码"></a>子网掩码</h3><p>子网掩码用于区分网络号和主机号<br>它是一种用来指明一个IP地址的哪些位标识的是主机所在的子网，以及哪些位标识的是主机的位掩码。子网掩码不能单独存在，它必须结合IP地址一起使用。子网掩码只能有一个作用，就是将某一个IP地址划分成为网络地址和主机地址两部分</p>
+<h2 id="3-3-IP地址的分类"><a href="#3-3-IP地址的分类" class="headerlink" title="3.3  IP地址的分类"></a>3.3  IP地址的分类</h2><h3 id="3-3-1A类"><a href="#3-3-1A类" class="headerlink" title="3.3.1A类"></a>3.3.1A类</h3><p>一个A类IP地址是指，在IP地址的四段号码中，第一段号为网络号码，剩下的三段号码为本地计算机的号码。A类IP地址中网络的标识长度为8位，主机标识的长度为24位，A类网络地址数量较少，有126个网络，每一个网络可以容纳主机数量高达1600多万台. A类IP地址 地址范围1.0.0.1到127.255.255.254<br>第一个字节为网络号，第一个字节第一位为0</p>
+<h3 id="3-3-2B类"><a href="#3-3-2B类" class="headerlink" title="3.3.2B类"></a>3.3.2B类</h3><p>一个B类地址是指，在IP地址的四段号码中，前两段号码为网络号码。B类IP地址中网络的标识长度为16位，主机标识的长度为16位，B类网络地址适用于中等规模的网络，有16384个网络，每个网络所能容纳的计算机数6万多台。 B类IP地址 地址范围128.0.01-191.255.255.254<br>前两个字节为网络号，第一个字节前两位是10</p>
+<h3 id="3-3-3C类"><a href="#3-3-3C类" class="headerlink" title="3.3.3C类"></a>3.3.3C类</h3><p>一个C类IP地址是指，在IP地址的四段号码中，前三段号码为网络号码，剩下的一段号码为本地计算机的号码。C类IP地址中网络的标识长度为24位，主机标识的长度为8位，C网络地址数量较多，有209万余个网络。适用于小规模的局域网络，每个网络最多只能包含254台计算机。C类IP地址范围192.0.0.1-223.255.255.254<br>前三个字节为网络号，第一个字节前两位是110</p>
+<h3 id="3-3-4D类"><a href="#3-3-4D类" class="headerlink" title="3.3.4D类"></a>3.3.4D类</h3><p>D类IP地址在历史上呗叫做多播地址，及组播地址。在以太网中，多播地址命名了一组应该在这个网络中应用接收到一个分组的站点。多播地址的最高位必须是“1110”，范围从224.0.0.0到239.255.255.255</p>
+<h3 id="3-3-5E类"><a href="#3-3-5E类" class="headerlink" title="3.3.5E类"></a>3.3.5E类</h3><p>保留</p>
+<h3 id="3-3-6特殊地址"><a href="#3-3-6特殊地址" class="headerlink" title="3.3.6特殊地址"></a>3.3.6特殊地址</h3><p>网络地址：主机号全为0的地址不可用<br>广播地址：主机号全为1的地址不可用<br>回环地址：127.0.0.0 测试使用</p>
+<p><img src="/images/blog/Pasted%20image%2020230205163121.png"><br><img src="/images/blog/Pasted%20image%2020230205170103.png"><br><img src="/images/blog/Pasted%20image%2020230205170253.png"></p>
+<h2 id="子网划分（CIDR）"><a href="#子网划分（CIDR）" class="headerlink" title="子网划分（CIDR）"></a>子网划分（CIDR）</h2><p><img src="/images/blog/Pasted%20image%2020230205172542.png"><br><img src="/images/blog/Pasted%20image%2020230205172915.png"></p>
+<h3 id="例题"><a href="#例题" class="headerlink" title="例题"></a>例题</h3><p><img src="/images/blog/Pasted%20image%2020230205173650.png"><br><img src="/images/blog/Pasted%20image%2020230205173659.png"></p>
+<h2 id="IP分片"><a href="#IP分片" class="headerlink" title="IP分片"></a>IP分片</h2><p><img src="/images/blog/Pasted%20image%2020230211161500.png"><br><img src="/images/blog/Pasted%20image%2020230211161509.png"></p>
+<h1 id="4-IPv6"><a href="#4-IPv6" class="headerlink" title="4.  IPv6"></a>4.  IPv6</h1><p>因为IPv4地址满足不了需求，出现匮乏的情况，所以就诞生了IPv6地址继续使用。v6地址由128位，16字节组成，一般表现形式为十六进制。<br>4.网络层的路由</p>
+<h2 id="4-1路由"><a href="#4-1路由" class="headerlink" title="4.1路由"></a>4.1路由</h2><p>路由是什么？<br>路由是指分组从源到目的地时，决定端到端路径的网络范围的进程。路由是指导报文转发的路径信息，通过路由可以确认转发IP报文的路径<br>路由是网络层最主要的工作任务</p>
+<h3 id="路由器"><a href="#路由器" class="headerlink" title="路由器"></a>路由器</h3><p>网络层的基础设备</p>
+<h3 id="数据转发"><a href="#数据转发" class="headerlink" title="数据转发"></a>数据转发</h3><p>一个端口代表一个网段，路由器中存放着通往各个网段的表格，叫做路由表</p>
+<h3 id="路由表"><a href="#路由表" class="headerlink" title="路由表"></a>路由表</h3><p>又称路由择域信息库，是一个存储在路由器或者联网计算机中的电子表格（文件）或者类数据库。路由表存储着指向特定网络地址的路径</p>
+<h3 id="网关"><a href="#网关" class="headerlink" title="网关"></a>网关</h3><p>又称网间连接器，协议转换器。用于两个高层协议不同的网络互连。网关既可以用于广域网互连，也可以用于局域网互连</p>
+<h3 id="路由获取方式"><a href="#路由获取方式" class="headerlink" title="路由获取方式"></a>路由获取方式</h3><ul>
+<li>直连路由</li>
+<li>静态路由</li>
+<li>动态路由</li>
+</ul>
+<h2 id="4-2路由的配置方式"><a href="#4-2路由的配置方式" class="headerlink" title="4.2路由的配置方式"></a>4.2路由的配置方式</h2><h3 id="静态路由"><a href="#静态路由" class="headerlink" title="静态路由"></a>静态路由</h3><p>静态路由：由管理员手工配置，配置方便，对系统要求低，适用于拓扑结构简单稳定的小型网络<br>缺省路由：是一种特殊的路由，当报文没有在路由表中找到匹配的具体表项时才能使用的路由<br>动态路由</p>
+<h3 id="动态路由"><a href="#动态路由" class="headerlink" title="动态路由"></a>动态路由</h3><p>通过动态路由协议来实现不同网段的路由互通<br>动态路由协议有自己的路由算法，能够自动适应网络拓扑的变化，适用于具有一定数量的三层设备的网络</p>
+<h3 id="动态路由协议"><a href="#动态路由协议" class="headerlink" title="动态路由协议"></a>动态路由协议</h3><h4 id="RPI"><a href="#RPI" class="headerlink" title="RPI"></a>RPI</h4><p>RPI：路由信息协议<br>基于矢量的动态路由协议<br>适用于中小规模的网络拓扑，最大跳数为15</p>
+<h4 id="OSPF"><a href="#OSPF" class="headerlink" title="OSPF"></a>OSPF</h4><p>OSPF:开放式最短路径优先<br>基于链路状态的路由<br>使用SPF算法，计算最短路径。树形协议</p>
+<h4 id="BGP"><a href="#BGP" class="headerlink" title="BGP"></a>BGP</h4><p>BGP是自治系统间的路由协议。自治系统之间的路由协议<br>自治系统间的路由协议</p>
+<h4 id="IS-IS"><a href="#IS-IS" class="headerlink" title="IS-IS"></a>IS-IS</h4><p>IS-IS：中间系统到中间系统<br>与OSPF类似，IS-IS是基于路由路划分区域，OSPF利用接口划分</p>
+<h4 id="内部网关协议"><a href="#内部网关协议" class="headerlink" title="内部网关协议"></a>内部网关协议</h4><h5 id="RIP和OSPF的区别"><a href="#RIP和OSPF的区别" class="headerlink" title="RIP和OSPF的区别"></a>RIP和OSPF的区别</h5><ul>
+<li>RIP是基于矢量的协议，OSPF是基于链路状态</li>
+<li>RIP适用于中小型网络拓扑，OSPF适用于较大规模的网络</li>
+<li>OSPF支持可变长度子网掩码（VLSM）。RIP不支持</li>
+<li>ODPF的收敛速度比RIP更加的迅速</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/toufachangdehen/article/details/128954142">(40条消息) 计算机网络 第四章 网络层 期末考试（重点）_Zhuang的博客-CSDN博客</a></p>
+
+    </div>
+    <footer class="article-footer">
+        <a class="article-category-link" href="/en/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="学习笔记" data-aos="zoom-in">学习笔记</a><a class="article-category-link" href="/en/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" title="计算机网络" data-aos="zoom-in">计算机网络</a>
+
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/en/tags/%E5%A4%A7%E4%B8%89%E8%AF%BE%E7%A8%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="tag" title="大三课程学习笔记">大三课程学习笔记</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/en/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag" title="计算机网络">计算机网络</a></li></ul>
+
+    </footer>
+  </div>
+    <nav id="article-nav" aria-label="Article navigation" data-aos="fade-up">
+      <div class="article-nav-link-wrap left">
+            <img data-src="/images/banner.webp" data-sizes="auto" alt="计算机网络 - 1.应用层的作用" class="lazyload">
+        <a href="/en/2025/01/17/Note/%E5%A4%A7%E4%B8%89%E8%AF%BE%E7%A8%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E5%85%AD%E3%80%81%E5%BA%94%E7%94%A8%E5%B1%82/" aria-label="Prev: 计算机网络 - 1.应用层的作用" title="Prev: 计算机网络 - 1.应用层的作用"></a>
+        <div class="article-nav-caption">Prev</div>
+        <h3 class="article-nav-title">
+            计算机网络 - 1.应用层的作用
+        </h3>
+      </div>
+    <div class="article-nav-link-wrap right">
+          <img data-src="/images/banner.webp" data-sizes="auto" alt="计算机网络体系结构" class="lazyload">
+      <a href="/en/2025/01/17/Note/%E5%A4%A7%E4%B8%89%E8%AF%BE%E7%A8%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E4%BA%8C%E3%80%81%E7%89%A9%E7%90%86%E5%B1%82/" aria-label="Next: 计算机网络体系结构"  title="Next: 计算机网络体系结构"></a>
+      <div class="article-nav-caption">Next</div>
+      <h3 class="article-nav-title">
+          计算机网络体系结构
+      </h3>
+    </div>
+  </nav>
+
+</article>
+
+
+</section>
+        </div>
+        <footer id="footer" aria-label="Site footer">
+  <div style="width: 100%; overflow: hidden">
+    <div class="footer-line"></div>
+  </div>
+  <div id="footer-info">
+    <div>
+      <span class="icon-copyright"></span>
+        2020-2026
+        <span class="footer-info-sep rotate"></span>
+      OnricYF
+    </div>
+      <div>
+        Powered by&nbsp;<a href="https://hexo.io/" rel="noopener nofollow noreferrer" target="_blank">Hexo</a>&nbsp;
+        Theme.<a href="https://github.com/D-Sketon/hexo-theme-reimu" rel="noopener nofollow noreferrer" target="_blank">Reimu</a>
+      </div>
+      <div>
+        <span class="icon-brush"></span>
+        87.2k
+        &nbsp;|&nbsp;
+        <span class="icon-coffee"></span>
+        07:26
+      </div>
+      <div>
+        <span class="icon-eye"></span>
+        <span id="busuanzi_container_site_pv">Number of visits&nbsp;<span id="busuanzi_value_site_pv"></span></span>
+        &nbsp;|&nbsp;
+        <span class="icon-user"></span>
+        <span id="busuanzi_container_site_uv">Number of visitors&nbsp;<span id="busuanzi_value_site_uv"></span></span>
+      </div>
+  </div>
+</footer>
+
+          <div class="sidebar-top">
+            <div class="sidebar-top-taichi rotate"></div>
+            <div class="arrow-up"></div>
+          </div>
+        <div id="mask" class="hide"></div>
+      </div>
+      <nav id="mobile-nav" aria-label="Mobile navigation">
+  <div class="sidebar-wrap">
+        <div class="sidebar-toc-sidebar"><h3 class="toc-title">Contents</h3>
+<div class="sidebar-toc-wrapper toc-div-class" >
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E7%BD%91%E7%BB%9C%E5%B1%82%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">1.</span> <span class="toc-text">1.网络层的作用</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E7%BD%91%E9%99%85%E5%B1%82%E5%8D%8F%E8%AE%AEIP"><span class="toc-number">2.</span> <span class="toc-text">2.网际层协议IP</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ARP%E5%9C%B0%E5%9D%80%E8%A7%A3%E6%9E%90%E5%8D%8F%E8%AE%AE"><span class="toc-number">2.1.</span> <span class="toc-text">-ARP地址解析协议</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RARP%E5%8F%8D%E5%9C%B0%E5%9D%80%E8%A7%A3%E6%9E%90%E5%8D%8F%E8%AE%AE"><span class="toc-number">2.2.</span> <span class="toc-text">-RARP反地址解析协议</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ICMP%E7%BD%91%E9%99%85%E6%8E%A7%E5%88%B6%E6%8A%A5%E6%96%87%E5%8D%8F%E8%AE%AE"><span class="toc-number">2.3.</span> <span class="toc-text">-ICMP网际控制报文协议</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IGMP%E7%BD%91%E9%99%85%E7%BB%84%E7%AE%A1%E7%90%86%E5%8D%8F%E8%AE%AE"><span class="toc-number">2.4.</span> <span class="toc-text">-IGMP网际组管理协议</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-IP%E5%9C%B0%E5%9D%80"><span class="toc-number">3.</span> <span class="toc-text">3.IP地址</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-IP%E5%9C%B0%E5%9D%80%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="toc-number">3.1.</span> <span class="toc-text">3.1  IP地址的概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%84%E6%88%90%EF%BC%9A"><span class="toc-number">3.1.1.</span> <span class="toc-text">组成：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IP%E5%9C%B0%E5%9D%80%E5%92%8CMAC%E5%9C%B0%E5%9D%80%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">3.1.2.</span> <span class="toc-text">IP地址和MAC地址的区别</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-IP%E5%9C%B0%E5%9D%80%E7%9A%84%E7%BB%84%E6%88%90"><span class="toc-number">3.2.</span> <span class="toc-text">3.2  IP地址的组成</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%9C%B0%E5%9D%80-%E4%B8%BB%E6%9C%BA%E5%8F%B7"><span class="toc-number">3.2.1.</span> <span class="toc-text">主机地址&#x2F;主机号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E5%9C%B0%E5%9D%80-%E7%BD%91%E7%BB%9C%E5%8F%B7"><span class="toc-number">3.2.2.</span> <span class="toc-text">网络地址&#x2F;网络号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81"><span class="toc-number">3.2.3.</span> <span class="toc-text">子网掩码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-IP%E5%9C%B0%E5%9D%80%E7%9A%84%E5%88%86%E7%B1%BB"><span class="toc-number">3.3.</span> <span class="toc-text">3.3  IP地址的分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-1A%E7%B1%BB"><span class="toc-number">3.3.1.</span> <span class="toc-text">3.3.1A类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-2B%E7%B1%BB"><span class="toc-number">3.3.2.</span> <span class="toc-text">3.3.2B类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-3C%E7%B1%BB"><span class="toc-number">3.3.3.</span> <span class="toc-text">3.3.3C类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-4D%E7%B1%BB"><span class="toc-number">3.3.4.</span> <span class="toc-text">3.3.4D类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-5E%E7%B1%BB"><span class="toc-number">3.3.5.</span> <span class="toc-text">3.3.5E类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-6%E7%89%B9%E6%AE%8A%E5%9C%B0%E5%9D%80"><span class="toc-number">3.3.6.</span> <span class="toc-text">3.3.6特殊地址</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%90%E7%BD%91%E5%88%92%E5%88%86%EF%BC%88CIDR%EF%BC%89"><span class="toc-number">3.4.</span> <span class="toc-text">子网划分（CIDR）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E9%A2%98"><span class="toc-number">3.4.1.</span> <span class="toc-text">例题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IP%E5%88%86%E7%89%87"><span class="toc-number">3.5.</span> <span class="toc-text">IP分片</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-IPv6"><span class="toc-number">4.</span> <span class="toc-text">4.  IPv6</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-1%E8%B7%AF%E7%94%B1"><span class="toc-number">4.1.</span> <span class="toc-text">4.1路由</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%AF%E7%94%B1%E5%99%A8"><span class="toc-number">4.1.1.</span> <span class="toc-text">路由器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E8%BD%AC%E5%8F%91"><span class="toc-number">4.1.2.</span> <span class="toc-text">数据转发</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%AF%E7%94%B1%E8%A1%A8"><span class="toc-number">4.1.3.</span> <span class="toc-text">路由表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E5%85%B3"><span class="toc-number">4.1.4.</span> <span class="toc-text">网关</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%AF%E7%94%B1%E8%8E%B7%E5%8F%96%E6%96%B9%E5%BC%8F"><span class="toc-number">4.1.5.</span> <span class="toc-text">路由获取方式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2%E8%B7%AF%E7%94%B1%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F"><span class="toc-number">4.2.</span> <span class="toc-text">4.2路由的配置方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1"><span class="toc-number">4.2.1.</span> <span class="toc-text">静态路由</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1"><span class="toc-number">4.2.2.</span> <span class="toc-text">动态路由</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1%E5%8D%8F%E8%AE%AE"><span class="toc-number">4.2.3.</span> <span class="toc-text">动态路由协议</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#RPI"><span class="toc-number">4.2.3.1.</span> <span class="toc-text">RPI</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#OSPF"><span class="toc-number">4.2.3.2.</span> <span class="toc-text">OSPF</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#BGP"><span class="toc-number">4.2.3.3.</span> <span class="toc-text">BGP</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#IS-IS"><span class="toc-number">4.2.3.4.</span> <span class="toc-text">IS-IS</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%86%85%E9%83%A8%E7%BD%91%E5%85%B3%E5%8D%8F%E8%AE%AE"><span class="toc-number">4.2.3.5.</span> <span class="toc-text">内部网关协议</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#RIP%E5%92%8COSPF%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">4.2.3.5.1.</span> <span class="toc-text">RIP和OSPF的区别</span></a></li></ol></li></ol></li></ol></li></ol></li></ol>
+</div>
+</div>
+        <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/avatar.webp" data-sizes="auto" alt="OnricYF" class="lazyload">
+  <div class="sidebar-author-name">OnricYF</div>
+  <div class="sidebar-description">TRASH ARTIST</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>Post</div>
+    <div class="sidebar-state-number">144</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>Category</div>
+    <div class="sidebar-state-number">33</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>Tag</div>
+    <div class="sidebar-state-number">82</div>
+  </div>
+</div>
+<div class="sidebar-social" >
+    <div class="icon-email sidebar-social-icon">
+      <a href=mailto:a1521070145@gmail.com itemprop="url" target="_blank" aria-label="email" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-github sidebar-social-icon">
+      <a href=https://github.com/Madoka9 itemprop="url" target="_blank" aria-label="github" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-bilibili sidebar-social-icon">
+      <a href=https://space.bilibili.com/5862963 itemprop="url" target="_blank" aria-label="bilibili" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-zhihu sidebar-social-icon">
+      <a href=https://www.zhihu.com/people/lan-mei-sheng-dai-77 itemprop="url" target="_blank" aria-label="zhihu" rel="noopener nofollow noreferrer"></a>
+    </div>
+</div>
+<div class="sidebar-menu">
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/" aria-label="Home"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Home</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/archives" aria-label="Archives"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Archives</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/about" aria-label="About"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">About</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/friend" aria-label="Friend"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Friend</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/portfolio" aria-label="Portfolio"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Portfolio</div>
+      </div>
+</div>
+</div>
+  </div>
+      <div class="sidebar-btn-wrapper">
+        <div class="sidebar-toc-btn current"></div>
+        <div class="sidebar-common-btn"></div>
+      </div>
+</nav>
+
+    </div>
+    
+<script src="https://npm.webcache.cn/lazysizes@5.3.2/lazysizes.min.js" integrity="sha384-3gT&#x2F;vsepWkfz&#x2F;ff7PpWNUeMzeWoH3cDhm&#x2F;A8jM7ouoAK0&#x2F;fP&#x2F;9bcHHR5kHq2nf+e" crossorigin="anonymous"></script>
+
+
+<script src="https://npm.webcache.cn/clipboard@2.0.11/dist/clipboard.min.js" integrity="sha384-J08i8An&#x2F;QeARD9ExYpvphB8BsyOj3Gh2TSh1aLINKO3L0cMSH2dN3E22zFoXEi0Q" crossorigin="anonymous"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+  
+<script src="/js/aos.js"></script>
+
+  <script>
+    var aosInit = () => {
+      AOS.init({
+        duration: 1000,
+        easing: "ease",
+        once: true,
+        offset: 50,
+      });
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', aosInit);
+    } else {
+      aosInit();
+    }
+  </script>
+
+
+<script src="/js/pjax_script.js" data-pjax></script>
+
+
+
+
+  <script>
+    var setupFirework = () => {
+      if (!false || !window.matchMedia('(max-width: 768px)').matches) {
+        window.firework && window.firework(JSON.parse('{"excludeElements":["a","button"],"particles":[{"shape":"circle","move":["emit"],"easing":"easeOutExpo","colors":["var(--red-1)","var(--red-2)","var(--red-3)","var(--red-4)"],"number":20,"duration":[1200,1800],"shapeOptions":{"radius":[16,32],"alpha":[0.3,0.5]}},{"shape":"circle","move":["diffuse"],"easing":"easeOutExpo","colors":["var(--red-0)"],"number":1,"duration":[1200,1800],"shapeOptions":{"radius":20,"alpha":[0.2,0.5],"lineWidth":6}}]}'));
+      }
+    }
+  </script>
+  
+<script src="https://npm.webcache.cn/mouse-firework@0.2.0/dist/index.umd.js" integrity="sha384-qi9WggRt19tv8Vc7pCHW3ulMNLwrn515zaLEWZjl1px07vz8+pUoWX8n1rgq282T" crossorigin="anonymous" onload="setupFirework()" defer></script>
+
+
+  
+<script src="https://npm.webcache.cn/theme-shokax-pjax@0.0.3/dist/index.umd.js" integrity="sha384-xneY1WY8hOfUzswrE4CrYq35N4BdVcxqxwHPr9zawE&#x2F;jMSCxD+jAPU55x&#x2F;jj3wlf" crossorigin="anonymous"></script>
+
+  
+<script src="/js/pjax.js"></script>
+
+
+
+
+
+<div id="lazy-script">
+  <div>
+      
+      
+      <script data-pjax>
+        window.REIMU_POST = {
+          author: "OnricYF",
+          title: "计算机网络 - 1.网络层的作用",
+          url: "http://example.com/2025/01/17/Note/%E5%A4%A7%E4%B8%89%E8%AF%BE%E7%A8%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E5%9B%9B%E3%80%81%E7%BD%91%E7%BB%9C%E5%B1%82/",
+          excerpt: "",
+          description: "",
+          stripContent: "1.网络层的作用提供点到点的服务 单位：分组网络层的目的是实现两个端系统之间的数据透明传输，具体功能包括寻址和路由选择，连接的建立，保持和终止等。它提供的服务使传输层不需要了解网络中的数据传输和交换技术。 2.网际层协议IP-ARP地址解析协议根据IP地址获取物理地址 -RARP反地址解析协议-ICMP网际控制报文协议通过ICMP传输控制消息，控制消息是指网络通不通，主机是否可达，路由是否可用等网络本身的消息。 -IGMP网际组管理协议适用于管理协议多播组成员的一种通信协议。IP主机和相邻路由器",
+          date: "Fri Jan 17 2025 22:04:11 GMT+0800",
+          updated: "Thu Jul 16 2026 11:38:25 GMT+0800",
+          cover: "/images/banner.webp",
+        };
+      </script>
+        
+<script src="/js/insert_highlight.js" data-pjax></script>
+
+      
+<script src="/js/tabs.js" data-pjax defer></script>
+
+      <script type="module" data-pjax>
+        (async () => {
+          const PhotoSwipeLightbox = (await safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe-lightbox.esm.min.js", "sha384-DiL6M/gG+wmTxmCRZyD1zee6lIhawn5TGvED0FOh7fXcN9B0aZ9dexSF/N6lrZi/")).default;
+          const initPswp = (gallery, children) => {
+            if (_$$(`${gallery} ${children}`).length > 0) {
+              new PhotoSwipeLightbox({
+                gallery,
+                children,
+                pswpModule: () => safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.esm.min.js", "sha384-WkkO3GCmgkC3VQWpaV8DqhKJqpzpF9JoByxDmnV8+oTJ7m3DfYEWX1fu1scuS4+s")
+              }).init();
+            }
+          }
+          const pswp = () => {
+            initPswp('.article-entry', 'a.article-gallery-item');
+            initPswp('.article-gallery', 'a.article-gallery-item');
+          }
+          pswp();
+        })();
+      </script>
+  </div>
+</div>
+
+
+  <script>
+    console.log(String.raw`%c 
+ ______     ______     __     __    __     __  __    
+/\  == \   /\  ___\   /\ \   /\ "-./  \   /\ \/\ \   
+\ \  __<   \ \  __\   \ \ \  \ \ \-./\ \  \ \ \_\ \  
+ \ \_\ \_\  \ \_____\  \ \_\  \ \_\ \ \_\  \ \_____\ 
+  \/_/ /_/   \/_____/   \/_/   \/_/  \/_/   \/_____/ 
+                                                  
+`,'color: #ff5252;')
+    console.log('%c Theme.Reimu v' + '1.12.0' + ' %c https://github.com/D-Sketon/hexo-theme-reimu ', 'color: white; background: #ff5252; padding:5px 0;', 'padding:4px;border:1px solid #ff5252;')
+  </script>
+  
+
+
+  
+<script src="https://npm.webcache.cn/busuanzi@2.3.0/bsz.pure.mini.js" integrity="sha384-0M75wtSkhjIInv4coYlaJU83+OypaRCIq2SukQVQX04eGTCBXJDuWAbJet56id+S" crossorigin="anonymous" async></script>
+
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      for (let registration of registrations) {
+        registration.unregister();
+      }
+    });
+  }
+</script>
+
+
+    <script>
+      var setupAPlayer = () => {
+        if (!true || !window.matchMedia('(max-width: 768px)').matches) {
+          if (window.matchMedia('(max-width: 959px)').matches) {
+            const meting = _$('meting-js');
+            if (meting) {
+              meting.setAttribute('fixed', 'true');
+              const aside = meting.parentNode?.parentNode;
+              if (aside?.tagName === 'ASIDE') {
+                meting.parentNode.removeChild(meting);
+                document.body.appendChild(meting);
+              }
+            }
+          }
+        }
+      };
+    </script>
+  
+<script src="https://npm.webcache.cn/aplayer@1.10.1/dist/APlayer.min.js" integrity="sha384-gdGYZwHnfJM54evoZhpO0s6ZF5BQiybkiyW7VXr+h5UfruuRL&#x2F;aORyw+5+HZoU6e" crossorigin="anonymous" defer onload="setupAPlayer()"></script>
+
+    
+<script src="https://npm.webcache.cn/meting@2.0.1/dist/Meting.min.js" integrity="sha384-ASVlpKF80A22OXTK3tfEjZm1EL6uFMKIC4p8+0maanw1S&#x2F;IyB+Y4JG+ZDU7GpKE8" crossorigin="anonymous" defer></script>
+
+
+
+  </body>
+  </html>

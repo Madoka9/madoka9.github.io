@@ -1,0 +1,920 @@
+  <!DOCTYPE html>
+  <html lang="en"  
+      data-theme-mode="auto"
+  >
+  <head>
+  <meta charset="utf-8">
+  
+  
+  
+  <script>window.REIMU_CONFIG = {};window.REIMU_CONFIG.icon_font = '4552607_4k4bc36ef96';window.REIMU_CONFIG.clipboard_tips = {"success":{"zh-CN":"复制成功 (*^▽^*)","en":"Copy successfully (*^▽^*)"},"fail":{"zh-CN":"复制失败 (ﾟ⊿ﾟ)ﾂ","en":"Copy failed (ﾟ⊿ﾟ)ﾂ"},"copyright":{"enable":false,"count":50,"license_type":"by-nc-sa"}};window.REIMU_CONFIG.clipboard_tips.copyright.content = '本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！';window.REIMU_CONFIG.code_block = {"expand":true};window.REIMU_CONFIG.base = 'http://example.com';window.REIMU_CONFIG.i18n_languages = ["en"];</script>
+  <title>
+    3.4 前向 延迟渲染 | YF&#39;s Blog
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic|Noto Serif SC:400,400italic,700,700italic&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic|Noto Serif SC:400,400italic,700,700italic&display=swap" media="print" onload="this.media='all'">
+    <link rel="preload" href="//at.alicdn.com/t/c/font_4552607_4k4bc36ef96.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+    
+<link rel="stylesheet" href="/css/loader.css">
+
+    <meta name="description" content="一、渲染路径1.什么是渲染路径（Rendering Path） 是决定光照实现的方式。（也就是当前渲染目标使用的光照流程）  二、渲染方式首先看一下两者的直观的不同  【前向&#x2F;正向渲染-Forward Rendering】一句话概括：每个光照都计算 1、流程   如图所示，流程为：  待渲染几何体 → 顶点着色器 → 片元着色器 → 渲染目标  在渲染每一帧的时，每一个顶点&#x2F;片">
+<meta property="og:type" content="article">
+<meta property="og:title" content="3.4 前向 延迟渲染">
+<meta property="og:url" content="http://example.com/en/2026/02/22/Note/PersonalArrange/3.4%20%E5%89%8D%E5%90%91%20%E5%BB%B6%E8%BF%9F%E6%B8%B2%E6%9F%93/index.html">
+<meta property="og:site_name" content="YF&#39;s Blog">
+<meta property="og:description" content="一、渲染路径1.什么是渲染路径（Rendering Path） 是决定光照实现的方式。（也就是当前渲染目标使用的光照流程）  二、渲染方式首先看一下两者的直观的不同  【前向&#x2F;正向渲染-Forward Rendering】一句话概括：每个光照都计算 1、流程   如图所示，流程为：  待渲染几何体 → 顶点着色器 → 片元着色器 → 渲染目标  在渲染每一帧的时，每一个顶点&#x2F;片">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625655194343-368bc593-725d-41df-bed9-7085d93644a6.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625655863915-d7e821ee-4bc7-46dd-aa98-cc331019ae81.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625664053094-2e249d64-735e-4ae3-b095-9502069ea659.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625664244728-ed30434d-259e-4a86-99b2-f11897f71e06.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1617288408547-2ac00882-0ac2-4c57-9ca2-667cad2668c7.png?x-oss-process=image/resize,w_726">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625664705657-7f3b1f56-e3e9-4289-8e9a-7dc1b99613c8.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/jpeg/12962324/1625667766827-3db4b4fe-72ee-4cb7-8b71-74d58d822494.jpeg">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1640481377414-d8933778-18e8-4f42-84e0-ff4588a054a4.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625665575241-92d5e497-9a8b-40dc-bcae-cf4a857f23cb.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1617288407557-dcb8eb8c-156c-4934-ab81-bc100c5cb169.png?x-oss-process=image/resize,w_726">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625667165982-bb4c0be8-a92f-408a-989d-37608c0a0eb0.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625667172481-7202b9aa-2219-4f6d-821a-f444ad5ea2c4.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625667559903-d3e71d2a-cbbc-4192-bc5b-205228718b94.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625667434770-a3562b61-2e22-4b46-af1c-9be550bdea64.png">
+<meta property="article:published_time" content="2026-02-22T13:10:43.000Z">
+<meta property="article:modified_time" content="2026-07-16T03:53:32.085Z">
+<meta property="article:author" content="OnricYF">
+<meta property="article:tag" content="PersonalArrange">
+<meta property="article:tag" content="渲染">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625655194343-368bc593-725d-41df-bed9-7085d93644a6.png">
+    <link rel="alternate" href="/atom.xml" title="YF's Blog" type="application/atom+xml">
+    <link rel="shortcut icon" href="/images/favicon.ico">
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.css" integrity="sha384-IfxC36XL/toUyJ939C73PcgMuRzAZuIzZxE38drsmO5p6jD7ei+Zx/1oA/0l8ysE" crossorigin="anonymous">
+    
+<script src="https://npm.webcache.cn/pace-js@1.2.4/pace.min.js" integrity="sha384-k6YtvFUEIuEFBdrLKJ3YAUbBki333tj1CSUisai5Cswsg9wcLNaPzsTHDswp4Az8" crossorigin="anonymous"></script>
+
+    
+<link rel="stylesheet" href="https://npm.webcache.cn/@reimujs/aos@0.1.2/dist/aos.css" integrity="sha384-GMRP93c6Hkz9JVKGAuRR3nTS7M07RwPgTFenXiosjq2VbVgvdDNcz1g6Mkj8AONa" crossorigin="anonymous">
+
+    <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://npm.webcache.cn/aplayer@1.10.1/dist/APlayer.min.css" integrity="sha384-tLMkTWh2pfXNWGFlUS0w1TFtRG5xZ9lPWFOooj+vDDLIL+xBGQU/voDBY5XE2lVh" crossorigin="anonymous">
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+  <body>
+      <div id='loader'>
+    <div class="loading-left-bg loading-bg"></div>
+    <div class="loading-right-bg loading-bg"></div>
+    <div class="spinner-box">
+      <div class="loading-taichi rotate">
+          <svg width="150" height="150" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="https://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
+            <path d="M303.5 432A80 80 0 0 1 291.5 592A80 80 0 0 1 303.5 432z" fill="var(--red-1, #ff5252)" />
+            <path d="M512 65A447 447 0 0 1 512 959L512 929A417 417 0 0 0 512 95A417 417 0 0 0 512 929L512 959A447 447 0 0 1 512 65z 
+           M512 95A417 417 0 0 1 929 512A208.5 208.5 0 0 1 720.5 720.5L720.5 592A80 80 0 0 0 720.5 432A80 80 0 0 0 720.5 592L720.5 720.5A208.5 208.5 0 0 1 512 512A208.5 208.5 0 0 0 303.5 303.5A208.5 208.5 0 0 0 95 512A417 417 0 0 1 512 95z" fill="var(--red-1, #ff5252)" />
+          </svg>
+      </div>
+      <div class="loading-word">Loading...</div>
+    </div>
+  </div>
+  </div>
+  <script>
+    var time = null;
+    var loaderEl = document.getElementById('loader');
+    var startLoading = () => {
+      time = Date.now();
+      loaderEl.classList.remove("loading");
+    }
+    var hideLoader = () => {
+      document.body.style.overflow = 'auto';
+      loader.classList.add('loading');
+    };
+
+    var endLoading = () => {
+      if (!time) {
+        hideLoader();
+      } else {
+        if (Date.now() - time > 500) {
+          time = null;
+          hideLoader();
+        } else {
+          setTimeout(endLoading, 500 - (Date.now() - time));
+          time = null;
+        }
+      }
+    }
+    window.addEventListener('DOMContentLoaded', endLoading);
+    loaderEl.addEventListener('click', endLoading);
+  </script>
+<div id="copy-tooltip"></div>
+<div id="heatmap-tooltip"></div>
+
+
+    <div id="container">
+      <div id="wrap">
+        <div id="header-nav">
+  <nav id="main-nav" aria-label="Primary navigation">
+        <a class="main-nav-link-wrap" href="/en/">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Home</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/archives">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Archives</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/about">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">About</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/friend">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Friend</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/portfolio">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Portfolio</span>
+        </span>
+    <a id="main-nav-toggle" class="nav-icon" aria-label="Toggle navigation" role="button"></a>
+  </nav>
+  <nav id="sub-nav" aria-label="Secondary navigation">
+  </nav>
+    <nav id="i18n-nav" aria-label="Language selection">
+      <div class="custom-dropdown">
+        <div class="select-selected" id="select-selected" role="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Language menu">
+          <span id="nav-language-btn" class="nav-icon" style="padding: 0 20px 0 0"></span>
+          <span id="selected-lang">English</span>
+        </div>
+        <ul class="select-items" id="select-items" role="listbox" aria-label="Languages">
+            <li data-value="zh-CN" role="option" aria-selected="false">简体中文</li>
+            <li data-value="en" role="option" class="selected" aria-selected="true">English</li>
+        </ul>
+      </div>
+      <script>
+        var selectSelected = document.getElementById("select-selected");
+        var selectedLang = document.getElementById("selected-lang");
+        var selectItems = document.getElementById("select-items");
+        var selectOptions = selectItems.querySelectorAll("li");
+
+        selectSelected.addEventListener("click", () => {
+          selectItems.classList.toggle("show");
+          var expanded = selectSelected.getAttribute("aria-expanded") === "true";
+          selectSelected.setAttribute("aria-expanded", (!expanded).toString());
+        });
+
+        selectOptions.forEach((item) => {
+          item.addEventListener("click", () => {
+            const langMap = {};
+              langMap['zh-CN'] = '/2026/02/22/Note/PersonalArrange/3.4 前向 延迟渲染/';
+              langMap['en'] = '/en/2026/02/22/Note/PersonalArrange/3.4 前向 延迟渲染/';
+            selectedLang.textContent = item.textContent;
+            selectItems.classList.remove("show");
+            selectOptions.forEach((option) => {
+              option.classList.remove("selected");
+            });
+            item.classList.add("selected");
+            window.location = langMap[item.dataset.value];
+          });
+        });
+
+        document.addEventListener("click", (event) => {
+          if (!event.target.closest(".custom-dropdown")) {
+            selectItems.classList.remove("show");
+            selectSelected.setAttribute("aria-expanded", "false");
+          }
+        });
+      </script>
+    </nav>
+</div>
+<header id="header" aria-label="Site header">
+        <picture>
+        </picture>
+          <img  fetchpriority="high" src="/images/banner.webp" alt="3.4 前向 延迟渲染">
+  <div id="header-outer">
+    <div id="header-title">
+          <span id="logo">
+            <h1 data-aos="slide-up">3.4 前向 延迟渲染</h1>
+          </span>
+        <h2 id="subtitle-wrap" data-aos="slide-down">
+        </h2>
+    </div>
+  </div>
+</header>
+
+        <div id="content" aria-label="Page content"  class="sidebar-right" >
+          <aside id="sidebar" aria-label="Sidebar">
+  <div class="sidebar-wrapper-container sticky">
+  <div class="sidebar-wrapper">
+    <div class="sidebar-wrap" data-aos="fade-up">
+          <div class="sidebar-toc-sidebar"><h3 class="toc-title">Contents</h3>
+<div class="sidebar-toc-wrapper toc-div-class" >
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%B8%B2%E6%9F%93%E8%B7%AF%E5%BE%84"><span class="toc-number">1.</span> <span class="toc-text">一、渲染路径</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E4%BB%80%E4%B9%88%E6%98%AF%E6%B8%B2%E6%9F%93%E8%B7%AF%E5%BE%84%EF%BC%88Rendering-Path%EF%BC%89"><span class="toc-number">1.1.</span> <span class="toc-text">1.什么是渲染路径（Rendering Path）</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%B8%B2%E6%9F%93%E6%96%B9%E5%BC%8F"><span class="toc-number">2.</span> <span class="toc-text">二、渲染方式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%80%90%E5%89%8D%E5%90%91-%E6%AD%A3%E5%90%91%E6%B8%B2%E6%9F%93-Forward-Rendering%E3%80%91"><span class="toc-number">2.1.</span> <span class="toc-text">【前向&#x2F;正向渲染-Forward Rendering】</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E6%B5%81%E7%A8%8B"><span class="toc-number">2.1.1.</span> <span class="toc-text">1、流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E8%A7%84%E5%88%99%EF%BC%88%E5%A6%82%E4%BD%95%E6%B8%B2%E6%9F%93%E6%AF%8F%E4%B8%80%E5%B8%A7%E7%9A%84%EF%BC%89%E5%92%8C%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-number">2.1.2.</span> <span class="toc-text">2、规则（如何渲染每一帧的）和注意事项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E8%A1%A5%E5%85%85"><span class="toc-number">2.1.3.</span> <span class="toc-text">3、补充</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%80%90%E5%BB%B6%E8%BF%9F%E6%B8%B2%E6%9F%93-Deferred-Rendering%E3%80%91"><span class="toc-number">2.2.</span> <span class="toc-text">【延迟渲染-Deferred Rendering】</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E4%BB%80%E4%B9%88%E6%98%AF%E5%BB%B6%E8%BF%9F%E6%B8%B2%E6%9F%93"><span class="toc-number">2.2.1.</span> <span class="toc-text">1、什么是延迟渲染</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E6%B5%81%E7%A8%8B"><span class="toc-number">2.2.2.</span> <span class="toc-text">2、流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E4%B8%80%E4%BA%9B%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-number">2.2.3.</span> <span class="toc-text">3、一些注意事项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4%E3%80%81%E8%A1%A5%E5%85%85"><span class="toc-number">2.2.4.</span> <span class="toc-text">4、补充</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E4%B8%8D%E5%90%8C%E6%B8%B2%E6%9F%93%E8%B7%AF%E5%BE%84%E7%9A%84%E7%89%B9%E6%80%A7"><span class="toc-number">3.</span> <span class="toc-text">三、不同渲染路径的特性</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E3%80%81%E5%90%8E%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F%E4%B8%8D%E5%90%8C"><span class="toc-number">3.1.</span> <span class="toc-text">1、后处理方式不同</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81%E7%9D%80%E8%89%B2%E8%AE%A1%E7%AE%97%E4%B8%8D%E5%90%8C%EF%BC%88shader%EF%BC%89"><span class="toc-number">3.2.</span> <span class="toc-text">2、着色计算不同（shader）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3%E3%80%81%E6%8A%97%E9%94%AF%E9%BD%BF%E6%96%B9%E5%BC%8F%E4%B8%8D%E5%90%8C"><span class="toc-number">3.3.</span> <span class="toc-text">3、抗锯齿方式不同</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E4%B8%8D%E5%90%8C%E6%B8%B2%E6%9F%93%E8%B7%AF%E5%BE%84%E7%9A%84%E4%BC%98%E5%8A%A3"><span class="toc-number">4.</span> <span class="toc-text">四、不同渲染路径的优劣</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E3%80%81%E5%89%8D%E5%90%91%E6%B8%B2%E6%9F%93%E7%9A%84%E4%BC%98%E7%82%B9%E3%80%81%E7%BC%BA%E7%82%B9"><span class="toc-number">4.1.</span> <span class="toc-text">1、前向渲染的优点、缺点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-number">4.1.1.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9"><span class="toc-number">4.1.2.</span> <span class="toc-text">缺点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81%E5%BB%B6%E8%BF%9F%E6%B8%B2%E6%9F%93%E7%9A%84%E4%BC%98%E7%82%B9%E3%80%81%E7%BC%BA%E7%82%B9"><span class="toc-number">4.2.</span> <span class="toc-text">2、延迟渲染的优点、缺点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E7%82%B9-1"><span class="toc-number">4.2.1.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9-1"><span class="toc-number">4.2.2.</span> <span class="toc-text">缺点</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%85%B6%E4%BB%96%E9%83%A8%E5%88%86"><span class="toc-number">5.</span> <span class="toc-text">五、其他部分</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E3%80%81%E6%B8%B2%E6%9F%93%E8%B7%AF%E5%BE%84%E7%9A%84%E8%AE%BE%E7%BD%AE"><span class="toc-number">5.1.</span> <span class="toc-text">1、渲染路径的设置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81TBDR"><span class="toc-number">5.2.</span> <span class="toc-text">2、TBDR</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3%E3%80%81%E5%85%B6%E4%BB%96%E6%B8%B2%E6%9F%93%E8%B7%AF%E5%BE%84"><span class="toc-number">5.3.</span> <span class="toc-text">3、其他渲染路径</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BB%B6%E8%BF%9F%E5%85%89%E7%85%A7%EF%BC%88Light-Pre-Pass-Deferred-Lighting%EF%BC%89"><span class="toc-number">5.3.1.</span> <span class="toc-text">延迟光照（Light Pre-Pass &#x2F; Deferred Lighting）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Forward-%EF%BC%88%E5%8D%B3Tiled-Forward-Rendering%EF%BC%8C%E5%88%86%E5%9D%97%E6%AD%A3%E5%90%91%E6%B8%B2%E6%9F%93%EF%BC%89"><span class="toc-number">5.3.2.</span> <span class="toc-text">Forward+（即Tiled Forward Rendering，分块正向渲染）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BE%A4%E7%BB%84%E6%B8%B2%E6%9F%93%EF%BC%88Clustered-Rendering%EF%BC%89"><span class="toc-number">5.3.3.</span> <span class="toc-text">群组渲染（Clustered Rendering）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4%E3%80%81%E5%BB%B6%E8%BF%9F%E6%B8%B2%E6%9F%93%E4%B8%ADMSAA%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">5.4.</span> <span class="toc-text">4、延迟渲染中MSAA存在的问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5%E3%80%81%E4%B8%8D%E5%90%8Cpath%E4%B8%8B%E5%85%89%E6%BA%90shader%E7%9A%84%E7%BC%96%E5%86%99"><span class="toc-number">5.5.</span> <span class="toc-text">5、不同path下光源shader的编写</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6%E3%80%81PreZ-Zprepass"><span class="toc-number">5.6.</span> <span class="toc-text">6、PreZ(Zprepass)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7%E3%80%81%E4%B8%80%E4%BA%9B%E8%A1%A5%E5%85%85"><span class="toc-number">5.7.</span> <span class="toc-text">7、一些补充</span></a></li></ol></li></ol>
+</div>
+</div>
+          <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/avatar.webp" data-sizes="auto" alt="OnricYF" class="lazyload">
+  <div class="sidebar-author-name">OnricYF</div>
+  <div class="sidebar-description">TRASH ARTIST</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>Post</div>
+    <div class="sidebar-state-number">144</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>Category</div>
+    <div class="sidebar-state-number">33</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>Tag</div>
+    <div class="sidebar-state-number">82</div>
+  </div>
+</div>
+<div class="sidebar-social" >
+    <div class="icon-email sidebar-social-icon">
+      <a href=mailto:a1521070145@gmail.com itemprop="url" target="_blank" aria-label="email" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-github sidebar-social-icon">
+      <a href=https://github.com/Madoka9 itemprop="url" target="_blank" aria-label="github" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-bilibili sidebar-social-icon">
+      <a href=https://space.bilibili.com/5862963 itemprop="url" target="_blank" aria-label="bilibili" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-zhihu sidebar-social-icon">
+      <a href=https://www.zhihu.com/people/lan-mei-sheng-dai-77 itemprop="url" target="_blank" aria-label="zhihu" rel="noopener nofollow noreferrer"></a>
+    </div>
+</div>
+<div class="sidebar-menu">
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/" aria-label="Home"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Home</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/archives" aria-label="Archives"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Archives</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/about" aria-label="About"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">About</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/friend" aria-label="Friend"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Friend</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/portfolio" aria-label="Portfolio"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Portfolio</div>
+      </div>
+</div>
+</div>
+          <div class="sidebar-btn-wrapper" style="position:static">
+            <div class="sidebar-toc-btn current"></div>
+            <div class="sidebar-common-btn"></div>
+          </div>
+    </div>
+  </div>
+      <meting-js
+        theme="var(--color-link)"
+        id="385907592"
+        server="netease"
+        type="playlist"
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        class="aplayer-after-sidebar"
+      ></meting-js>
+  <div class="sidebar-widget">
+  </div>
+  </div>
+</aside>
+
+          <section id="main" aria-label="Main content"><article id="post-Note/PersonalArrange/3.4 前向 延迟渲染" class="h-entry article" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner" data-aos="fade-up">
+    <div class="article-meta">
+      <div class="article-date">
+  <span class="article-date-link icon-calendar" data-aos="zoom-in">
+    <time datetime="2026-02-22T13:10:43.000Z" itemprop="datePublished">2026-02-22</time>
+    <time style="display: none;" id="post-update-time">2026-07-16</time>
+  </span>
+</div>
+
+    </div>
+    
+    <div class="hr-line"></div>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+        <h1 id="一、渲染路径"><a href="#一、渲染路径" class="headerlink" title="一、渲染路径"></a>一、渲染路径</h1><h2 id="1-什么是渲染路径（Rendering-Path）"><a href="#1-什么是渲染路径（Rendering-Path）" class="headerlink" title="1.什么是渲染路径（Rendering Path）"></a>1.什么是渲染路径（Rendering Path）</h2><ul>
+<li>是决定光照实现的方式。（也就是当前渲染目标使用的光照流程）</li>
+</ul>
+<h1 id="二、渲染方式"><a href="#二、渲染方式" class="headerlink" title="二、渲染方式"></a>二、渲染方式</h1><p>首先看一下两者的直观的不同</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625655194343-368bc593-725d-41df-bed9-7085d93644a6.png"></p>
+<h2 id="【前向-正向渲染-Forward-Rendering】"><a href="#【前向-正向渲染-Forward-Rendering】" class="headerlink" title="【前向&#x2F;正向渲染-Forward Rendering】"></a>【前向&#x2F;正向渲染-Forward Rendering】</h2><p>一句话概括：每个光照都计算</p>
+<h3 id="1、流程"><a href="#1、流程" class="headerlink" title="1、流程"></a>1、流程</h3><ul>
+<li><p><img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625655863915-d7e821ee-4bc7-46dd-aa98-cc331019ae81.png"></p>
+</li>
+<li><p>如图所示，<strong>流程</strong>为：</p>
+</li>
+<li><p>待渲染几何体 → 顶点着色器 → 片元着色器 → 渲染目标</p>
+</li>
+<li><p>在渲染每一帧的时，每一个顶点&#x2F;片元都要执行一次片元着色器代码，这时需要将所有的光照信息传到片元着色器中。</p>
+</li>
+<li><p>虽然大部分情况下的光照都趋向于小型化，而且照亮区域也不大，但即便是离这个像素所对应的世界空间的位置很远的光源，光照计算还是会把所有的光源考虑进去的。</p>
+</li>
+<li><p>简单来说就是不管光源的影响大不大，计算的时候都会把所有光源计算进去，这样就会造成一个很大的浪费</p>
+</li>
+</ul>
+<h3 id="2、规则（如何渲染每一帧的）和注意事项"><a href="#2、规则（如何渲染每一帧的）和注意事项" class="headerlink" title="2、规则（如何渲染每一帧的）和注意事项"></a>2、规则（如何渲染每一帧的）和注意事项</h3><ul>
+<li><p><strong>发生在顶点处理阶段，会计算所有顶点的光照</strong>。全平台支持</p>
+</li>
+<li><p>规则1：最亮的几个光源会被实现为像素光照</p>
+</li>
+<li><p>规则2：然后就是，最多四个光源会被实现为顶点光照</p>
+</li>
+<li><p>规则3：剩下的光源会实现为效率较高的球面调谐光照（Spherical Hamanic），这是一种模拟光照</p>
+</li>
+<li><p><strong>补充说明</strong></p>
+</li>
+<li><p>最亮的那盏光一定是像素光照</p>
+</li>
+<li><p>Light的Render Mode是important的光一定是像素光照</p>
+</li>
+<li><p>如果前面的两条加起来的像素光照小于Quality Setting里的Pixel Light Count（最大像素光照数量），那么从剩下的光源中找出最亮的那几盏光源，实现为像素光照。</p>
+</li>
+<li><p>最后剩下的光源，按照规则2或3。</p>
+</li>
+<li><p>在base pass里执行一盏像素光、所有的顶点光和球面调谐光照，并且进行阴影计算。</p>
+</li>
+<li><p>其余的像素光每盏一个Additional Pass，并且这些pass里没有阴影计算。</p>
+</li>
+<li><p>场景中看到的阴影，全是base pass里计算出最亮那盏像素光的阴影，其他像素光是不计算阴影的。</p>
+</li>
+<li><p><strong>最多的光源数是可以更改的</strong></p>
+</li>
+<li><p>以Unity中的为例，在project setting中</p>
+</li>
+<li><p><img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625664053094-2e249d64-735e-4ae3-b095-9502069ea659.png"></p>
+</li>
+<li><p>所以，如果一个物体受到n个光源影响，那么每个片元着色器执行代码时，都必须把n个光源传递给着色器中进行计算。</p>
+</li>
+<li><p><img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625664244728-ed30434d-259e-4a86-99b2-f11897f71e06.png"></p>
+</li>
+</ul>
+<h3 id="3、补充"><a href="#3、补充" class="headerlink" title="3、补充"></a>3、补充</h3><ul>
+<li>之前在看UE4课的时候，上来就讲UE引擎的渲染路径，当时不是很懂是个啥，现在终于明白啦</li>
+<li>贴上之前的截图</li>
+<li><img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1617288408547-2ac00882-0ac2-4c57-9ca2-667cad2668c7.png?x-oss-process=image/resize,w_726"></li>
+</ul>
+<h2 id="【延迟渲染-Deferred-Rendering】"><a href="#【延迟渲染-Deferred-Rendering】" class="headerlink" title="【延迟渲染-Deferred Rendering】"></a>【延迟渲染-Deferred Rendering】</h2><p>一句话概括：先不计算光照，延迟到最后再一起计算</p>
+<h3 id="1、什么是延迟渲染"><a href="#1、什么是延迟渲染" class="headerlink" title="1、什么是延迟渲染"></a>1、什么是延迟渲染</h3><ul>
+<li><p>主要用来解决大量光照渲染的方案</p>
+</li>
+<li><p>延迟渲染的实质是：</p>
+</li>
+<li><p>先不要做迭代三角形做光照计算，而是先找出来你能看到的所有像素，再去迭代光照。</p>
+</li>
+<li><p>直接迭代三角形的话，由于大量三角形是看不到的，会造成极大的浪费。</p>
+</li>
+</ul>
+<h3 id="2、流程"><a href="#2、流程" class="headerlink" title="2、流程"></a>2、流程</h3><ul>
+<li><p><img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625664705657-7f3b1f56-e3e9-4289-8e9a-7dc1b99613c8.png"></p>
+</li>
+<li><p>流程为：待渲染几何体 → 顶点着色器 → MRT → 光照计算 → 渲染目标</p>
+</li>
+<li><p>过程可以拆分为两个pass</p>
+</li>
+<li><p>第一个pass：<strong>几何处理通路</strong>。</p>
+</li>
+<li><p>首先将场景渲染一次，获取到的待渲染对象的各种几何信息存储到名为G-buffer的缓冲区中，这些缓冲区用来之后进行更复杂的光照计算。</p>
+</li>
+<li><p>由于有深度测试，所以最终写入G-buffer中的，都是离摄像机最近的片元的集合属性，这就意味着，在G-buffer中的片元必定要进行光照计算。</p>
+</li>
+<li><p>第二个pass：<strong>光照处理通路</strong>。</p>
+</li>
+<li><p>这个pass会遍历所有G-buffer中的位置、颜色、法线等参数，执行一次光照计算。</p>
+</li>
+</ul>
+<h3 id="3、一些注意事项"><a href="#3、一些注意事项" class="headerlink" title="3、一些注意事项"></a>3、一些注意事项</h3><ul>
+<li><p><strong>G-buffer的概念</strong></p>
+</li>
+<li><p>G-Buffer，全称Geometric Buffer ，译作几何缓冲区，它主要用于存储每个像素对应的位置（Position），法线（Normal），漫反射颜色（Diffuse Color）以及其他有用材质参数。</p>
+</li>
+<li><p>根据这些信息，就可以在像空间（二维空间）中对每个像素进行光照处理。</p>
+</li>
+<li><p>如图为一个典型的G-buffer</p>
+</li>
+<li><p><img src="https://cdn.nlark.com/yuque/0/2021/jpeg/12962324/1625667766827-3db4b4fe-72ee-4cb7-8b71-74d58d822494.jpeg"></p>
+</li>
+<li><p>UE4默认使用的是延迟管线</p>
+</li>
+<li><p>我们在视图模式—缓冲显示—总览，就可以看到所有G-buffer的预览</p>
+</li>
+<li><p><img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1640481377414-d8933778-18e8-4f42-84e0-ff4588a054a4.png"></p>
+</li>
+<li><p><strong>延迟渲染不支持透明物体的渲染</strong></p>
+</li>
+<li><p>因为没有深度信息</p>
+</li>
+<li><p>延迟渲染中的透明物体渲染方式和前向渲染相同</p>
+</li>
+<li><p>伪代码 </p>
+</li>
+<li><p><img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625665575241-92d5e497-9a8b-40dc-bcae-cf4a857f23cb.png"></p>
+</li>
+<li><p>RT（G-buffer）相当于把整个屏幕的信息绘制到一个图中，每个RT都可以写到一个G-buffer中</p>
+</li>
+<li><p>G-buffer中的数据都是2D的，所以我们的光照计算就相当于一个<strong>2D的光照后处理</strong></p>
+</li>
+</ul>
+<h3 id="4、补充"><a href="#4、补充" class="headerlink" title="4、补充"></a>4、补充</h3><ul>
+<li><img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1617288407557-dcb8eb8c-156c-4934-ab81-bc100c5cb169.png?x-oss-process=image/resize,w_726"></li>
+</ul>
+<h1 id="三、不同渲染路径的特性"><a href="#三、不同渲染路径的特性" class="headerlink" title="三、不同渲染路径的特性"></a>三、不同渲染路径的特性</h1><h2 id="1、后处理方式不同"><a href="#1、后处理方式不同" class="headerlink" title="1、后处理方式不同"></a>1、后处理方式不同</h2><ul>
+<li><p>如何需要深度信息进行后处理的话</p>
+</li>
+<li><p>前向渲染需要单独渲染出一张深度图</p>
+</li>
+<li><p>延迟渲染直接用G-buffer中的深度信息计算即可</p>
+</li>
+</ul>
+<h2 id="2、着色计算不同（shader）"><a href="#2、着色计算不同（shader）" class="headerlink" title="2、着色计算不同（shader）"></a>2、着色计算不同（shader）</h2><ul>
+<li><p>延迟渲染</p>
+</li>
+<li><p>因为是最后统一计算光照的，所以只能算一个光照模型（如果需要其他光照模型，只能切换pass）</p>
+</li>
+</ul>
+<h2 id="3、抗锯齿方式不同"><a href="#3、抗锯齿方式不同" class="headerlink" title="3、抗锯齿方式不同"></a>3、抗锯齿方式不同</h2><ul>
+<li>后续具体说明</li>
+</ul>
+<h1 id="四、不同渲染路径的优劣"><a href="#四、不同渲染路径的优劣" class="headerlink" title="四、不同渲染路径的优劣"></a>四、不同渲染路径的优劣</h1><h2 id="1、前向渲染的优点、缺点"><a href="#1、前向渲染的优点、缺点" class="headerlink" title="1、前向渲染的优点、缺点"></a>1、前向渲染的优点、缺点</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ul>
+<li><p>1.支持半透明渲染</p>
+</li>
+<li><p>2.支持使用多个光照pass</p>
+</li>
+<li><p>3.支持自定义光照计算方式</p>
+</li>
+<li><p>（延迟渲染是渲染到Gbuffer，再一起计算光照，所以不支持每一个物体用单独的光照方式计算）</p>
+</li>
+</ul>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ul>
+<li>1.光源数量对计算复杂度影响巨大</li>
+<li>2.访问深度等数据需要额外计算（需要再渲染一张深度图）</li>
+</ul>
+<h2 id="2、延迟渲染的优点、缺点"><a href="#2、延迟渲染的优点、缺点" class="headerlink" title="2、延迟渲染的优点、缺点"></a>2、延迟渲染的优点、缺点</h2><h3 id="优点-1"><a href="#优点-1" class="headerlink" title="优点"></a>优点</h3><ul>
+<li>1.大量光照场景的情况下，优势明显</li>
+<li>2.只渲染可见像素，节省计算量</li>
+<li>3.对后处理支持良好（例如深度信息：直接拿G-buffer中的就行）</li>
+<li>4.用更少的shader（所有的物体光照模型都一样，很多东西不用再定义了）</li>
+</ul>
+<h3 id="缺点-1"><a href="#缺点-1" class="headerlink" title="缺点"></a>缺点</h3><ul>
+<li><p>1.对MSAA支持不友好</p>
+</li>
+<li><p>2.透明物体渲染存在问题（深度问题，只渲染力物体最近的物体，渲染透明度时会出现问题）</p>
+</li>
+<li><p>3.占用大量的显存带宽</p>
+</li>
+<li><p>涉及一个clear的操作，如果不清理的话，后边可以继续获取到</p>
+</li>
+<li><p>每一帧都需要几张rt在显存中传输、清理等，会更耗带宽</p>
+</li>
+<li><p>4.只能使用同一个光照pass</p>
+</li>
+</ul>
+<h1 id="五、其他部分"><a href="#五、其他部分" class="headerlink" title="五、其他部分"></a>五、其他部分</h1><h2 id="1、渲染路径的设置"><a href="#1、渲染路径的设置" class="headerlink" title="1、渲染路径的设置"></a>1、渲染路径的设置</h2><ul>
+<li><p>Project Setting中进行设置</p>
+</li>
+<li><p><img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625667165982-bb4c0be8-a92f-408a-989d-37608c0a0eb0.png"></p>
+</li>
+<li><p><img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625667172481-7202b9aa-2219-4f6d-821a-f444ad5ea2c4.png"></p>
+</li>
+</ul>
+<h2 id="2、TBDR"><a href="#2、TBDR" class="headerlink" title="2、TBDR"></a>2、TBDR</h2><ul>
+<li><p>有两个TBDR，名字一样，内容不同</p>
+</li>
+<li><p>第一个：</p>
+</li>
+<li><p>是SIGGRAPH2010提出的，作为传统Defferred Rendering的另一种主要改进，分块延迟渲染（Tile-Based Deferred Rendering，TBDR）旨在合理分摊开销（amortize overhead），自SIGGRAPH 2010上提出以来逐渐为业界所了解。基于延迟渲染的优化方式，通过分块来降低带宽内存用量（解决带宽和内存问题）</p>
+</li>
+<li><p><img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625667559903-d3e71d2a-cbbc-4192-bc5b-205228718b94.png"></p>
+</li>
+<li><p>延迟渲染的分块，把整个图像分为很多块，再一块一块的渲染。</p>
+</li>
+<li><p>第二个：</p>
+</li>
+<li><p>PowerVR基于手机GPU的TBR框架提出的改进，通过HSR减少Overdraw</p>
+</li>
+<li><p>TBDR这个架构是PowerVR提出来的对TBR的一次改进，在TBR的基础上再加了一个Deferred。</p>
+</li>
+<li><p>通过做一些可见性测试来减少Overdraw</p>
+</li>
+<li><p>涉及手机GPU架构，和延迟渲染没什么关系</p>
+</li>
+<li><p>这里提到的关于TBR 、PowerVR提出的TBRD，作业部分有整理，详细的也可以看知乎的这篇文章<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/259760974">https://zhuanlan.zhihu.com/p/259760974</a></p>
+</li>
+<li><p><img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625667434770-a3562b61-2e22-4b46-af1c-9be550bdea64.png"></p>
+</li>
+</ul>
+<h2 id="3、其他渲染路径"><a href="#3、其他渲染路径" class="headerlink" title="3、其他渲染路径"></a>3、其他渲染路径</h2><h3 id="延迟光照（Light-Pre-Pass-Deferred-Lighting）"><a href="#延迟光照（Light-Pre-Pass-Deferred-Lighting）" class="headerlink" title="延迟光照（Light Pre-Pass &#x2F; Deferred Lighting）"></a>延迟光照（Light Pre-Pass &#x2F; Deferred Lighting）</h3><ul>
+<li><p>减少G-buffer占用的过多开销，支持多种光照模型</p>
+</li>
+<li><p>和延迟渲染的区别：</p>
+</li>
+<li><p>用更少的buffe信息，着色计算的时候用的是forward，所以第三步开始都是前向渲染（可以对不同的物体进行不同的光照模型）</p>
+</li>
+</ul>
+<h3 id="Forward-（即Tiled-Forward-Rendering，分块正向渲染）"><a href="#Forward-（即Tiled-Forward-Rendering，分块正向渲染）" class="headerlink" title="Forward+（即Tiled Forward Rendering，分块正向渲染）"></a>Forward+（<strong>即Tiled Forward Rendering，分块正向渲染</strong>）</h3><ul>
+<li><p>减少带宽，支持多光源，强制需要一个preZ</p>
+</li>
+<li><p>通过分块索引的方式，以及深度和法线信息来到需要进行光照计算的片元进行光照计算。</p>
+</li>
+<li><p>需要法线和深度的后处理需要单独渲染一个rt出来</p>
+</li>
+<li><p>强制使用了一个preZ（如果没涉及过这个概念的话，可以理解为进行了一个深度预计算）</p>
+</li>
+</ul>
+<h3 id="群组渲染（Clustered-Rendering）"><a href="#群组渲染（Clustered-Rendering）" class="headerlink" title="群组渲染（Clustered Rendering）"></a>群组渲染（Clustered Rendering）</h3><ul>
+<li>带宽相对减少，多光源下效率提升</li>
+<li>分为forward和deferred两种</li>
+<li>详细补充拓展：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/54694743">https://zhuanlan.zhihu.com/p/54694743</a></li>
+</ul>
+<h2 id="4、延迟渲染中MSAA存在的问题"><a href="#4、延迟渲染中MSAA存在的问题" class="headerlink" title="4、延迟渲染中MSAA存在的问题"></a>4、延迟渲染中MSAA存在的问题</h2><ul>
+<li>前边补充的图里有提到“NO MSAA Possible”，也就是说延迟渲染管线不支持MSAA</li>
+<li>MSAA在延迟渲染中存在的问题：像素已经被光栅化了，所以没法用更大的像素来渲染。</li>
+</ul>
+<h2 id="5、不同path下光源shader的编写"><a href="#5、不同path下光源shader的编写" class="headerlink" title="5、不同path下光源shader的编写"></a>5、不同path下光源shader的编写</h2><ul>
+<li>详情请看官方文档</li>
+</ul>
+<h2 id="6、PreZ-Zprepass"><a href="#6、PreZ-Zprepass" class="headerlink" title="6、PreZ(Zprepass)"></a>6、PreZ(Zprepass)</h2><ul>
+<li><p>实际上就是一个深度计算</p>
+</li>
+<li><p>和深度图的区别</p>
+</li>
+<li><p>都是深度信息</p>
+</li>
+<li><p>PreZ是用一个pass，只算深度</p>
+</li>
+<li><p>深度图是算成了一张RT（RenderTexture），把深度信息绘制到了一张RT上。</p>
+</li>
+<li><p>具体用途：</p>
+</li>
+<li><p>大规模草、透明排序会用到PreZ</p>
+</li>
+<li><p>early-z 和 PreZ的区别</p>
+</li>
+<li><p>early-z，自动的，对面数有要求（硬件自动）</p>
+</li>
+<li><p>PreZ，当early-z失效的时候，或者需要深度图的时候，一种手动代替的方案</p>
+</li>
+<li><p>后边课程还会细讲</p>
+</li>
+</ul>
+<h2 id="7、一些补充"><a href="#7、一些补充" class="headerlink" title="7、一些补充"></a>7、一些补充</h2><ul>
+<li>Unity的urp是不支持延迟渲染的，老管线支持。</li>
+<li>UE默认管线就是延迟渲染管线</li>
+<li>一般延迟渲染用于主机&#x2F;大项目</li>
+</ul>
+
+    </div>
+    <footer class="article-footer">
+        <a class="article-category-link" href="/en/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" title="技术笔记" data-aos="zoom-in">技术笔记</a><a class="article-category-link" href="/en/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E5%9B%BE%E5%BD%A2%E5%AD%A6/" title="图形学" data-aos="zoom-in">图形学</a>
+
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/en/tags/PersonalArrange/" rel="tag" title="PersonalArrange">PersonalArrange</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/en/tags/%E6%B8%B2%E6%9F%93/" rel="tag" title="渲染">渲染</a></li></ul>
+
+    </footer>
+  </div>
+    <nav id="article-nav" aria-label="Article navigation" data-aos="fade-up">
+      <div class="article-nav-link-wrap left">
+            <img data-src="/images/banner.webp" data-sizes="auto" alt="4.2 SSAO" class="lazyload">
+        <a href="/en/2026/02/22/Note/PersonalArrange/4.2%20SSAO/" aria-label="Prev: 4.2 SSAO" title="Prev: 4.2 SSAO"></a>
+        <div class="article-nav-caption">Prev</div>
+        <h3 class="article-nav-title">
+            4.2 SSAO
+        </h3>
+      </div>
+    <div class="article-nav-link-wrap right">
+          <img data-src="/images/banner.webp" data-sizes="auto" alt="4.1 Bloom" class="lazyload">
+      <a href="/en/2026/02/22/Note/PersonalArrange/4.1%20Bloom/" aria-label="Next: 4.1 Bloom"  title="Next: 4.1 Bloom"></a>
+      <div class="article-nav-caption">Next</div>
+      <h3 class="article-nav-title">
+          4.1 Bloom
+      </h3>
+    </div>
+  </nav>
+
+</article>
+
+
+</section>
+        </div>
+        <footer id="footer" aria-label="Site footer">
+  <div style="width: 100%; overflow: hidden">
+    <div class="footer-line"></div>
+  </div>
+  <div id="footer-info">
+    <div>
+      <span class="icon-copyright"></span>
+        2020-2026
+        <span class="footer-info-sep rotate"></span>
+      OnricYF
+    </div>
+      <div>
+        Powered by&nbsp;<a href="https://hexo.io/" rel="noopener nofollow noreferrer" target="_blank">Hexo</a>&nbsp;
+        Theme.<a href="https://github.com/D-Sketon/hexo-theme-reimu" rel="noopener nofollow noreferrer" target="_blank">Reimu</a>
+      </div>
+      <div>
+        <span class="icon-brush"></span>
+        87.2k
+        &nbsp;|&nbsp;
+        <span class="icon-coffee"></span>
+        07:26
+      </div>
+      <div>
+        <span class="icon-eye"></span>
+        <span id="busuanzi_container_site_pv">Number of visits&nbsp;<span id="busuanzi_value_site_pv"></span></span>
+        &nbsp;|&nbsp;
+        <span class="icon-user"></span>
+        <span id="busuanzi_container_site_uv">Number of visitors&nbsp;<span id="busuanzi_value_site_uv"></span></span>
+      </div>
+  </div>
+</footer>
+
+          <div class="sidebar-top">
+            <div class="sidebar-top-taichi rotate"></div>
+            <div class="arrow-up"></div>
+          </div>
+        <div id="mask" class="hide"></div>
+      </div>
+      <nav id="mobile-nav" aria-label="Mobile navigation">
+  <div class="sidebar-wrap">
+        <div class="sidebar-toc-sidebar"><h3 class="toc-title">Contents</h3>
+<div class="sidebar-toc-wrapper toc-div-class" >
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%B8%B2%E6%9F%93%E8%B7%AF%E5%BE%84"><span class="toc-number">1.</span> <span class="toc-text">一、渲染路径</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E4%BB%80%E4%B9%88%E6%98%AF%E6%B8%B2%E6%9F%93%E8%B7%AF%E5%BE%84%EF%BC%88Rendering-Path%EF%BC%89"><span class="toc-number">1.1.</span> <span class="toc-text">1.什么是渲染路径（Rendering Path）</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%B8%B2%E6%9F%93%E6%96%B9%E5%BC%8F"><span class="toc-number">2.</span> <span class="toc-text">二、渲染方式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%80%90%E5%89%8D%E5%90%91-%E6%AD%A3%E5%90%91%E6%B8%B2%E6%9F%93-Forward-Rendering%E3%80%91"><span class="toc-number">2.1.</span> <span class="toc-text">【前向&#x2F;正向渲染-Forward Rendering】</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E6%B5%81%E7%A8%8B"><span class="toc-number">2.1.1.</span> <span class="toc-text">1、流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E8%A7%84%E5%88%99%EF%BC%88%E5%A6%82%E4%BD%95%E6%B8%B2%E6%9F%93%E6%AF%8F%E4%B8%80%E5%B8%A7%E7%9A%84%EF%BC%89%E5%92%8C%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-number">2.1.2.</span> <span class="toc-text">2、规则（如何渲染每一帧的）和注意事项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E8%A1%A5%E5%85%85"><span class="toc-number">2.1.3.</span> <span class="toc-text">3、补充</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%80%90%E5%BB%B6%E8%BF%9F%E6%B8%B2%E6%9F%93-Deferred-Rendering%E3%80%91"><span class="toc-number">2.2.</span> <span class="toc-text">【延迟渲染-Deferred Rendering】</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E4%BB%80%E4%B9%88%E6%98%AF%E5%BB%B6%E8%BF%9F%E6%B8%B2%E6%9F%93"><span class="toc-number">2.2.1.</span> <span class="toc-text">1、什么是延迟渲染</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E6%B5%81%E7%A8%8B"><span class="toc-number">2.2.2.</span> <span class="toc-text">2、流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E4%B8%80%E4%BA%9B%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-number">2.2.3.</span> <span class="toc-text">3、一些注意事项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4%E3%80%81%E8%A1%A5%E5%85%85"><span class="toc-number">2.2.4.</span> <span class="toc-text">4、补充</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E4%B8%8D%E5%90%8C%E6%B8%B2%E6%9F%93%E8%B7%AF%E5%BE%84%E7%9A%84%E7%89%B9%E6%80%A7"><span class="toc-number">3.</span> <span class="toc-text">三、不同渲染路径的特性</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E3%80%81%E5%90%8E%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F%E4%B8%8D%E5%90%8C"><span class="toc-number">3.1.</span> <span class="toc-text">1、后处理方式不同</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81%E7%9D%80%E8%89%B2%E8%AE%A1%E7%AE%97%E4%B8%8D%E5%90%8C%EF%BC%88shader%EF%BC%89"><span class="toc-number">3.2.</span> <span class="toc-text">2、着色计算不同（shader）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3%E3%80%81%E6%8A%97%E9%94%AF%E9%BD%BF%E6%96%B9%E5%BC%8F%E4%B8%8D%E5%90%8C"><span class="toc-number">3.3.</span> <span class="toc-text">3、抗锯齿方式不同</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E4%B8%8D%E5%90%8C%E6%B8%B2%E6%9F%93%E8%B7%AF%E5%BE%84%E7%9A%84%E4%BC%98%E5%8A%A3"><span class="toc-number">4.</span> <span class="toc-text">四、不同渲染路径的优劣</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E3%80%81%E5%89%8D%E5%90%91%E6%B8%B2%E6%9F%93%E7%9A%84%E4%BC%98%E7%82%B9%E3%80%81%E7%BC%BA%E7%82%B9"><span class="toc-number">4.1.</span> <span class="toc-text">1、前向渲染的优点、缺点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-number">4.1.1.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9"><span class="toc-number">4.1.2.</span> <span class="toc-text">缺点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81%E5%BB%B6%E8%BF%9F%E6%B8%B2%E6%9F%93%E7%9A%84%E4%BC%98%E7%82%B9%E3%80%81%E7%BC%BA%E7%82%B9"><span class="toc-number">4.2.</span> <span class="toc-text">2、延迟渲染的优点、缺点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E7%82%B9-1"><span class="toc-number">4.2.1.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9-1"><span class="toc-number">4.2.2.</span> <span class="toc-text">缺点</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%85%B6%E4%BB%96%E9%83%A8%E5%88%86"><span class="toc-number">5.</span> <span class="toc-text">五、其他部分</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E3%80%81%E6%B8%B2%E6%9F%93%E8%B7%AF%E5%BE%84%E7%9A%84%E8%AE%BE%E7%BD%AE"><span class="toc-number">5.1.</span> <span class="toc-text">1、渲染路径的设置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81TBDR"><span class="toc-number">5.2.</span> <span class="toc-text">2、TBDR</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3%E3%80%81%E5%85%B6%E4%BB%96%E6%B8%B2%E6%9F%93%E8%B7%AF%E5%BE%84"><span class="toc-number">5.3.</span> <span class="toc-text">3、其他渲染路径</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BB%B6%E8%BF%9F%E5%85%89%E7%85%A7%EF%BC%88Light-Pre-Pass-Deferred-Lighting%EF%BC%89"><span class="toc-number">5.3.1.</span> <span class="toc-text">延迟光照（Light Pre-Pass &#x2F; Deferred Lighting）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Forward-%EF%BC%88%E5%8D%B3Tiled-Forward-Rendering%EF%BC%8C%E5%88%86%E5%9D%97%E6%AD%A3%E5%90%91%E6%B8%B2%E6%9F%93%EF%BC%89"><span class="toc-number">5.3.2.</span> <span class="toc-text">Forward+（即Tiled Forward Rendering，分块正向渲染）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BE%A4%E7%BB%84%E6%B8%B2%E6%9F%93%EF%BC%88Clustered-Rendering%EF%BC%89"><span class="toc-number">5.3.3.</span> <span class="toc-text">群组渲染（Clustered Rendering）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4%E3%80%81%E5%BB%B6%E8%BF%9F%E6%B8%B2%E6%9F%93%E4%B8%ADMSAA%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">5.4.</span> <span class="toc-text">4、延迟渲染中MSAA存在的问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5%E3%80%81%E4%B8%8D%E5%90%8Cpath%E4%B8%8B%E5%85%89%E6%BA%90shader%E7%9A%84%E7%BC%96%E5%86%99"><span class="toc-number">5.5.</span> <span class="toc-text">5、不同path下光源shader的编写</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6%E3%80%81PreZ-Zprepass"><span class="toc-number">5.6.</span> <span class="toc-text">6、PreZ(Zprepass)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7%E3%80%81%E4%B8%80%E4%BA%9B%E8%A1%A5%E5%85%85"><span class="toc-number">5.7.</span> <span class="toc-text">7、一些补充</span></a></li></ol></li></ol>
+</div>
+</div>
+        <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/avatar.webp" data-sizes="auto" alt="OnricYF" class="lazyload">
+  <div class="sidebar-author-name">OnricYF</div>
+  <div class="sidebar-description">TRASH ARTIST</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>Post</div>
+    <div class="sidebar-state-number">144</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>Category</div>
+    <div class="sidebar-state-number">33</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>Tag</div>
+    <div class="sidebar-state-number">82</div>
+  </div>
+</div>
+<div class="sidebar-social" >
+    <div class="icon-email sidebar-social-icon">
+      <a href=mailto:a1521070145@gmail.com itemprop="url" target="_blank" aria-label="email" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-github sidebar-social-icon">
+      <a href=https://github.com/Madoka9 itemprop="url" target="_blank" aria-label="github" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-bilibili sidebar-social-icon">
+      <a href=https://space.bilibili.com/5862963 itemprop="url" target="_blank" aria-label="bilibili" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-zhihu sidebar-social-icon">
+      <a href=https://www.zhihu.com/people/lan-mei-sheng-dai-77 itemprop="url" target="_blank" aria-label="zhihu" rel="noopener nofollow noreferrer"></a>
+    </div>
+</div>
+<div class="sidebar-menu">
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/" aria-label="Home"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Home</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/archives" aria-label="Archives"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Archives</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/about" aria-label="About"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">About</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/friend" aria-label="Friend"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Friend</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/portfolio" aria-label="Portfolio"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Portfolio</div>
+      </div>
+</div>
+</div>
+  </div>
+      <div class="sidebar-btn-wrapper">
+        <div class="sidebar-toc-btn current"></div>
+        <div class="sidebar-common-btn"></div>
+      </div>
+</nav>
+
+    </div>
+    
+<script src="https://npm.webcache.cn/lazysizes@5.3.2/lazysizes.min.js" integrity="sha384-3gT&#x2F;vsepWkfz&#x2F;ff7PpWNUeMzeWoH3cDhm&#x2F;A8jM7ouoAK0&#x2F;fP&#x2F;9bcHHR5kHq2nf+e" crossorigin="anonymous"></script>
+
+
+<script src="https://npm.webcache.cn/clipboard@2.0.11/dist/clipboard.min.js" integrity="sha384-J08i8An&#x2F;QeARD9ExYpvphB8BsyOj3Gh2TSh1aLINKO3L0cMSH2dN3E22zFoXEi0Q" crossorigin="anonymous"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+  
+<script src="/js/aos.js"></script>
+
+  <script>
+    var aosInit = () => {
+      AOS.init({
+        duration: 1000,
+        easing: "ease",
+        once: true,
+        offset: 50,
+      });
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', aosInit);
+    } else {
+      aosInit();
+    }
+  </script>
+
+
+<script src="/js/pjax_script.js" data-pjax></script>
+
+
+
+
+  <script>
+    var setupFirework = () => {
+      if (!false || !window.matchMedia('(max-width: 768px)').matches) {
+        window.firework && window.firework(JSON.parse('{"excludeElements":["a","button"],"particles":[{"shape":"circle","move":["emit"],"easing":"easeOutExpo","colors":["var(--red-1)","var(--red-2)","var(--red-3)","var(--red-4)"],"number":20,"duration":[1200,1800],"shapeOptions":{"radius":[16,32],"alpha":[0.3,0.5]}},{"shape":"circle","move":["diffuse"],"easing":"easeOutExpo","colors":["var(--red-0)"],"number":1,"duration":[1200,1800],"shapeOptions":{"radius":20,"alpha":[0.2,0.5],"lineWidth":6}}]}'));
+      }
+    }
+  </script>
+  
+<script src="https://npm.webcache.cn/mouse-firework@0.2.0/dist/index.umd.js" integrity="sha384-qi9WggRt19tv8Vc7pCHW3ulMNLwrn515zaLEWZjl1px07vz8+pUoWX8n1rgq282T" crossorigin="anonymous" onload="setupFirework()" defer></script>
+
+
+  
+<script src="https://npm.webcache.cn/theme-shokax-pjax@0.0.3/dist/index.umd.js" integrity="sha384-xneY1WY8hOfUzswrE4CrYq35N4BdVcxqxwHPr9zawE&#x2F;jMSCxD+jAPU55x&#x2F;jj3wlf" crossorigin="anonymous"></script>
+
+  
+<script src="/js/pjax.js"></script>
+
+
+
+
+
+<div id="lazy-script">
+  <div>
+      
+      
+      <script data-pjax>
+        window.REIMU_POST = {
+          author: "OnricYF",
+          title: "3.4 前向 延迟渲染",
+          url: "http://example.com/2026/02/22/Note/PersonalArrange/3.4%20%E5%89%8D%E5%90%91%20%E5%BB%B6%E8%BF%9F%E6%B8%B2%E6%9F%93/",
+          excerpt: "",
+          description: "",
+          stripContent: "一、渲染路径1.什么是渲染路径（Rendering Path） 是决定光照实现的方式。（也就是当前渲染目标使用的光照流程）  二、渲染方式首先看一下两者的直观的不同  【前向&amp;#x2F;正向渲染-Forward Rendering】一句话概括：每个光照都计算 1、流程   如图所示，流程为：  待渲染几何体 → 顶点着色器 → 片元着色器 → 渲染目标  在渲染每一帧的时，每一个顶点&amp;#x2F;片元都要执行一次片元着色器代码，这时需要将所有的光照信息传到片元着色器中。  虽然大部分情况下的光照都",
+          date: "Sun Feb 22 2026 21:10:43 GMT+0800",
+          updated: "Thu Jul 16 2026 11:53:32 GMT+0800",
+          cover: "/images/banner.webp",
+        };
+      </script>
+        
+<script src="/js/insert_highlight.js" data-pjax></script>
+
+      
+<script src="/js/tabs.js" data-pjax defer></script>
+
+      <script type="module" data-pjax>
+        (async () => {
+          const PhotoSwipeLightbox = (await safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe-lightbox.esm.min.js", "sha384-DiL6M/gG+wmTxmCRZyD1zee6lIhawn5TGvED0FOh7fXcN9B0aZ9dexSF/N6lrZi/")).default;
+          const initPswp = (gallery, children) => {
+            if (_$$(`${gallery} ${children}`).length > 0) {
+              new PhotoSwipeLightbox({
+                gallery,
+                children,
+                pswpModule: () => safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.esm.min.js", "sha384-WkkO3GCmgkC3VQWpaV8DqhKJqpzpF9JoByxDmnV8+oTJ7m3DfYEWX1fu1scuS4+s")
+              }).init();
+            }
+          }
+          const pswp = () => {
+            initPswp('.article-entry', 'a.article-gallery-item');
+            initPswp('.article-gallery', 'a.article-gallery-item');
+          }
+          pswp();
+        })();
+      </script>
+  </div>
+</div>
+
+
+  <script>
+    console.log(String.raw`%c 
+ ______     ______     __     __    __     __  __    
+/\  == \   /\  ___\   /\ \   /\ "-./  \   /\ \/\ \   
+\ \  __<   \ \  __\   \ \ \  \ \ \-./\ \  \ \ \_\ \  
+ \ \_\ \_\  \ \_____\  \ \_\  \ \_\ \ \_\  \ \_____\ 
+  \/_/ /_/   \/_____/   \/_/   \/_/  \/_/   \/_____/ 
+                                                  
+`,'color: #ff5252;')
+    console.log('%c Theme.Reimu v' + '1.12.0' + ' %c https://github.com/D-Sketon/hexo-theme-reimu ', 'color: white; background: #ff5252; padding:5px 0;', 'padding:4px;border:1px solid #ff5252;')
+  </script>
+  
+
+
+  
+<script src="https://npm.webcache.cn/busuanzi@2.3.0/bsz.pure.mini.js" integrity="sha384-0M75wtSkhjIInv4coYlaJU83+OypaRCIq2SukQVQX04eGTCBXJDuWAbJet56id+S" crossorigin="anonymous" async></script>
+
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      for (let registration of registrations) {
+        registration.unregister();
+      }
+    });
+  }
+</script>
+
+
+    <script>
+      var setupAPlayer = () => {
+        if (!true || !window.matchMedia('(max-width: 768px)').matches) {
+          if (window.matchMedia('(max-width: 959px)').matches) {
+            const meting = _$('meting-js');
+            if (meting) {
+              meting.setAttribute('fixed', 'true');
+              const aside = meting.parentNode?.parentNode;
+              if (aside?.tagName === 'ASIDE') {
+                meting.parentNode.removeChild(meting);
+                document.body.appendChild(meting);
+              }
+            }
+          }
+        }
+      };
+    </script>
+  
+<script src="https://npm.webcache.cn/aplayer@1.10.1/dist/APlayer.min.js" integrity="sha384-gdGYZwHnfJM54evoZhpO0s6ZF5BQiybkiyW7VXr+h5UfruuRL&#x2F;aORyw+5+HZoU6e" crossorigin="anonymous" defer onload="setupAPlayer()"></script>
+
+    
+<script src="https://npm.webcache.cn/meting@2.0.1/dist/Meting.min.js" integrity="sha384-ASVlpKF80A22OXTK3tfEjZm1EL6uFMKIC4p8+0maanw1S&#x2F;IyB+Y4JG+ZDU7GpKE8" crossorigin="anonymous" defer></script>
+
+
+
+  </body>
+  </html>

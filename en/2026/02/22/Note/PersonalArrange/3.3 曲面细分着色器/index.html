@@ -1,0 +1,785 @@
+  <!DOCTYPE html>
+  <html lang="en"  
+      data-theme-mode="auto"
+  >
+  <head>
+  <meta charset="utf-8">
+  
+  
+  
+  <script>window.REIMU_CONFIG = {};window.REIMU_CONFIG.icon_font = '4552607_4k4bc36ef96';window.REIMU_CONFIG.clipboard_tips = {"success":{"zh-CN":"复制成功 (*^▽^*)","en":"Copy successfully (*^▽^*)"},"fail":{"zh-CN":"复制失败 (ﾟ⊿ﾟ)ﾂ","en":"Copy failed (ﾟ⊿ﾟ)ﾂ"},"copyright":{"enable":false,"count":50,"license_type":"by-nc-sa"}};window.REIMU_CONFIG.clipboard_tips.copyright.content = '本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！';window.REIMU_CONFIG.code_block = {"expand":true};window.REIMU_CONFIG.base = 'http://example.com';window.REIMU_CONFIG.i18n_languages = ["en"];</script>
+  <title>
+    3.3 曲面细分着色器 | YF&#39;s Blog
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic|Noto Serif SC:400,400italic,700,700italic&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic|Noto Serif SC:400,400italic,700,700italic&display=swap" media="print" onload="this.media='all'">
+    <link rel="preload" href="//at.alicdn.com/t/c/font_4552607_4k4bc36ef96.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+    
+<link rel="stylesheet" href="/css/loader.css">
+
+    <meta name="description" content="一、两者的应用列举1-1.曲面着色器的应用①海浪、雪地等  如右图一样，将一条直线进行细分，向一条曲线慢慢逼近  ②著名的应用：和置换贴图（DIsplacement mapping，也叫位移贴图）结合使用   使用普通法线的模型，在边缘部分的凹凸感会不理想  如果使用置换贴图，因为它是真正改变物体的形状，所以边缘部分的凹凸感就会很真实  注意：使用置换贴图，对模型的面数有要求。  正是这个原因，让">
+<meta property="og:type" content="article">
+<meta property="og:title" content="3.3 曲面细分着色器">
+<meta property="og:url" content="http://example.com/en/2026/02/22/Note/PersonalArrange/3.3%20%E6%9B%B2%E9%9D%A2%E7%BB%86%E5%88%86%E7%9D%80%E8%89%B2%E5%99%A8/index.html">
+<meta property="og:site_name" content="YF&#39;s Blog">
+<meta property="og:description" content="一、两者的应用列举1-1.曲面着色器的应用①海浪、雪地等  如右图一样，将一条直线进行细分，向一条曲线慢慢逼近  ②著名的应用：和置换贴图（DIsplacement mapping，也叫位移贴图）结合使用   使用普通法线的模型，在边缘部分的凹凸感会不理想  如果使用置换贴图，因为它是真正改变物体的形状，所以边缘部分的凹凸感就会很真实  注意：使用置换贴图，对模型的面数有要求。  正是这个原因，让">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625196811887-90a8c810-ef28-49b5-a69c-c5296b02b72f.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625196936041-6fc1b0a9-43c6-495a-9665-ba7568289168.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/gif/12962324/1625197322689-e6e1d35e-d82e-4485-8ca2-72923d96969c.gif">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/gif/12962324/1625197503763-803a51bd-5e93-47e1-b2e4-afc22bb7c206.gif">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625197329054-12e8dc66-0e04-40bf-b7ec-33c578e5518a.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625198192638-c9c13509-02bc-486e-9b84-40756573e58e.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/gif/12962324/1625200279059-61d9ced3-9b01-4d76-bb9c-abe3e46db26c.gif">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/gif/12962324/1625200292416-55458d78-ec19-4298-b46c-6ebdd38895b0.gif">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/gif/12962324/1625200307439-40333bda-affe-4f54-aef9-b35c386fdb4d.gif">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625200604403-77d787e3-9386-4620-946a-df42d6431436.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625201860508-1ca3af9b-b450-484c-99d3-c89251867f9c.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625201863667-6250012a-eb0a-4b4a-b823-a0155e7cecb9.png">
+<meta property="article:published_time" content="2026-02-22T13:10:41.000Z">
+<meta property="article:modified_time" content="2026-07-16T03:53:32.083Z">
+<meta property="article:author" content="OnricYF">
+<meta property="article:tag" content="PersonalArrange">
+<meta property="article:tag" content="图形学">
+<meta property="article:tag" content="技术笔记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625196811887-90a8c810-ef28-49b5-a69c-c5296b02b72f.png">
+    <link rel="alternate" href="/atom.xml" title="YF's Blog" type="application/atom+xml">
+    <link rel="shortcut icon" href="/images/favicon.ico">
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.css" integrity="sha384-IfxC36XL/toUyJ939C73PcgMuRzAZuIzZxE38drsmO5p6jD7ei+Zx/1oA/0l8ysE" crossorigin="anonymous">
+    
+<script src="https://npm.webcache.cn/pace-js@1.2.4/pace.min.js" integrity="sha384-k6YtvFUEIuEFBdrLKJ3YAUbBki333tj1CSUisai5Cswsg9wcLNaPzsTHDswp4Az8" crossorigin="anonymous"></script>
+
+    
+<link rel="stylesheet" href="https://npm.webcache.cn/@reimujs/aos@0.1.2/dist/aos.css" integrity="sha384-GMRP93c6Hkz9JVKGAuRR3nTS7M07RwPgTFenXiosjq2VbVgvdDNcz1g6Mkj8AONa" crossorigin="anonymous">
+
+    <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://npm.webcache.cn/aplayer@1.10.1/dist/APlayer.min.css" integrity="sha384-tLMkTWh2pfXNWGFlUS0w1TFtRG5xZ9lPWFOooj+vDDLIL+xBGQU/voDBY5XE2lVh" crossorigin="anonymous">
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+  <body>
+      <div id='loader'>
+    <div class="loading-left-bg loading-bg"></div>
+    <div class="loading-right-bg loading-bg"></div>
+    <div class="spinner-box">
+      <div class="loading-taichi rotate">
+          <svg width="150" height="150" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="https://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
+            <path d="M303.5 432A80 80 0 0 1 291.5 592A80 80 0 0 1 303.5 432z" fill="var(--red-1, #ff5252)" />
+            <path d="M512 65A447 447 0 0 1 512 959L512 929A417 417 0 0 0 512 95A417 417 0 0 0 512 929L512 959A447 447 0 0 1 512 65z 
+           M512 95A417 417 0 0 1 929 512A208.5 208.5 0 0 1 720.5 720.5L720.5 592A80 80 0 0 0 720.5 432A80 80 0 0 0 720.5 592L720.5 720.5A208.5 208.5 0 0 1 512 512A208.5 208.5 0 0 0 303.5 303.5A208.5 208.5 0 0 0 95 512A417 417 0 0 1 512 95z" fill="var(--red-1, #ff5252)" />
+          </svg>
+      </div>
+      <div class="loading-word">Loading...</div>
+    </div>
+  </div>
+  </div>
+  <script>
+    var time = null;
+    var loaderEl = document.getElementById('loader');
+    var startLoading = () => {
+      time = Date.now();
+      loaderEl.classList.remove("loading");
+    }
+    var hideLoader = () => {
+      document.body.style.overflow = 'auto';
+      loader.classList.add('loading');
+    };
+
+    var endLoading = () => {
+      if (!time) {
+        hideLoader();
+      } else {
+        if (Date.now() - time > 500) {
+          time = null;
+          hideLoader();
+        } else {
+          setTimeout(endLoading, 500 - (Date.now() - time));
+          time = null;
+        }
+      }
+    }
+    window.addEventListener('DOMContentLoaded', endLoading);
+    loaderEl.addEventListener('click', endLoading);
+  </script>
+<div id="copy-tooltip"></div>
+<div id="heatmap-tooltip"></div>
+
+
+    <div id="container">
+      <div id="wrap">
+        <div id="header-nav">
+  <nav id="main-nav" aria-label="Primary navigation">
+        <a class="main-nav-link-wrap" href="/en/">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Home</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/archives">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Archives</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/about">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">About</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/friend">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Friend</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/portfolio">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Portfolio</span>
+        </span>
+    <a id="main-nav-toggle" class="nav-icon" aria-label="Toggle navigation" role="button"></a>
+  </nav>
+  <nav id="sub-nav" aria-label="Secondary navigation">
+  </nav>
+    <nav id="i18n-nav" aria-label="Language selection">
+      <div class="custom-dropdown">
+        <div class="select-selected" id="select-selected" role="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Language menu">
+          <span id="nav-language-btn" class="nav-icon" style="padding: 0 20px 0 0"></span>
+          <span id="selected-lang">English</span>
+        </div>
+        <ul class="select-items" id="select-items" role="listbox" aria-label="Languages">
+            <li data-value="zh-CN" role="option" aria-selected="false">简体中文</li>
+            <li data-value="en" role="option" class="selected" aria-selected="true">English</li>
+        </ul>
+      </div>
+      <script>
+        var selectSelected = document.getElementById("select-selected");
+        var selectedLang = document.getElementById("selected-lang");
+        var selectItems = document.getElementById("select-items");
+        var selectOptions = selectItems.querySelectorAll("li");
+
+        selectSelected.addEventListener("click", () => {
+          selectItems.classList.toggle("show");
+          var expanded = selectSelected.getAttribute("aria-expanded") === "true";
+          selectSelected.setAttribute("aria-expanded", (!expanded).toString());
+        });
+
+        selectOptions.forEach((item) => {
+          item.addEventListener("click", () => {
+            const langMap = {};
+              langMap['zh-CN'] = '/2026/02/22/Note/PersonalArrange/3.3 曲面细分着色器/';
+              langMap['en'] = '/en/2026/02/22/Note/PersonalArrange/3.3 曲面细分着色器/';
+            selectedLang.textContent = item.textContent;
+            selectItems.classList.remove("show");
+            selectOptions.forEach((option) => {
+              option.classList.remove("selected");
+            });
+            item.classList.add("selected");
+            window.location = langMap[item.dataset.value];
+          });
+        });
+
+        document.addEventListener("click", (event) => {
+          if (!event.target.closest(".custom-dropdown")) {
+            selectItems.classList.remove("show");
+            selectSelected.setAttribute("aria-expanded", "false");
+          }
+        });
+      </script>
+    </nav>
+</div>
+<header id="header" aria-label="Site header">
+        <picture>
+        </picture>
+          <img  fetchpriority="high" src="/images/banner.webp" alt="3.3 曲面细分着色器">
+  <div id="header-outer">
+    <div id="header-title">
+          <span id="logo">
+            <h1 data-aos="slide-up">3.3 曲面细分着色器</h1>
+          </span>
+        <h2 id="subtitle-wrap" data-aos="slide-down">
+        </h2>
+    </div>
+  </div>
+</header>
+
+        <div id="content" aria-label="Page content"  class="sidebar-right" >
+          <aside id="sidebar" aria-label="Sidebar">
+  <div class="sidebar-wrapper-container sticky">
+  <div class="sidebar-wrapper">
+    <div class="sidebar-wrap" data-aos="fade-up">
+          <div class="sidebar-toc-sidebar"><h3 class="toc-title">Contents</h3>
+<div class="sidebar-toc-wrapper toc-div-class" >
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E4%B8%A4%E8%80%85%E7%9A%84%E5%BA%94%E7%94%A8%E5%88%97%E4%B8%BE"><span class="toc-number">1.</span> <span class="toc-text">一、两者的应用列举</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1-%E6%9B%B2%E9%9D%A2%E7%9D%80%E8%89%B2%E5%99%A8%E7%9A%84%E5%BA%94%E7%94%A8"><span class="toc-number">1.1.</span> <span class="toc-text">1-1.曲面着色器的应用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%91%A0%E6%B5%B7%E6%B5%AA%E3%80%81%E9%9B%AA%E5%9C%B0%E7%AD%89"><span class="toc-number">1.1.1.</span> <span class="toc-text">①海浪、雪地等</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%91%A1%E8%91%97%E5%90%8D%E7%9A%84%E5%BA%94%E7%94%A8%EF%BC%9A%E5%92%8C%E7%BD%AE%E6%8D%A2%E8%B4%B4%E5%9B%BE%EF%BC%88DIsplacement-mapping%EF%BC%8C%E4%B9%9F%E5%8F%AB%E4%BD%8D%E7%A7%BB%E8%B4%B4%E5%9B%BE%EF%BC%89%E7%BB%93%E5%90%88%E4%BD%BF%E7%94%A8"><span class="toc-number">1.1.2.</span> <span class="toc-text">②著名的应用：和置换贴图（DIsplacement mapping，也叫位移贴图）结合使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%91%A2%E9%9B%AA%E5%9C%B0%E9%87%8C%E5%87%BA%E7%8E%B0%E7%9A%84%E8%84%9A%E5%8D%B0"><span class="toc-number">1.1.3.</span> <span class="toc-text">③雪地里出现的脚印</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E7%94%A8%E5%A4%8D%E6%9D%82%E7%9A%84%E6%A8%A1%E5%9E%8B%EF%BC%8C%E8%80%8C%E8%A6%81%E7%94%A8%E6%9B%B2%E9%9D%A2%E7%BB%86%E5%88%86%E7%9D%80%E8%89%B2%E5%99%A8%EF%BC%9F"><span class="toc-number">1.2.</span> <span class="toc-text">1-2.为什么不用复杂的模型，而要用曲面细分着色器？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%87%A0%E4%BD%95%E7%9D%80%E8%89%B2%E5%99%A8%E7%9A%84%E5%BA%94%E7%94%A8"><span class="toc-number">1.3.</span> <span class="toc-text">2.几何着色器的应用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%91%A0%E5%87%A0%E4%BD%95%E5%8A%A8%E7%94%BB"><span class="toc-number">1.3.1.</span> <span class="toc-text">①几何动画</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%91%A1%E8%8D%89%E5%9C%B0%E7%AD%89%E6%95%88%E6%9E%9C%EF%BC%88%E4%B8%8E%E6%9B%B2%E9%9D%A2%E7%BB%86%E5%88%86%E7%BB%93%E5%90%88%EF%BC%89"><span class="toc-number">1.3.2.</span> <span class="toc-text">②草地等效果（与曲面细分结合）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E4%BB%8E%E7%AE%A1%E7%BA%BF%E9%A1%BA%E5%BA%8F%E6%9D%A5%E7%9C%8B"><span class="toc-number">2.</span> <span class="toc-text">二、从管线顺序来看</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%9B%B2%E9%9D%A2%E7%BB%86%E5%88%86%E7%9D%80%E8%89%B2%E5%99%A8-Tessellation-shader%EF%BC%88TESS%EF%BC%89"><span class="toc-number">3.</span> <span class="toc-text">三、曲面细分着色器-Tessellation shader（TESS）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-TESS%E7%9A%84%E8%BE%93%E5%85%A5%E5%92%8C%E8%BE%93%E5%87%BA"><span class="toc-number">3.1.</span> <span class="toc-text">1.TESS的输入和输出</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BE%93%E5%85%A5"><span class="toc-number">3.1.1.</span> <span class="toc-text">输入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%9F%E8%83%BD"><span class="toc-number">3.1.2.</span> <span class="toc-text">功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BE%93%E5%87%BA"><span class="toc-number">3.1.3.</span> <span class="toc-text">输出</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-TESS%E7%9A%84%E6%B5%81%E7%A8%8B"><span class="toc-number">3.2.</span> <span class="toc-text">2.TESS的流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Hull-shader"><span class="toc-number">3.2.1.</span> <span class="toc-text">Hull shader</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Tessellation-Primitive-Generator"><span class="toc-number">3.2.2.</span> <span class="toc-text">Tessellation Primitive Generator</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Domain-shader"><span class="toc-number">3.2.3.</span> <span class="toc-text">Domain shader</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Hull-shader%E5%8F%82%E6%95%B0%E8%AF%A6%E8%A7%A3"><span class="toc-number">3.3.</span> <span class="toc-text">3.Hull shader参数详解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%91%A0Tessellation-Factor"><span class="toc-number">3.3.1.</span> <span class="toc-text">①Tessellation Factor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%91%A1Inner-Tessellation-Factor"><span class="toc-number">3.3.2.</span> <span class="toc-text">②Inner Tessellation Factor</span></a></li></ol></li></ol></li></ol>
+</div>
+</div>
+          <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/avatar.webp" data-sizes="auto" alt="OnricYF" class="lazyload">
+  <div class="sidebar-author-name">OnricYF</div>
+  <div class="sidebar-description">TRASH ARTIST</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>Post</div>
+    <div class="sidebar-state-number">144</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>Category</div>
+    <div class="sidebar-state-number">33</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>Tag</div>
+    <div class="sidebar-state-number">82</div>
+  </div>
+</div>
+<div class="sidebar-social" >
+    <div class="icon-email sidebar-social-icon">
+      <a href=mailto:a1521070145@gmail.com itemprop="url" target="_blank" aria-label="email" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-github sidebar-social-icon">
+      <a href=https://github.com/Madoka9 itemprop="url" target="_blank" aria-label="github" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-bilibili sidebar-social-icon">
+      <a href=https://space.bilibili.com/5862963 itemprop="url" target="_blank" aria-label="bilibili" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-zhihu sidebar-social-icon">
+      <a href=https://www.zhihu.com/people/lan-mei-sheng-dai-77 itemprop="url" target="_blank" aria-label="zhihu" rel="noopener nofollow noreferrer"></a>
+    </div>
+</div>
+<div class="sidebar-menu">
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/" aria-label="Home"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Home</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/archives" aria-label="Archives"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Archives</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/about" aria-label="About"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">About</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/friend" aria-label="Friend"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Friend</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/portfolio" aria-label="Portfolio"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Portfolio</div>
+      </div>
+</div>
+</div>
+          <div class="sidebar-btn-wrapper" style="position:static">
+            <div class="sidebar-toc-btn current"></div>
+            <div class="sidebar-common-btn"></div>
+          </div>
+    </div>
+  </div>
+      <meting-js
+        theme="var(--color-link)"
+        id="385907592"
+        server="netease"
+        type="playlist"
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        class="aplayer-after-sidebar"
+      ></meting-js>
+  <div class="sidebar-widget">
+  </div>
+  </div>
+</aside>
+
+          <section id="main" aria-label="Main content"><article id="post-Note/PersonalArrange/3.3 曲面细分着色器" class="h-entry article" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner" data-aos="fade-up">
+    <div class="article-meta">
+      <div class="article-date">
+  <span class="article-date-link icon-calendar" data-aos="zoom-in">
+    <time datetime="2026-02-22T13:10:41.000Z" itemprop="datePublished">2026-02-22</time>
+    <time style="display: none;" id="post-update-time">2026-07-16</time>
+  </span>
+</div>
+
+    </div>
+    
+    <div class="hr-line"></div>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+        <h1 id="一、两者的应用列举"><a href="#一、两者的应用列举" class="headerlink" title="一、两者的应用列举"></a>一、两者的应用列举</h1><h2 id="1-1-曲面着色器的应用"><a href="#1-1-曲面着色器的应用" class="headerlink" title="1-1.曲面着色器的应用"></a>1-1.曲面着色器的应用</h2><h3 id="①海浪、雪地等"><a href="#①海浪、雪地等" class="headerlink" title="①海浪、雪地等"></a>①海浪、雪地等</h3><ul>
+<li><img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625196811887-90a8c810-ef28-49b5-a69c-c5296b02b72f.png"></li>
+<li>如右图一样，将一条直线进行细分，向一条曲线慢慢逼近</li>
+</ul>
+<h3 id="②著名的应用：和置换贴图（DIsplacement-mapping，也叫位移贴图）结合使用"><a href="#②著名的应用：和置换贴图（DIsplacement-mapping，也叫位移贴图）结合使用" class="headerlink" title="②著名的应用：和置换贴图（DIsplacement mapping，也叫位移贴图）结合使用"></a>②著名的应用：和置换贴图（DIsplacement mapping，也叫位移贴图）结合使用</h3><ul>
+<li><p><img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625196936041-6fc1b0a9-43c6-495a-9665-ba7568289168.png"></p>
+</li>
+<li><p>使用普通法线的模型，在边缘部分的凹凸感会不理想</p>
+</li>
+<li><p>如果使用置换贴图，因为它是真正改变物体的形状，所以边缘部分的凹凸感就会很真实</p>
+</li>
+<li><p>注意：使用置换贴图，对模型的面数有要求。</p>
+</li>
+<li><p>正是这个原因，让它和曲面细分着色器有着很好的契合度。</p>
+</li>
+</ul>
+<h3 id="③雪地里出现的脚印"><a href="#③雪地里出现的脚印" class="headerlink" title="③雪地里出现的脚印"></a>③雪地里出现的脚印</h3><ul>
+<li>可以用曲面细分着色器进行优化</li>
+</ul>
+<h2 id="1-2-为什么不用复杂的模型，而要用曲面细分着色器？"><a href="#1-2-为什么不用复杂的模型，而要用曲面细分着色器？" class="headerlink" title="1-2.为什么不用复杂的模型，而要用曲面细分着色器？"></a>1-2.为什么不用复杂的模型，而要用曲面细分着色器？</h2><ul>
+<li>曲面细分着色器可以根据距离&#x2F;一些规则，动态的调整模型的复杂度，带来更好的性能。</li>
+</ul>
+<h2 id="2-几何着色器的应用"><a href="#2-几何着色器的应用" class="headerlink" title="2.几何着色器的应用"></a>2.几何着色器的应用</h2><h3 id="①几何动画"><a href="#①几何动画" class="headerlink" title="①几何动画"></a>①几何动画</h3><ul>
+<li><p><img src="https://cdn.nlark.com/yuque/0/2021/gif/12962324/1625197322689-e6e1d35e-d82e-4485-8ca2-72923d96969c.gif"><img src="https://cdn.nlark.com/yuque/0/2021/gif/12962324/1625197503763-803a51bd-5e93-47e1-b2e4-afc22bb7c206.gif"></p>
+</li>
+<li><p>简单的几何动画、甚至可以做一些破碎的效果</p>
+</li>
+</ul>
+<h3 id="②草地等效果（与曲面细分结合）"><a href="#②草地等效果（与曲面细分结合）" class="headerlink" title="②草地等效果（与曲面细分结合）"></a>②草地等效果（与曲面细分结合）</h3><ul>
+<li><img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625197329054-12e8dc66-0e04-40bf-b7ec-33c578e5518a.png"></li>
+<li>自定义草的画法，再和曲面细分着色器结合，就可以得到一个可以动态调整草密度的一个草地效果。</li>
+</ul>
+<h1 id="二、从管线顺序来看"><a href="#二、从管线顺序来看" class="headerlink" title="二、从管线顺序来看"></a>二、从管线顺序来看</h1><ul>
+<li><p><img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625198192638-c9c13509-02bc-486e-9b84-40756573e58e.png"></p>
+</li>
+<li><p>整体顺序：顶点 → 曲面细分 → 几何 → 片元</p>
+</li>
+<li><p>曲面细分又分为：Hull shader 、Tessellation Primitive Generator 、 Domain shader</p>
+</li>
+<li><p><strong>Hull shader</strong>主要作用：定义一些细分的参数（如：每条边上如何细分，内部三角形如何细分）</p>
+</li>
+<li><p><strong>Tessellation Primitive Generator</strong>，不可编程的</p>
+</li>
+<li><p><strong>Domain shader</strong>：经过曲面细分着色器细分后的点是位于重心空间的，这部分的作用就是把它转化到我们要用的空间。</p>
+</li>
+<li><p>在D3D11 和 OpenGL中，名字&#x2F;叫法有差异，问题不大</p>
+</li>
+</ul>
+<h1 id="三、曲面细分着色器-Tessellation-shader（TESS）"><a href="#三、曲面细分着色器-Tessellation-shader（TESS）" class="headerlink" title="三、曲面细分着色器-Tessellation shader（TESS）"></a>三、曲面细分着色器-Tessellation shader（TESS）</h1><h2 id="1-TESS的输入和输出"><a href="#1-TESS的输入和输出" class="headerlink" title="1.TESS的输入和输出"></a>1.TESS的输入和输出</h2><h3 id="输入"><a href="#输入" class="headerlink" title="输入"></a>输入</h3><ul>
+<li>称为Patch，可以看成是多个顶点的集合，包含每个顶点的属性。（属性是所有顶点共享的，不是每个顶点有独自的属性）</li>
+</ul>
+<h3 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h3><ul>
+<li><p>将图元进行细分。</p>
+</li>
+<li><p>图元可以是三角形、矩形等</p>
+</li>
+<li><p>不同的图元，输入参数也不一样。</p>
+</li>
+</ul>
+<h3 id="输出"><a href="#输出" class="headerlink" title="输出"></a>输出</h3><ul>
+<li>细分后的顶点</li>
+</ul>
+<h2 id="2-TESS的流程"><a href="#2-TESS的流程" class="headerlink" title="2.TESS的流程"></a>2.TESS的流程</h2><p>Hull shader → Tessellation Primitive Generator → Domain shader</p>
+<h3 id="Hull-shader"><a href="#Hull-shader" class="headerlink" title="Hull shader"></a>Hull shader</h3><ul>
+<li><p>定义细分的参数</p>
+</li>
+<li><p>设定Tessellation factor以及Inside Tessellation factor</p>
+</li>
+<li><p>（如果需要的话）可以对输入的Patch参数进行改变</p>
+</li>
+</ul>
+<h3 id="Tessellation-Primitive-Generator"><a href="#Tessellation-Primitive-Generator" class="headerlink" title="Tessellation Primitive Generator"></a>Tessellation Primitive Generator</h3><ul>
+<li>这部分是不可编程、无法控制的</li>
+<li>进行细分操作</li>
+</ul>
+<h3 id="Domain-shader"><a href="#Domain-shader" class="headerlink" title="Domain shader"></a>Domain shader</h3><ul>
+<li>对细分后的点进行处理，从重心空间（Barycentric coordinate system）转换到屏幕空间</li>
+</ul>
+<h2 id="3-Hull-shader参数详解"><a href="#3-Hull-shader参数详解" class="headerlink" title="3.Hull shader参数详解"></a>3.Hull shader参数详解</h2><h3 id="①Tessellation-Factor"><a href="#①Tessellation-Factor" class="headerlink" title="①Tessellation Factor"></a>①Tessellation Factor</h3><ul>
+<li><p>定义把一条边分为几个部分</p>
+</li>
+<li><p><strong>切分的方法有三种</strong>：</p>
+</li>
+<li><p><strong>equal_Spacing</strong></p>
+</li>
+<li><p>把一条边等分（二、三分等等..）</p>
+</li>
+<li><p><img src="https://cdn.nlark.com/yuque/0/2021/gif/12962324/1625200279059-61d9ced3-9b01-4d76-bb9c-abe3e46db26c.gif"></p>
+</li>
+<li><p><strong>fractional_even_spacing</strong></p>
+</li>
+<li><p>向上取最近的偶数</p>
+</li>
+<li><p>最小值是2</p>
+</li>
+<li><p>会把周长分为n-2的等长部分、以及两端不等长的部分（两端部分和小数有关，具体看gif）</p>
+</li>
+<li><p><img src="https://cdn.nlark.com/yuque/0/2021/gif/12962324/1625200292416-55458d78-ec19-4298-b46c-6ebdd38895b0.gif"></p>
+</li>
+<li><p><strong>fractional_odd_spacing</strong></p>
+</li>
+<li><p>向上取最近的奇数</p>
+</li>
+<li><p>最小值是1</p>
+</li>
+<li><p>会把周长分为n-2的等长部分、以及两端不等长的部分</p>
+</li>
+<li><p><img src="https://cdn.nlark.com/yuque/0/2021/gif/12962324/1625200307439-40333bda-affe-4f54-aef9-b35c386fdb4d.gif"></p>
+</li>
+<li><p><strong>目的</strong>：让细分更加平滑</p>
+</li>
+</ul>
+<h3 id="②Inner-Tessellation-Factor"><a href="#②Inner-Tessellation-Factor" class="headerlink" title="②Inner Tessellation Factor"></a>②Inner Tessellation Factor</h3><ul>
+<li><p>定义内部的三角形&#x2F;矩形是怎么画出来的</p>
+</li>
+<li><p>三角形情况</p>
+</li>
+<li><p><img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625200604403-77d787e3-9386-4620-946a-df42d6431436.png"></p>
+</li>
+<li><p>例如上图三等分的情况：</p>
+</li>
+<li><p>将三条边三等分，然后从一个端点开始，取邻近的两个切分点做垂线，两者的交点就是新三角形的一个端点。以此类推就是左图的效果。</p>
+</li>
+<li><p>上图四等分、甚至更多点的情况：</p>
+</li>
+<li><p>上述三等分步骤之后，内部三角形的每个边的等分点做垂线，交点就是</p>
+</li>
+<li><p>矩形情况</p>
+</li>
+<li><p><img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625201860508-1ca3af9b-b450-484c-99d3-c89251867f9c.png"><img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1625201863667-6250012a-eb0a-4b4a-b823-a0155e7cecb9.png"></p>
+</li>
+<li><p>同样的，做垂线，交点，直到没有交点或者交于重心一个点</p>
+</li>
+</ul>
+<p>参考文章<br><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzIxMzgzMzQxOA==&mid=2247485821&idx=1&sn=b319cd540eee34f8a064270b9cb933e2&chksm=97b18ad8a0c603ce412bab0666aa57f57320bb009cf9af2c0ce76ac14b10fa8bbe77a564436e&scene=178&cur_album_id=1745807625885171715#rd">https://mp.weixin.qq.com/s?__biz=MzIxMzgzMzQxOA==&amp;mid=2247485821&amp;idx=1&amp;sn=b319cd540eee34f8a064270b9cb933e2&amp;chksm=97b18ad8a0c603ce412bab0666aa57f57320bb009cf9af2c0ce76ac14b10fa8bbe77a564436e&amp;scene=178&amp;cur_album_id=1745807625885171715#rd</a></p>
+
+    </div>
+    <footer class="article-footer">
+        <a class="article-category-link" href="/en/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" title="技术笔记" data-aos="zoom-in">技术笔记</a><a class="article-category-link" href="/en/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E5%9B%BE%E5%BD%A2%E5%AD%A6/" title="图形学" data-aos="zoom-in">图形学</a>
+
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/en/tags/PersonalArrange/" rel="tag" title="PersonalArrange">PersonalArrange</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/en/tags/%E5%9B%BE%E5%BD%A2%E5%AD%A6/" rel="tag" title="图形学">图形学</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/en/tags/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" rel="tag" title="技术笔记">技术笔记</a></li></ul>
+
+    </footer>
+  </div>
+    <nav id="article-nav" aria-label="Article navigation" data-aos="fade-up">
+      <div class="article-nav-link-wrap left">
+            <img data-src="/images/banner.webp" data-sizes="auto" alt="4.1 Bloom" class="lazyload">
+        <a href="/en/2026/02/22/Note/PersonalArrange/4.1%20Bloom/" aria-label="Prev: 4.1 Bloom" title="Prev: 4.1 Bloom"></a>
+        <div class="article-nav-caption">Prev</div>
+        <h3 class="article-nav-title">
+            4.1 Bloom
+        </h3>
+      </div>
+    <div class="article-nav-link-wrap right">
+          <img data-src="/images/banner.webp" data-sizes="auto" alt="技术美术 - 一、基本连招" class="lazyload">
+      <a href="/en/2026/02/22/Note/PersonalArrange/TA%E6%96%B9%E9%9D%A2/UE5.2%20-%20PCG/" aria-label="Next: 技术美术 - 一、基本连招"  title="Next: 技术美术 - 一、基本连招"></a>
+      <div class="article-nav-caption">Next</div>
+      <h3 class="article-nav-title">
+          技术美术 - 一、基本连招
+      </h3>
+    </div>
+  </nav>
+
+</article>
+
+
+</section>
+        </div>
+        <footer id="footer" aria-label="Site footer">
+  <div style="width: 100%; overflow: hidden">
+    <div class="footer-line"></div>
+  </div>
+  <div id="footer-info">
+    <div>
+      <span class="icon-copyright"></span>
+        2020-2026
+        <span class="footer-info-sep rotate"></span>
+      OnricYF
+    </div>
+      <div>
+        Powered by&nbsp;<a href="https://hexo.io/" rel="noopener nofollow noreferrer" target="_blank">Hexo</a>&nbsp;
+        Theme.<a href="https://github.com/D-Sketon/hexo-theme-reimu" rel="noopener nofollow noreferrer" target="_blank">Reimu</a>
+      </div>
+      <div>
+        <span class="icon-brush"></span>
+        87.2k
+        &nbsp;|&nbsp;
+        <span class="icon-coffee"></span>
+        07:26
+      </div>
+      <div>
+        <span class="icon-eye"></span>
+        <span id="busuanzi_container_site_pv">Number of visits&nbsp;<span id="busuanzi_value_site_pv"></span></span>
+        &nbsp;|&nbsp;
+        <span class="icon-user"></span>
+        <span id="busuanzi_container_site_uv">Number of visitors&nbsp;<span id="busuanzi_value_site_uv"></span></span>
+      </div>
+  </div>
+</footer>
+
+          <div class="sidebar-top">
+            <div class="sidebar-top-taichi rotate"></div>
+            <div class="arrow-up"></div>
+          </div>
+        <div id="mask" class="hide"></div>
+      </div>
+      <nav id="mobile-nav" aria-label="Mobile navigation">
+  <div class="sidebar-wrap">
+        <div class="sidebar-toc-sidebar"><h3 class="toc-title">Contents</h3>
+<div class="sidebar-toc-wrapper toc-div-class" >
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E4%B8%A4%E8%80%85%E7%9A%84%E5%BA%94%E7%94%A8%E5%88%97%E4%B8%BE"><span class="toc-number">1.</span> <span class="toc-text">一、两者的应用列举</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1-%E6%9B%B2%E9%9D%A2%E7%9D%80%E8%89%B2%E5%99%A8%E7%9A%84%E5%BA%94%E7%94%A8"><span class="toc-number">1.1.</span> <span class="toc-text">1-1.曲面着色器的应用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%91%A0%E6%B5%B7%E6%B5%AA%E3%80%81%E9%9B%AA%E5%9C%B0%E7%AD%89"><span class="toc-number">1.1.1.</span> <span class="toc-text">①海浪、雪地等</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%91%A1%E8%91%97%E5%90%8D%E7%9A%84%E5%BA%94%E7%94%A8%EF%BC%9A%E5%92%8C%E7%BD%AE%E6%8D%A2%E8%B4%B4%E5%9B%BE%EF%BC%88DIsplacement-mapping%EF%BC%8C%E4%B9%9F%E5%8F%AB%E4%BD%8D%E7%A7%BB%E8%B4%B4%E5%9B%BE%EF%BC%89%E7%BB%93%E5%90%88%E4%BD%BF%E7%94%A8"><span class="toc-number">1.1.2.</span> <span class="toc-text">②著名的应用：和置换贴图（DIsplacement mapping，也叫位移贴图）结合使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%91%A2%E9%9B%AA%E5%9C%B0%E9%87%8C%E5%87%BA%E7%8E%B0%E7%9A%84%E8%84%9A%E5%8D%B0"><span class="toc-number">1.1.3.</span> <span class="toc-text">③雪地里出现的脚印</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E7%94%A8%E5%A4%8D%E6%9D%82%E7%9A%84%E6%A8%A1%E5%9E%8B%EF%BC%8C%E8%80%8C%E8%A6%81%E7%94%A8%E6%9B%B2%E9%9D%A2%E7%BB%86%E5%88%86%E7%9D%80%E8%89%B2%E5%99%A8%EF%BC%9F"><span class="toc-number">1.2.</span> <span class="toc-text">1-2.为什么不用复杂的模型，而要用曲面细分着色器？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%87%A0%E4%BD%95%E7%9D%80%E8%89%B2%E5%99%A8%E7%9A%84%E5%BA%94%E7%94%A8"><span class="toc-number">1.3.</span> <span class="toc-text">2.几何着色器的应用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%91%A0%E5%87%A0%E4%BD%95%E5%8A%A8%E7%94%BB"><span class="toc-number">1.3.1.</span> <span class="toc-text">①几何动画</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%91%A1%E8%8D%89%E5%9C%B0%E7%AD%89%E6%95%88%E6%9E%9C%EF%BC%88%E4%B8%8E%E6%9B%B2%E9%9D%A2%E7%BB%86%E5%88%86%E7%BB%93%E5%90%88%EF%BC%89"><span class="toc-number">1.3.2.</span> <span class="toc-text">②草地等效果（与曲面细分结合）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E4%BB%8E%E7%AE%A1%E7%BA%BF%E9%A1%BA%E5%BA%8F%E6%9D%A5%E7%9C%8B"><span class="toc-number">2.</span> <span class="toc-text">二、从管线顺序来看</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%9B%B2%E9%9D%A2%E7%BB%86%E5%88%86%E7%9D%80%E8%89%B2%E5%99%A8-Tessellation-shader%EF%BC%88TESS%EF%BC%89"><span class="toc-number">3.</span> <span class="toc-text">三、曲面细分着色器-Tessellation shader（TESS）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-TESS%E7%9A%84%E8%BE%93%E5%85%A5%E5%92%8C%E8%BE%93%E5%87%BA"><span class="toc-number">3.1.</span> <span class="toc-text">1.TESS的输入和输出</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BE%93%E5%85%A5"><span class="toc-number">3.1.1.</span> <span class="toc-text">输入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%9F%E8%83%BD"><span class="toc-number">3.1.2.</span> <span class="toc-text">功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BE%93%E5%87%BA"><span class="toc-number">3.1.3.</span> <span class="toc-text">输出</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-TESS%E7%9A%84%E6%B5%81%E7%A8%8B"><span class="toc-number">3.2.</span> <span class="toc-text">2.TESS的流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Hull-shader"><span class="toc-number">3.2.1.</span> <span class="toc-text">Hull shader</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Tessellation-Primitive-Generator"><span class="toc-number">3.2.2.</span> <span class="toc-text">Tessellation Primitive Generator</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Domain-shader"><span class="toc-number">3.2.3.</span> <span class="toc-text">Domain shader</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Hull-shader%E5%8F%82%E6%95%B0%E8%AF%A6%E8%A7%A3"><span class="toc-number">3.3.</span> <span class="toc-text">3.Hull shader参数详解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%91%A0Tessellation-Factor"><span class="toc-number">3.3.1.</span> <span class="toc-text">①Tessellation Factor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%91%A1Inner-Tessellation-Factor"><span class="toc-number">3.3.2.</span> <span class="toc-text">②Inner Tessellation Factor</span></a></li></ol></li></ol></li></ol>
+</div>
+</div>
+        <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/avatar.webp" data-sizes="auto" alt="OnricYF" class="lazyload">
+  <div class="sidebar-author-name">OnricYF</div>
+  <div class="sidebar-description">TRASH ARTIST</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>Post</div>
+    <div class="sidebar-state-number">144</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>Category</div>
+    <div class="sidebar-state-number">33</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>Tag</div>
+    <div class="sidebar-state-number">82</div>
+  </div>
+</div>
+<div class="sidebar-social" >
+    <div class="icon-email sidebar-social-icon">
+      <a href=mailto:a1521070145@gmail.com itemprop="url" target="_blank" aria-label="email" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-github sidebar-social-icon">
+      <a href=https://github.com/Madoka9 itemprop="url" target="_blank" aria-label="github" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-bilibili sidebar-social-icon">
+      <a href=https://space.bilibili.com/5862963 itemprop="url" target="_blank" aria-label="bilibili" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-zhihu sidebar-social-icon">
+      <a href=https://www.zhihu.com/people/lan-mei-sheng-dai-77 itemprop="url" target="_blank" aria-label="zhihu" rel="noopener nofollow noreferrer"></a>
+    </div>
+</div>
+<div class="sidebar-menu">
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/" aria-label="Home"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Home</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/archives" aria-label="Archives"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Archives</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/about" aria-label="About"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">About</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/friend" aria-label="Friend"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Friend</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/portfolio" aria-label="Portfolio"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Portfolio</div>
+      </div>
+</div>
+</div>
+  </div>
+      <div class="sidebar-btn-wrapper">
+        <div class="sidebar-toc-btn current"></div>
+        <div class="sidebar-common-btn"></div>
+      </div>
+</nav>
+
+    </div>
+    
+<script src="https://npm.webcache.cn/lazysizes@5.3.2/lazysizes.min.js" integrity="sha384-3gT&#x2F;vsepWkfz&#x2F;ff7PpWNUeMzeWoH3cDhm&#x2F;A8jM7ouoAK0&#x2F;fP&#x2F;9bcHHR5kHq2nf+e" crossorigin="anonymous"></script>
+
+
+<script src="https://npm.webcache.cn/clipboard@2.0.11/dist/clipboard.min.js" integrity="sha384-J08i8An&#x2F;QeARD9ExYpvphB8BsyOj3Gh2TSh1aLINKO3L0cMSH2dN3E22zFoXEi0Q" crossorigin="anonymous"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+  
+<script src="/js/aos.js"></script>
+
+  <script>
+    var aosInit = () => {
+      AOS.init({
+        duration: 1000,
+        easing: "ease",
+        once: true,
+        offset: 50,
+      });
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', aosInit);
+    } else {
+      aosInit();
+    }
+  </script>
+
+
+<script src="/js/pjax_script.js" data-pjax></script>
+
+
+
+
+  <script>
+    var setupFirework = () => {
+      if (!false || !window.matchMedia('(max-width: 768px)').matches) {
+        window.firework && window.firework(JSON.parse('{"excludeElements":["a","button"],"particles":[{"shape":"circle","move":["emit"],"easing":"easeOutExpo","colors":["var(--red-1)","var(--red-2)","var(--red-3)","var(--red-4)"],"number":20,"duration":[1200,1800],"shapeOptions":{"radius":[16,32],"alpha":[0.3,0.5]}},{"shape":"circle","move":["diffuse"],"easing":"easeOutExpo","colors":["var(--red-0)"],"number":1,"duration":[1200,1800],"shapeOptions":{"radius":20,"alpha":[0.2,0.5],"lineWidth":6}}]}'));
+      }
+    }
+  </script>
+  
+<script src="https://npm.webcache.cn/mouse-firework@0.2.0/dist/index.umd.js" integrity="sha384-qi9WggRt19tv8Vc7pCHW3ulMNLwrn515zaLEWZjl1px07vz8+pUoWX8n1rgq282T" crossorigin="anonymous" onload="setupFirework()" defer></script>
+
+
+  
+<script src="https://npm.webcache.cn/theme-shokax-pjax@0.0.3/dist/index.umd.js" integrity="sha384-xneY1WY8hOfUzswrE4CrYq35N4BdVcxqxwHPr9zawE&#x2F;jMSCxD+jAPU55x&#x2F;jj3wlf" crossorigin="anonymous"></script>
+
+  
+<script src="/js/pjax.js"></script>
+
+
+
+
+
+<div id="lazy-script">
+  <div>
+      
+      
+      <script data-pjax>
+        window.REIMU_POST = {
+          author: "OnricYF",
+          title: "3.3 曲面细分着色器",
+          url: "http://example.com/2026/02/22/Note/PersonalArrange/3.3%20%E6%9B%B2%E9%9D%A2%E7%BB%86%E5%88%86%E7%9D%80%E8%89%B2%E5%99%A8/",
+          excerpt: "",
+          description: "",
+          stripContent: "一、两者的应用列举1-1.曲面着色器的应用①海浪、雪地等  如右图一样，将一条直线进行细分，向一条曲线慢慢逼近  ②著名的应用：和置换贴图（DIsplacement mapping，也叫位移贴图）结合使用   使用普通法线的模型，在边缘部分的凹凸感会不理想  如果使用置换贴图，因为它是真正改变物体的形状，所以边缘部分的凹凸感就会很真实  注意：使用置换贴图，对模型的面数有要求。  正是这个原因，让它和曲面细分着色器有着很好的契合度。   ③雪地里出现的脚印 可以用曲面细分着色器进行优化  1-2",
+          date: "Sun Feb 22 2026 21:10:41 GMT+0800",
+          updated: "Thu Jul 16 2026 11:53:32 GMT+0800",
+          cover: "/images/banner.webp",
+        };
+      </script>
+        
+<script src="/js/insert_highlight.js" data-pjax></script>
+
+      
+<script src="/js/tabs.js" data-pjax defer></script>
+
+      <script type="module" data-pjax>
+        (async () => {
+          const PhotoSwipeLightbox = (await safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe-lightbox.esm.min.js", "sha384-DiL6M/gG+wmTxmCRZyD1zee6lIhawn5TGvED0FOh7fXcN9B0aZ9dexSF/N6lrZi/")).default;
+          const initPswp = (gallery, children) => {
+            if (_$$(`${gallery} ${children}`).length > 0) {
+              new PhotoSwipeLightbox({
+                gallery,
+                children,
+                pswpModule: () => safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.esm.min.js", "sha384-WkkO3GCmgkC3VQWpaV8DqhKJqpzpF9JoByxDmnV8+oTJ7m3DfYEWX1fu1scuS4+s")
+              }).init();
+            }
+          }
+          const pswp = () => {
+            initPswp('.article-entry', 'a.article-gallery-item');
+            initPswp('.article-gallery', 'a.article-gallery-item');
+          }
+          pswp();
+        })();
+      </script>
+  </div>
+</div>
+
+
+  <script>
+    console.log(String.raw`%c 
+ ______     ______     __     __    __     __  __    
+/\  == \   /\  ___\   /\ \   /\ "-./  \   /\ \/\ \   
+\ \  __<   \ \  __\   \ \ \  \ \ \-./\ \  \ \ \_\ \  
+ \ \_\ \_\  \ \_____\  \ \_\  \ \_\ \ \_\  \ \_____\ 
+  \/_/ /_/   \/_____/   \/_/   \/_/  \/_/   \/_____/ 
+                                                  
+`,'color: #ff5252;')
+    console.log('%c Theme.Reimu v' + '1.12.0' + ' %c https://github.com/D-Sketon/hexo-theme-reimu ', 'color: white; background: #ff5252; padding:5px 0;', 'padding:4px;border:1px solid #ff5252;')
+  </script>
+  
+
+
+  
+<script src="https://npm.webcache.cn/busuanzi@2.3.0/bsz.pure.mini.js" integrity="sha384-0M75wtSkhjIInv4coYlaJU83+OypaRCIq2SukQVQX04eGTCBXJDuWAbJet56id+S" crossorigin="anonymous" async></script>
+
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      for (let registration of registrations) {
+        registration.unregister();
+      }
+    });
+  }
+</script>
+
+
+    <script>
+      var setupAPlayer = () => {
+        if (!true || !window.matchMedia('(max-width: 768px)').matches) {
+          if (window.matchMedia('(max-width: 959px)').matches) {
+            const meting = _$('meting-js');
+            if (meting) {
+              meting.setAttribute('fixed', 'true');
+              const aside = meting.parentNode?.parentNode;
+              if (aside?.tagName === 'ASIDE') {
+                meting.parentNode.removeChild(meting);
+                document.body.appendChild(meting);
+              }
+            }
+          }
+        }
+      };
+    </script>
+  
+<script src="https://npm.webcache.cn/aplayer@1.10.1/dist/APlayer.min.js" integrity="sha384-gdGYZwHnfJM54evoZhpO0s6ZF5BQiybkiyW7VXr+h5UfruuRL&#x2F;aORyw+5+HZoU6e" crossorigin="anonymous" defer onload="setupAPlayer()"></script>
+
+    
+<script src="https://npm.webcache.cn/meting@2.0.1/dist/Meting.min.js" integrity="sha384-ASVlpKF80A22OXTK3tfEjZm1EL6uFMKIC4p8+0maanw1S&#x2F;IyB+Y4JG+ZDU7GpKE8" crossorigin="anonymous" defer></script>
+
+
+
+  </body>
+  </html>

@@ -1,0 +1,674 @@
+  <!DOCTYPE html>
+  <html lang="en"  
+      data-theme-mode="auto"
+  >
+  <head>
+  <meta charset="utf-8">
+  
+  
+  
+  <script>window.REIMU_CONFIG = {};window.REIMU_CONFIG.icon_font = '4552607_4k4bc36ef96';window.REIMU_CONFIG.clipboard_tips = {"success":{"zh-CN":"复制成功 (*^▽^*)","en":"Copy successfully (*^▽^*)"},"fail":{"zh-CN":"复制失败 (ﾟ⊿ﾟ)ﾂ","en":"Copy failed (ﾟ⊿ﾟ)ﾂ"},"copyright":{"enable":false,"count":50,"license_type":"by-nc-sa"}};window.REIMU_CONFIG.clipboard_tips.copyright.content = '本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！';window.REIMU_CONFIG.code_block = {"expand":true};window.REIMU_CONFIG.base = 'http://example.com';window.REIMU_CONFIG.i18n_languages = ["en"];</script>
+  <title>
+    BRDF(Bidirectional Reflectance Distribution Function) | YF&#39;s Blog
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic|Noto Serif SC:400,400italic,700,700italic&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic|Noto Serif SC:400,400italic,700,700italic&display=swap" media="print" onload="this.media='all'">
+    <link rel="preload" href="//at.alicdn.com/t/c/font_4552607_4k4bc36ef96.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+    
+<link rel="stylesheet" href="/css/loader.css">
+
+    <meta name="description" content="（一）BRDF(Bidirectional Reflectance Distribution Function)‘双向反射分布函数（漫反射+高光） BSDF(双向散射分布函数) &#x3D; BRDF + BTDF(双向透射分布函数)   作用：入射光方向(点到光源)+出射光方向(点到摄像机)–&gt;反射比例  How计算：Lambert + Phong  一般把反射拆分为反射 和高光反射 。漫">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BRDF(Bidirectional Reflectance Distribution Function)">
+<meta property="og:url" content="http://example.com/en/2026/02/22/Note/PersonalArrange/5.1%20PBR/index.html">
+<meta property="og:site_name" content="YF&#39;s Blog">
+<meta property="og:description" content="（一）BRDF(Bidirectional Reflectance Distribution Function)‘双向反射分布函数（漫反射+高光） BSDF(双向散射分布函数) &#x3D; BRDF + BTDF(双向透射分布函数)   作用：入射光方向(点到光源)+出射光方向(点到摄像机)–&gt;反射比例  How计算：Lambert + Phong  一般把反射拆分为反射 和高光反射 。漫">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020230525135707.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020230525140233.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020230525140330.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020230525140818.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020230525152932.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020230525153100.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020230525153213.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020230525153311.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020230525153652.png">
+<meta property="article:published_time" content="2026-02-22T14:07:28.000Z">
+<meta property="article:modified_time" content="2026-07-16T03:51:15.826Z">
+<meta property="article:author" content="OnricYF">
+<meta property="article:tag" content="PBR">
+<meta property="article:tag" content="PersonalArrange">
+<meta property="article:tag" content="着色器">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/blog/Pasted%20image%2020230525135707.png">
+    <link rel="alternate" href="/atom.xml" title="YF's Blog" type="application/atom+xml">
+    <link rel="shortcut icon" href="/images/favicon.ico">
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.css" integrity="sha384-IfxC36XL/toUyJ939C73PcgMuRzAZuIzZxE38drsmO5p6jD7ei+Zx/1oA/0l8ysE" crossorigin="anonymous">
+    
+<script src="https://npm.webcache.cn/pace-js@1.2.4/pace.min.js" integrity="sha384-k6YtvFUEIuEFBdrLKJ3YAUbBki333tj1CSUisai5Cswsg9wcLNaPzsTHDswp4Az8" crossorigin="anonymous"></script>
+
+    
+<link rel="stylesheet" href="https://npm.webcache.cn/@reimujs/aos@0.1.2/dist/aos.css" integrity="sha384-GMRP93c6Hkz9JVKGAuRR3nTS7M07RwPgTFenXiosjq2VbVgvdDNcz1g6Mkj8AONa" crossorigin="anonymous">
+
+    <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://npm.webcache.cn/aplayer@1.10.1/dist/APlayer.min.css" integrity="sha384-tLMkTWh2pfXNWGFlUS0w1TFtRG5xZ9lPWFOooj+vDDLIL+xBGQU/voDBY5XE2lVh" crossorigin="anonymous">
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+  <body>
+      <div id='loader'>
+    <div class="loading-left-bg loading-bg"></div>
+    <div class="loading-right-bg loading-bg"></div>
+    <div class="spinner-box">
+      <div class="loading-taichi rotate">
+          <svg width="150" height="150" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="https://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
+            <path d="M303.5 432A80 80 0 0 1 291.5 592A80 80 0 0 1 303.5 432z" fill="var(--red-1, #ff5252)" />
+            <path d="M512 65A447 447 0 0 1 512 959L512 929A417 417 0 0 0 512 95A417 417 0 0 0 512 929L512 959A447 447 0 0 1 512 65z 
+           M512 95A417 417 0 0 1 929 512A208.5 208.5 0 0 1 720.5 720.5L720.5 592A80 80 0 0 0 720.5 432A80 80 0 0 0 720.5 592L720.5 720.5A208.5 208.5 0 0 1 512 512A208.5 208.5 0 0 0 303.5 303.5A208.5 208.5 0 0 0 95 512A417 417 0 0 1 512 95z" fill="var(--red-1, #ff5252)" />
+          </svg>
+      </div>
+      <div class="loading-word">Loading...</div>
+    </div>
+  </div>
+  </div>
+  <script>
+    var time = null;
+    var loaderEl = document.getElementById('loader');
+    var startLoading = () => {
+      time = Date.now();
+      loaderEl.classList.remove("loading");
+    }
+    var hideLoader = () => {
+      document.body.style.overflow = 'auto';
+      loader.classList.add('loading');
+    };
+
+    var endLoading = () => {
+      if (!time) {
+        hideLoader();
+      } else {
+        if (Date.now() - time > 500) {
+          time = null;
+          hideLoader();
+        } else {
+          setTimeout(endLoading, 500 - (Date.now() - time));
+          time = null;
+        }
+      }
+    }
+    window.addEventListener('DOMContentLoaded', endLoading);
+    loaderEl.addEventListener('click', endLoading);
+  </script>
+<div id="copy-tooltip"></div>
+<div id="heatmap-tooltip"></div>
+
+
+    <div id="container">
+      <div id="wrap">
+        <div id="header-nav">
+  <nav id="main-nav" aria-label="Primary navigation">
+        <a class="main-nav-link-wrap" href="/en/">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Home</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/archives">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Archives</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/about">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">About</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/friend">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Friend</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/portfolio">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Portfolio</span>
+        </span>
+    <a id="main-nav-toggle" class="nav-icon" aria-label="Toggle navigation" role="button"></a>
+  </nav>
+  <nav id="sub-nav" aria-label="Secondary navigation">
+  </nav>
+    <nav id="i18n-nav" aria-label="Language selection">
+      <div class="custom-dropdown">
+        <div class="select-selected" id="select-selected" role="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Language menu">
+          <span id="nav-language-btn" class="nav-icon" style="padding: 0 20px 0 0"></span>
+          <span id="selected-lang">English</span>
+        </div>
+        <ul class="select-items" id="select-items" role="listbox" aria-label="Languages">
+            <li data-value="zh-CN" role="option" aria-selected="false">简体中文</li>
+            <li data-value="en" role="option" class="selected" aria-selected="true">English</li>
+        </ul>
+      </div>
+      <script>
+        var selectSelected = document.getElementById("select-selected");
+        var selectedLang = document.getElementById("selected-lang");
+        var selectItems = document.getElementById("select-items");
+        var selectOptions = selectItems.querySelectorAll("li");
+
+        selectSelected.addEventListener("click", () => {
+          selectItems.classList.toggle("show");
+          var expanded = selectSelected.getAttribute("aria-expanded") === "true";
+          selectSelected.setAttribute("aria-expanded", (!expanded).toString());
+        });
+
+        selectOptions.forEach((item) => {
+          item.addEventListener("click", () => {
+            const langMap = {};
+              langMap['zh-CN'] = '/2026/02/22/Note/PersonalArrange/5.1 PBR/';
+              langMap['en'] = '/en/2026/02/22/Note/PersonalArrange/5.1 PBR/';
+            selectedLang.textContent = item.textContent;
+            selectItems.classList.remove("show");
+            selectOptions.forEach((option) => {
+              option.classList.remove("selected");
+            });
+            item.classList.add("selected");
+            window.location = langMap[item.dataset.value];
+          });
+        });
+
+        document.addEventListener("click", (event) => {
+          if (!event.target.closest(".custom-dropdown")) {
+            selectItems.classList.remove("show");
+            selectSelected.setAttribute("aria-expanded", "false");
+          }
+        });
+      </script>
+    </nav>
+</div>
+<header id="header" aria-label="Site header">
+        <picture>
+        </picture>
+          <img  fetchpriority="high" src="/images/banner.webp" alt="BRDF(Bidirectional Reflectance Distribution Function)">
+  <div id="header-outer">
+    <div id="header-title">
+          <span id="logo">
+            <h1 data-aos="slide-up">BRDF(Bidirectional Reflectance Distribution Function)</h1>
+          </span>
+        <h2 id="subtitle-wrap" data-aos="slide-down">
+        </h2>
+    </div>
+  </div>
+</header>
+
+        <div id="content" aria-label="Page content"  class="sidebar-right" >
+          <aside id="sidebar" aria-label="Sidebar">
+  <div class="sidebar-wrapper-container sticky">
+  <div class="sidebar-wrapper">
+    <div class="sidebar-wrap" data-aos="fade-up">
+          <div class="sidebar-toc-sidebar"><h3 class="toc-title">Contents</h3>
+<div class="sidebar-toc-wrapper toc-div-class" >
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%EF%BC%88%E4%B8%80%EF%BC%89BRDF-Bidirectional-Reflectance-Distribution-Function"><span class="toc-number">1.</span> <span class="toc-text">（一）BRDF(Bidirectional Reflectance Distribution Function)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#How%E8%AE%A1%E7%AE%97%EF%BC%9A"><span class="toc-number">1.1.</span> <span class="toc-text">How计算：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#BRDF%E4%B8%AD%E7%9A%84%E6%BC%AB%E5%8F%8D%E5%B0%84%E8%AE%A1%E7%AE%97%EF%BC%88Lambert%EF%BC%89"><span class="toc-number">1.1.1.</span> <span class="toc-text">BRDF中的漫反射计算（Lambert）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BRDF%E4%B8%AD%E7%9A%84%E9%AB%98%E5%85%89%E5%8F%8D%E5%B0%84%E8%AE%A1%E7%AE%97"><span class="toc-number">1.1.2.</span> <span class="toc-text">BRDF中的高光反射计算</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%8F%E9%AA%8C%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.1.2.1.</span> <span class="toc-text">经验模型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%A9%E7%90%86%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.1.2.2.</span> <span class="toc-text">物理模型</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%B3%95%E7%BA%BF%E5%88%86%E5%B8%83%E5%87%BD%E6%95%B0"><span class="toc-number">1.1.2.2.1.</span> <span class="toc-text">法线分布函数</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%87%A0%E4%BD%95%E9%81%AE%E8%94%BD%E5%87%BD%E6%95%B0"><span class="toc-number">1.1.2.2.2.</span> <span class="toc-text">几何遮蔽函数</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%8F%B2%E6%B6%85%E5%B0%94%E6%96%B9%E7%A8%8B"><span class="toc-number">1.1.2.2.3.</span> <span class="toc-text">菲涅尔方程</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Shader"><span class="toc-number">2.</span> <span class="toc-text">Shader</span></a></li></ol>
+</div>
+</div>
+          <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/avatar.webp" data-sizes="auto" alt="OnricYF" class="lazyload">
+  <div class="sidebar-author-name">OnricYF</div>
+  <div class="sidebar-description">TRASH ARTIST</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>Post</div>
+    <div class="sidebar-state-number">144</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>Category</div>
+    <div class="sidebar-state-number">33</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>Tag</div>
+    <div class="sidebar-state-number">82</div>
+  </div>
+</div>
+<div class="sidebar-social" >
+    <div class="icon-email sidebar-social-icon">
+      <a href=mailto:a1521070145@gmail.com itemprop="url" target="_blank" aria-label="email" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-github sidebar-social-icon">
+      <a href=https://github.com/Madoka9 itemprop="url" target="_blank" aria-label="github" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-bilibili sidebar-social-icon">
+      <a href=https://space.bilibili.com/5862963 itemprop="url" target="_blank" aria-label="bilibili" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-zhihu sidebar-social-icon">
+      <a href=https://www.zhihu.com/people/lan-mei-sheng-dai-77 itemprop="url" target="_blank" aria-label="zhihu" rel="noopener nofollow noreferrer"></a>
+    </div>
+</div>
+<div class="sidebar-menu">
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/" aria-label="Home"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Home</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/archives" aria-label="Archives"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Archives</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/about" aria-label="About"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">About</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/friend" aria-label="Friend"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Friend</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/portfolio" aria-label="Portfolio"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Portfolio</div>
+      </div>
+</div>
+</div>
+          <div class="sidebar-btn-wrapper" style="position:static">
+            <div class="sidebar-toc-btn current"></div>
+            <div class="sidebar-common-btn"></div>
+          </div>
+    </div>
+  </div>
+      <meting-js
+        theme="var(--color-link)"
+        id="385907592"
+        server="netease"
+        type="playlist"
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        class="aplayer-after-sidebar"
+      ></meting-js>
+  <div class="sidebar-widget">
+  </div>
+  </div>
+</aside>
+
+          <section id="main" aria-label="Main content"><article id="post-Note/PersonalArrange/5.1 PBR" class="h-entry article" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner" data-aos="fade-up">
+    <div class="article-meta">
+      <div class="article-date">
+  <span class="article-date-link icon-calendar" data-aos="zoom-in">
+    <time datetime="2026-02-22T14:07:28.000Z" itemprop="datePublished">2026-02-22</time>
+    <time style="display: none;" id="post-update-time">2026-07-16</time>
+  </span>
+</div>
+
+    </div>
+    
+    <div class="hr-line"></div>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+        <h1 id="（一）BRDF-Bidirectional-Reflectance-Distribution-Function"><a href="#（一）BRDF-Bidirectional-Reflectance-Distribution-Function" class="headerlink" title="（一）BRDF(Bidirectional Reflectance Distribution Function)"></a>（一）BRDF(Bidirectional Reflectance Distribution Function)</h1><p>‘双向反射分布函数（漫反射+高光）</p>
+<p>BSDF(双向散射分布函数) &#x3D; BRDF + BTDF(双向透射分布函数)</p>
+<p><img src="/images/blog/Pasted%20image%2020230525135707.png"></p>
+<ul>
+<li>作用：入射光方向(点到光源)+出射光方向(点到摄像机)–&gt;反射比例</li>
+</ul>
+<h2 id="How计算："><a href="#How计算：" class="headerlink" title="How计算："></a>How计算：</h2><p>Lambert + Phong</p>
+<ul>
+<li>一般把反射拆分为<mark style="background: #FF5582A6;">反射</mark> 和<mark style="background: #FF5582A6;">高光反射</mark> 。漫反射的算法基本采用Lambert模型<br><img src="/images/blog/Pasted%20image%2020230525140233.png"></li>
+</ul>
+<h3 id="BRDF中的漫反射计算（Lambert）"><a href="#BRDF中的漫反射计算（Lambert）" class="headerlink" title="BRDF中的漫反射计算（Lambert）"></a>BRDF中的漫反射计算（Lambert）</h3><p><img src="/images/blog/Pasted%20image%2020230525140330.png"></p>
+<ul>
+<li>Kd - 漫反射系数，与高光反射系数相加为1.</li>
+<li>I - 到达强度</li>
+<li>r - 距离</li>
+<li>n - normal</li>
+<li>l - light</li>
+</ul>
+<h3 id="BRDF中的高光反射计算"><a href="#BRDF中的高光反射计算" class="headerlink" title="BRDF中的高光反射计算"></a>BRDF中的高光反射计算</h3><h4 id="经验模型"><a href="#经验模型" class="headerlink" title="经验模型"></a>经验模型</h4><p><img src="/images/blog/Pasted%20image%2020230525140818.png"></p>
+<ul>
+<li>Phong – ndotL</li>
+<li>blinn-phong – normalize(V+L) * N  (经验模型)</li>
+</ul>
+<h4 id="物理模型"><a href="#物理模型" class="headerlink" title="物理模型"></a>物理模型</h4><p><img src="/images/blog/Pasted%20image%2020230525152932.png"><br><img src="/images/blog/Pasted%20image%2020230525153100.png"></p>
+<h5 id="法线分布函数"><a href="#法线分布函数" class="headerlink" title="法线分布函数"></a>法线分布函数</h5><p><img src="/images/blog/Pasted%20image%2020230525153213.png"></p>
+<h5 id="几何遮蔽函数"><a href="#几何遮蔽函数" class="headerlink" title="几何遮蔽函数"></a>几何遮蔽函数</h5><p><img src="/images/blog/Pasted%20image%2020230525153311.png"></p>
+<h5 id="菲涅尔方程"><a href="#菲涅尔方程" class="headerlink" title="菲涅尔方程"></a>菲涅尔方程</h5><p><img src="/images/blog/Pasted%20image%2020230525153652.png"></p>
+<h1 id="Shader"><a href="#Shader" class="headerlink" title="Shader"></a>Shader</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br></pre></td><td class="code"><pre><span class="line">Shader <span class="string">&quot;PBR/PBR&quot;</span>  </span><br><span class="line">&#123;  </span><br><span class="line">Properties  </span><br><span class="line">&#123;  </span><br><span class="line">_MainTex (<span class="string">&quot;Texture&quot;</span>, <span class="number">2</span>D) = <span class="string">&quot;white&quot;</span> &#123;&#125;  </span><br><span class="line">_Color (<span class="string">&quot;MainColor&quot;</span>, color) = (<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>)  </span><br><span class="line">  </span><br><span class="line">[Space][Header(Roughness)][Space]  </span><br><span class="line">_RoughnessTex (<span class="string">&quot;RoughnessTex&quot;</span>, <span class="number">2</span>D) = <span class="string">&quot;white&quot;</span> &#123;&#125;  </span><br><span class="line">_Roughness (<span class="string">&quot;Roughness&quot;</span>, range(<span class="number">0</span>,<span class="number">1</span>)) = <span class="number">0</span>  </span><br><span class="line">  </span><br><span class="line">[Space][Header(Metalic)][Space]  </span><br><span class="line">_MetalicTex (<span class="string">&quot;MetalicTex&quot;</span>, <span class="number">2</span>D) = <span class="string">&quot;white&quot;</span> &#123;&#125;  </span><br><span class="line">_Metalic (<span class="string">&quot;Metalic&quot;</span>, range(<span class="number">0</span>,<span class="number">1</span>)) = <span class="number">0</span>  </span><br><span class="line">  </span><br><span class="line">[Space][Header(Normal)][Space]  </span><br><span class="line">_NormalTex (<span class="string">&quot;NormalTex&quot;</span>, <span class="number">2</span>D) = <span class="string">&quot;bump&quot;</span> &#123;&#125;  </span><br><span class="line">[Space][Header(AO)][Space]  </span><br><span class="line">_AoTex (<span class="string">&quot;AoTex&quot;</span>, <span class="number">2</span>D) = <span class="string">&quot;white&quot;</span> &#123;&#125;  </span><br><span class="line">[Space][Header(Emission)][Space]  </span><br><span class="line">_EmitTex (<span class="string">&quot;EmitTex&quot;</span>, <span class="number">2</span>d) = <span class="string">&quot;black&quot;</span> &#123;&#125;  </span><br><span class="line">_EmitInt (<span class="string">&quot;EmitInt&quot;</span>, range(<span class="number">1</span>, <span class="number">10</span>)) = <span class="number">1</span>  </span><br><span class="line">&#125;  </span><br><span class="line">SubShader  </span><br><span class="line">&#123;  </span><br><span class="line">CGINCLUDE  </span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;UnityCG.cginc&quot;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;UnityLightingCommon.cginc&quot;</span>  </span></span><br><span class="line"><span class="type">float</span> NDF(<span class="type">float</span> rough, <span class="type">float</span> ndoth)  </span><br><span class="line">&#123;  </span><br><span class="line"><span class="type">float</span> a2 = rough*rough;  </span><br><span class="line"><span class="type">float</span> ndoth2 = ndoth*ndoth;  </span><br><span class="line"><span class="keyword">return</span> a2 / (UNITY_PI*(ndoth2*(a2<span class="number">-1</span>)+<span class="number">1</span>) * (ndoth2*(a2<span class="number">-1</span>)+<span class="number">1</span>));  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line"><span class="type">float</span> <span class="title function_">GF</span><span class="params">(<span class="type">float</span> ndotv,<span class="type">float</span> ndotl, <span class="type">float</span> rough)</span>  </span><br><span class="line">&#123;  </span><br><span class="line"><span class="type">float</span> a = ((rough + <span class="number">1</span>)/<span class="number">2</span>) * ((rough + <span class="number">1</span>)/<span class="number">2</span>);  </span><br><span class="line"><span class="type">float</span> k = a/<span class="number">2</span>;  </span><br><span class="line"><span class="type">float</span> gNdotV = ndotv / (ndotv*(<span class="number">1</span>-k) + k); <span class="comment">//lerp(k,1,ndotv)  </span></span><br><span class="line"><span class="type">float</span> gNdotl = ndotl / (ndotl*(<span class="number">1</span>-k) + k);  </span><br><span class="line"><span class="keyword">return</span> gNdotl * gNdotV;  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line">float3 <span class="title function_">Frenel</span><span class="params">(float3 h, float3 v, float3 F0)</span><span class="comment">//F0 基础反射率  </span></span><br><span class="line">&#123;  </span><br><span class="line"><span class="keyword">return</span> F0 + (<span class="number">1</span>-F0)*(<span class="number">1</span>-saturate(dot(h,v)))*(<span class="number">1</span>-saturate(dot(h,v)))*(<span class="number">1</span>-saturate(dot(h,v)))*(<span class="number">1</span>-saturate(dot(h,v)))*(<span class="number">1</span>-saturate(dot(h,v)));  </span><br><span class="line">&#125;  </span><br><span class="line">float3 <span class="title function_">PBR</span><span class="params">(float3 pos , float3 normal, float3 albedo, <span class="type">float</span> roughness, <span class="type">float</span> metalic, <span class="type">float</span> ao, <span class="type">float</span> shadow)</span>  </span><br><span class="line">&#123;  </span><br><span class="line">float3 viewDir = normalize(_WorldSpaceCameraPos - pos);  </span><br><span class="line">float3 LightDir = UnityWorldSpaceLightDir(pos);  </span><br><span class="line">float3 hDir = normalize(viewDir + LightDir);  </span><br><span class="line">half ndotl = saturate(dot(normal,LightDir));  </span><br><span class="line">half ndotv = saturate(dot(normal,viewDir));  </span><br><span class="line">half ndoth = saturate(dot(normal,hDir));  </span><br><span class="line">  </span><br><span class="line">float3 F0 = <span class="number">0.04</span>;<span class="comment">// 大多数电介质反射率为 0.02 - 0.05；对于导体 0.5-1 , 一般默认0.04  </span></span><br><span class="line">F0 = lerp(F0,albedo,metalic); <span class="comment">//在计算镜面反射时为了方便地实现金属和电介质的混合  </span></span><br><span class="line"><span class="comment">//DGF  </span></span><br><span class="line"><span class="type">float</span> D = NDF(roughness,ndoth);  </span><br><span class="line"><span class="type">float</span> G = GF(ndotv, ndotl, roughness);  </span><br><span class="line">float3 F = Frenel(hDir,viewDir,F0);  </span><br><span class="line">  </span><br><span class="line">float3 kd = <span class="number">1</span>-metalic;<span class="comment">//漫反射系数 kd = (1-F)*(1-Metalic)//一般我们在游戏引擎中使用时, 往往会把漫反射中的 1-F 项忽略  </span></span><br><span class="line"><span class="comment">//因为当 F 的值比较大的时候，都是在边缘区域，这时镜面反射很强，漫反射的强度相对很弱，完全可以直接忽略。  </span></span><br><span class="line"><span class="comment">///忽略漫反射中的 (1-F) 项，可以为全局光照等的计算带来极大的便利。  </span></span><br><span class="line">float3 diffuse = kd * albedo / UNITY_PI;  </span><br><span class="line">float3 specular = (D * G * F)/ (<span class="number">4</span> * ndotv * ndotl + <span class="number">0.00000001</span>);  </span><br><span class="line"><span class="comment">//菲涅尔项 F 本身就已经体现了镜面反射的比例，系数Ks可以直接去掉。  </span></span><br><span class="line">float3 finalColor = (diffuse + specular) * _LightColor0 * ndotl * shadow ;  </span><br><span class="line">  </span><br><span class="line"><span class="comment">//env color  </span></span><br><span class="line">float3 irradiance = ShadeSH9(float4(normal,<span class="number">1</span>));  </span><br><span class="line">float3 diffuseEnvCol = irradiance * albedo;  </span><br><span class="line">float4 cubeMapCol = UNITY_SAMPLE_TEXCUBE_LOD(unity_SpecCube0,reflect(-viewDir,normal),<span class="number">6</span>*roughness);  </span><br><span class="line">float3 specularEnvCol = DecodeHDR(cubeMapCol,unity_SpecCube0_HDR);  </span><br><span class="line">specularEnvCol *= F;  </span><br><span class="line">float3 envColor = (kd * diffuseEnvCol + specularEnvCol) * ao;  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">return</span> finalColor + envColor;  </span><br><span class="line">&#125;  </span><br><span class="line">float3 <span class="title function_">PBR2</span><span class="params">(float3 pos , float3 normal, float3 albedo, <span class="type">float</span> roughness, <span class="type">float</span> metalic, <span class="type">float</span> ao, <span class="type">float</span> shadow)</span>  </span><br><span class="line">&#123;  </span><br><span class="line">float3 viewDir = normalize(_WorldSpaceCameraPos - pos);  </span><br><span class="line">float3 LightDir = UnityWorldSpaceLightDir(pos);  </span><br><span class="line">float3 hDir = normalize(viewDir + LightDir);  </span><br><span class="line">half ndotl = saturate(dot(normal,LightDir));  </span><br><span class="line">half ndotv = saturate(dot(normal,viewDir));  </span><br><span class="line">half ndoth = saturate(dot(normal,hDir));  </span><br><span class="line">  </span><br><span class="line">float3 F0 = <span class="number">0.04</span>;<span class="comment">// 大多数电介质反射率为 0.02 - 0.05；对于导体 0.5-1 , 一般默认0.04  </span></span><br><span class="line">F0 = lerp(F0,albedo,metalic); <span class="comment">//在计算镜面反射时为了方便地实现金属和电介质的混合  </span></span><br><span class="line"><span class="comment">//DGF  </span></span><br><span class="line"><span class="type">float</span> D = NDF(roughness,ndoth);  </span><br><span class="line"><span class="type">float</span> G = GF(ndotv, ndotl, roughness);  </span><br><span class="line">float3 F = Frenel(hDir,viewDir,F0);  </span><br><span class="line">  </span><br><span class="line">float3 kd = <span class="number">1</span>-metalic;<span class="comment">//漫反射系数 kd = (1-F)*(1-Metalic)//一般我们在游戏引擎中使用时, 往往会把漫反射中的 1-F 项忽略  </span></span><br><span class="line"><span class="comment">//因为当 F 的值比较大的时候，都是在边缘区域，这时镜面反射很强，漫反射的强度相对很弱，完全可以直接忽略。  </span></span><br><span class="line"><span class="comment">///忽略漫反射中的 (1-F) 项，可以为全局光照等的计算带来极大的便利。  </span></span><br><span class="line">float3 diffuse = kd * albedo / UNITY_PI;  </span><br><span class="line">float3 specular = (D * G * F)/ (<span class="number">4</span> * ndotv * ndotl + <span class="number">0.00000001</span>);  </span><br><span class="line"><span class="comment">//菲涅尔项 F 本身就已经体现了镜面反射的比例，系数Ks可以直接去掉。  </span></span><br><span class="line">float3 finalColor = (diffuse + specular) * _LightColor0 * ndotl * shadow ;  </span><br><span class="line"><span class="keyword">return</span> finalColor;  </span><br><span class="line">&#125;  </span><br><span class="line">ENDCG  </span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">Pass  </span><br><span class="line">&#123;  </span><br><span class="line">Tags &#123; <span class="string">&quot;RenderType&quot;</span>=<span class="string">&quot;Opaque&quot;</span> <span class="string">&quot;LightMode&quot;</span> = <span class="string">&quot;ForwardBase&quot;</span>&#125;  </span><br><span class="line">CGPROGRAM  </span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> multi_compile_fwdbase_fullshadows  </span></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> vertex vert  </span></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> fragment frag  </span></span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;UnityCG.cginc&quot;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;AutoLight.cginc&quot;</span>  </span></span><br><span class="line"><span class="keyword">struct</span> appdata  </span><br><span class="line">&#123;  </span><br><span class="line">float4 vertex : POSITION;  </span><br><span class="line">float2 uv : TEXCOORD0;  </span><br><span class="line">float3 normal: NORMAL;  </span><br><span class="line">float4 tangent : TANGENT;  </span><br><span class="line">&#125;;  </span><br><span class="line">  </span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">v2f</span>  </span></span><br><span class="line"><span class="class">&#123;</span>  </span><br><span class="line">float4 pos : SV_POSITION;  </span><br><span class="line">float2 uv : TEXCOORD0;  </span><br><span class="line">float4 worldPos : TEXCOORD1;  </span><br><span class="line">float3 worldNormal : TEXCOORD2;  </span><br><span class="line">float4 worldTangent : TEXCOORD3;  </span><br><span class="line">LIGHTING_COORDS(<span class="number">5</span>,<span class="number">6</span>)  </span><br><span class="line">&#125;;  </span><br><span class="line">  </span><br><span class="line">sampler2D _MainTex, _RoughnessTex, _MetalicTex, _NormalTex,_AoTex,_EmitTex;  </span><br><span class="line">float4 _MainTex_ST, _Color;  </span><br><span class="line"><span class="type">float</span> _Roughness, _Metalic,_EmitInt;  </span><br><span class="line">  </span><br><span class="line">v2f <span class="title function_">vert</span> <span class="params">(appdata v)</span>  </span><br><span class="line">&#123;  </span><br><span class="line">v2f o;  </span><br><span class="line">o.pos = UnityObjectToClipPos(v.vertex);  </span><br><span class="line">o.uv = TRANSFORM_TEX(v.uv, _MainTex);  </span><br><span class="line">o.worldPos = mul(unity_ObjectToWorld, v.vertex);  </span><br><span class="line">o.worldNormal = UnityObjectToWorldNormal(v.normal);  </span><br><span class="line">o.worldTangent = float4(UnityObjectToWorldDir(v.tangent),v.tangent.w);  </span><br><span class="line">TRANSFER_VERTEX_TO_FRAGMENT(o)<span class="comment">//计算光照用， 必须为o.pos  </span></span><br><span class="line"><span class="keyword">return</span> o;  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line">fixed4 <span class="title function_">frag</span> <span class="params">(v2f i)</span> : SV_Target  </span><br><span class="line">&#123;  </span><br><span class="line"><span class="comment">// get data;  </span></span><br><span class="line">  </span><br><span class="line">float3 binormal = cross(i.worldNormal,i.worldTangent.xyz) * (i.worldTangent.w * unity_WorldTransformParams.w);  </span><br><span class="line">float4 normal = tex2D(_NormalTex,i.uv);  </span><br><span class="line">normal.xyz = UnpackNormal(normal);  </span><br><span class="line">normal.xyz = normal.xzy;  </span><br><span class="line">float3 worldNormal = normalize(  </span><br><span class="line">normal.x * i.worldTangent +  </span><br><span class="line">normal.y * i.worldNormal +  </span><br><span class="line">normal.z * binormal  </span><br><span class="line">);  </span><br><span class="line">  </span><br><span class="line">float3 albedo = tex2D(_MainTex,i.uv) * _Color;  </span><br><span class="line"><span class="type">float</span> rough = tex2D(_RoughnessTex,i.uv) * _Roughness;  </span><br><span class="line"><span class="type">float</span> metalic = tex2D(_MetalicTex,i.uv) * _Metalic;  </span><br><span class="line"><span class="type">float</span> ao = tex2D(_AoTex,i.uv);  </span><br><span class="line">  </span><br><span class="line"><span class="type">float</span> shadow = LIGHT_ATTENUATION(i);  </span><br><span class="line">float3 pbrCol = PBR(i.worldPos, worldNormal, albedo, rough, metalic, ao,shadow);  </span><br><span class="line">  </span><br><span class="line">float3 emitTex = tex2D(_EmitTex,i.uv);  </span><br><span class="line"><span class="type">float</span> emitInt = _EmitInt * (<span class="built_in">sin</span>(frac(_Time.z)) * <span class="number">0.5</span> + <span class="number">0.5</span>);  </span><br><span class="line">float3 emission = emitTex * emitInt;   </span><br><span class="line">  </span><br><span class="line">fixed4 col = fixed4(pbrCol + emission,<span class="number">1</span>);  </span><br><span class="line"><span class="keyword">return</span> col;  </span><br><span class="line">&#125;  </span><br><span class="line">ENDCG  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line">Pass  </span><br><span class="line">&#123;  </span><br><span class="line">Tags &#123; <span class="string">&quot;RenderType&quot;</span>=<span class="string">&quot;Opaque&quot;</span> <span class="string">&quot;LightMode&quot;</span> = <span class="string">&quot;ForwardAdd&quot;</span>&#125;  </span><br><span class="line">Blend One One  </span><br><span class="line">CGPROGRAM  </span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> multi_compile_fwdbase_fullshadows  </span></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> vertex vert  </span></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> fragment frag  </span></span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;UnityCG.cginc&quot;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;AutoLight.cginc&quot;</span>  </span></span><br><span class="line"><span class="keyword">struct</span> appdata  </span><br><span class="line">&#123;  </span><br><span class="line">float4 vertex : POSITION;  </span><br><span class="line">float2 uv : TEXCOORD0;  </span><br><span class="line">float3 normal: NORMAL;  </span><br><span class="line">float4 tangent : TANGENT;  </span><br><span class="line">&#125;;  </span><br><span class="line">  </span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">v2f</span>  </span></span><br><span class="line"><span class="class">&#123;</span>  </span><br><span class="line">float4 pos : SV_POSITION;  </span><br><span class="line">float2 uv : TEXCOORD0;  </span><br><span class="line">float4 worldPos : TEXCOORD1;  </span><br><span class="line">float3 worldNormal : TEXCOORD2;  </span><br><span class="line">float4 worldTangent : TEXCOORD3;  </span><br><span class="line">LIGHTING_COORDS(<span class="number">5</span>,<span class="number">6</span>)  </span><br><span class="line">&#125;;  </span><br><span class="line">  </span><br><span class="line">sampler2D _MainTex, _RoughnessTex, _MetalicTex, _NormalTex,_AoTex,_EmitTex;  </span><br><span class="line">float4 _MainTex_ST, _Color;  </span><br><span class="line"><span class="type">float</span> _Roughness, _Metalic,_EmitInt;  </span><br><span class="line">  </span><br><span class="line">v2f <span class="title function_">vert</span> <span class="params">(appdata v)</span>  </span><br><span class="line">&#123;  </span><br><span class="line">v2f o;  </span><br><span class="line">o.pos = UnityObjectToClipPos(v.vertex);  </span><br><span class="line">o.uv = TRANSFORM_TEX(v.uv, _MainTex);  </span><br><span class="line">o.worldPos = mul(unity_ObjectToWorld, v.vertex);  </span><br><span class="line">o.worldNormal = UnityObjectToWorldNormal(v.normal);  </span><br><span class="line">o.worldTangent = float4(UnityObjectToWorldDir(v.tangent),v.tangent.w);  </span><br><span class="line">TRANSFER_VERTEX_TO_FRAGMENT(o)<span class="comment">//计算光照用， 必须为o.pos  </span></span><br><span class="line"><span class="keyword">return</span> o;  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line">fixed4 <span class="title function_">frag</span> <span class="params">(v2f i)</span> : SV_Target  </span><br><span class="line">&#123;  </span><br><span class="line"><span class="comment">// get data;  </span></span><br><span class="line">  </span><br><span class="line">float3 binormal = cross(i.worldNormal,i.worldTangent.xyz) * (i.worldTangent.w * unity_WorldTransformParams.w);  </span><br><span class="line">float4 normal = tex2D(_NormalTex,i.uv);  </span><br><span class="line">normal.xyz = UnpackNormal(normal);  </span><br><span class="line">normal.xyz = normal.xzy;  </span><br><span class="line">float3 worldNormal = normalize(  </span><br><span class="line">normal.x * i.worldTangent +  </span><br><span class="line">normal.y * i.worldNormal +  </span><br><span class="line">normal.z * binormal  </span><br><span class="line">);  </span><br><span class="line">  </span><br><span class="line">float3 albedo = tex2D(_MainTex,i.uv) * _Color;  </span><br><span class="line"><span class="type">float</span> rough = tex2D(_RoughnessTex,i.uv) * _Roughness;  </span><br><span class="line"><span class="type">float</span> metalic = tex2D(_MetalicTex,i.uv) * _Metalic;  </span><br><span class="line"><span class="type">float</span> ao = tex2D(_AoTex,i.uv);  </span><br><span class="line">  </span><br><span class="line"><span class="type">float</span> shadow = LIGHT_ATTENUATION(i);  </span><br><span class="line">float3 pbrCol = PBR2(i.worldPos, worldNormal, albedo, rough, metalic, ao,shadow);  </span><br><span class="line">fixed4 col = fixed4(pbrCol,<span class="number">1</span>);  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">return</span> col;  </span><br><span class="line">&#125;  </span><br><span class="line">ENDCG  </span><br><span class="line">&#125;  </span><br><span class="line">UsePass <span class="string">&quot;Legacy Shaders/VertexLit/SHADOWCASTER&quot;</span>  </span><br><span class="line">&#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+    <footer class="article-footer">
+        <a class="article-category-link" href="/en/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" title="技术笔记" data-aos="zoom-in">技术笔记</a><a class="article-category-link" href="/en/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E5%9B%BE%E5%BD%A2%E5%AD%A6/" title="图形学" data-aos="zoom-in">图形学</a>
+
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/en/tags/PBR/" rel="tag" title="PBR">PBR</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/en/tags/PersonalArrange/" rel="tag" title="PersonalArrange">PersonalArrange</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/en/tags/%E7%9D%80%E8%89%B2%E5%99%A8/" rel="tag" title="着色器">着色器</a></li></ul>
+
+    </footer>
+  </div>
+    <nav id="article-nav" aria-label="Article navigation" data-aos="fade-up">
+      <div class="article-nav-link-wrap left">
+            <img data-src="/images/banner.webp" data-sizes="auto" alt="Example Tiltle" class="lazyload">
+        <a href="/en/2026/02/22/Examples/" aria-label="Prev: Example Tiltle" title="Prev: Example Tiltle"></a>
+        <div class="article-nav-caption">Prev</div>
+        <h3 class="article-nav-title">
+            Example Tiltle
+        </h3>
+      </div>
+    <div class="article-nav-link-wrap right">
+          <img data-src="/images/banner.webp" data-sizes="auto" alt="4.6 大气散射" class="lazyload">
+      <a href="/en/2026/02/22/Note/PersonalArrange/4.6%20%E5%A4%A7%E6%B0%94%E6%95%A3%E5%B0%84/" aria-label="Next: 4.6 大气散射"  title="Next: 4.6 大气散射"></a>
+      <div class="article-nav-caption">Next</div>
+      <h3 class="article-nav-title">
+          4.6 大气散射
+      </h3>
+    </div>
+  </nav>
+
+</article>
+
+
+</section>
+        </div>
+        <footer id="footer" aria-label="Site footer">
+  <div style="width: 100%; overflow: hidden">
+    <div class="footer-line"></div>
+  </div>
+  <div id="footer-info">
+    <div>
+      <span class="icon-copyright"></span>
+        2020-2026
+        <span class="footer-info-sep rotate"></span>
+      OnricYF
+    </div>
+      <div>
+        Powered by&nbsp;<a href="https://hexo.io/" rel="noopener nofollow noreferrer" target="_blank">Hexo</a>&nbsp;
+        Theme.<a href="https://github.com/D-Sketon/hexo-theme-reimu" rel="noopener nofollow noreferrer" target="_blank">Reimu</a>
+      </div>
+      <div>
+        <span class="icon-brush"></span>
+        87.2k
+        &nbsp;|&nbsp;
+        <span class="icon-coffee"></span>
+        07:26
+      </div>
+      <div>
+        <span class="icon-eye"></span>
+        <span id="busuanzi_container_site_pv">Number of visits&nbsp;<span id="busuanzi_value_site_pv"></span></span>
+        &nbsp;|&nbsp;
+        <span class="icon-user"></span>
+        <span id="busuanzi_container_site_uv">Number of visitors&nbsp;<span id="busuanzi_value_site_uv"></span></span>
+      </div>
+  </div>
+</footer>
+
+          <div class="sidebar-top">
+            <div class="sidebar-top-taichi rotate"></div>
+            <div class="arrow-up"></div>
+          </div>
+        <div id="mask" class="hide"></div>
+      </div>
+      <nav id="mobile-nav" aria-label="Mobile navigation">
+  <div class="sidebar-wrap">
+        <div class="sidebar-toc-sidebar"><h3 class="toc-title">Contents</h3>
+<div class="sidebar-toc-wrapper toc-div-class" >
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%EF%BC%88%E4%B8%80%EF%BC%89BRDF-Bidirectional-Reflectance-Distribution-Function"><span class="toc-number">1.</span> <span class="toc-text">（一）BRDF(Bidirectional Reflectance Distribution Function)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#How%E8%AE%A1%E7%AE%97%EF%BC%9A"><span class="toc-number">1.1.</span> <span class="toc-text">How计算：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#BRDF%E4%B8%AD%E7%9A%84%E6%BC%AB%E5%8F%8D%E5%B0%84%E8%AE%A1%E7%AE%97%EF%BC%88Lambert%EF%BC%89"><span class="toc-number">1.1.1.</span> <span class="toc-text">BRDF中的漫反射计算（Lambert）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#BRDF%E4%B8%AD%E7%9A%84%E9%AB%98%E5%85%89%E5%8F%8D%E5%B0%84%E8%AE%A1%E7%AE%97"><span class="toc-number">1.1.2.</span> <span class="toc-text">BRDF中的高光反射计算</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%8F%E9%AA%8C%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.1.2.1.</span> <span class="toc-text">经验模型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%A9%E7%90%86%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.1.2.2.</span> <span class="toc-text">物理模型</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%B3%95%E7%BA%BF%E5%88%86%E5%B8%83%E5%87%BD%E6%95%B0"><span class="toc-number">1.1.2.2.1.</span> <span class="toc-text">法线分布函数</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%87%A0%E4%BD%95%E9%81%AE%E8%94%BD%E5%87%BD%E6%95%B0"><span class="toc-number">1.1.2.2.2.</span> <span class="toc-text">几何遮蔽函数</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%8F%B2%E6%B6%85%E5%B0%94%E6%96%B9%E7%A8%8B"><span class="toc-number">1.1.2.2.3.</span> <span class="toc-text">菲涅尔方程</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Shader"><span class="toc-number">2.</span> <span class="toc-text">Shader</span></a></li></ol>
+</div>
+</div>
+        <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/avatar.webp" data-sizes="auto" alt="OnricYF" class="lazyload">
+  <div class="sidebar-author-name">OnricYF</div>
+  <div class="sidebar-description">TRASH ARTIST</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>Post</div>
+    <div class="sidebar-state-number">144</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>Category</div>
+    <div class="sidebar-state-number">33</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>Tag</div>
+    <div class="sidebar-state-number">82</div>
+  </div>
+</div>
+<div class="sidebar-social" >
+    <div class="icon-email sidebar-social-icon">
+      <a href=mailto:a1521070145@gmail.com itemprop="url" target="_blank" aria-label="email" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-github sidebar-social-icon">
+      <a href=https://github.com/Madoka9 itemprop="url" target="_blank" aria-label="github" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-bilibili sidebar-social-icon">
+      <a href=https://space.bilibili.com/5862963 itemprop="url" target="_blank" aria-label="bilibili" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-zhihu sidebar-social-icon">
+      <a href=https://www.zhihu.com/people/lan-mei-sheng-dai-77 itemprop="url" target="_blank" aria-label="zhihu" rel="noopener nofollow noreferrer"></a>
+    </div>
+</div>
+<div class="sidebar-menu">
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/" aria-label="Home"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Home</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/archives" aria-label="Archives"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Archives</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/about" aria-label="About"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">About</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/friend" aria-label="Friend"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Friend</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/portfolio" aria-label="Portfolio"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Portfolio</div>
+      </div>
+</div>
+</div>
+  </div>
+      <div class="sidebar-btn-wrapper">
+        <div class="sidebar-toc-btn current"></div>
+        <div class="sidebar-common-btn"></div>
+      </div>
+</nav>
+
+    </div>
+    
+<script src="https://npm.webcache.cn/lazysizes@5.3.2/lazysizes.min.js" integrity="sha384-3gT&#x2F;vsepWkfz&#x2F;ff7PpWNUeMzeWoH3cDhm&#x2F;A8jM7ouoAK0&#x2F;fP&#x2F;9bcHHR5kHq2nf+e" crossorigin="anonymous"></script>
+
+
+<script src="https://npm.webcache.cn/clipboard@2.0.11/dist/clipboard.min.js" integrity="sha384-J08i8An&#x2F;QeARD9ExYpvphB8BsyOj3Gh2TSh1aLINKO3L0cMSH2dN3E22zFoXEi0Q" crossorigin="anonymous"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+  
+<script src="/js/aos.js"></script>
+
+  <script>
+    var aosInit = () => {
+      AOS.init({
+        duration: 1000,
+        easing: "ease",
+        once: true,
+        offset: 50,
+      });
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', aosInit);
+    } else {
+      aosInit();
+    }
+  </script>
+
+
+<script src="/js/pjax_script.js" data-pjax></script>
+
+
+
+
+  <script>
+    var setupFirework = () => {
+      if (!false || !window.matchMedia('(max-width: 768px)').matches) {
+        window.firework && window.firework(JSON.parse('{"excludeElements":["a","button"],"particles":[{"shape":"circle","move":["emit"],"easing":"easeOutExpo","colors":["var(--red-1)","var(--red-2)","var(--red-3)","var(--red-4)"],"number":20,"duration":[1200,1800],"shapeOptions":{"radius":[16,32],"alpha":[0.3,0.5]}},{"shape":"circle","move":["diffuse"],"easing":"easeOutExpo","colors":["var(--red-0)"],"number":1,"duration":[1200,1800],"shapeOptions":{"radius":20,"alpha":[0.2,0.5],"lineWidth":6}}]}'));
+      }
+    }
+  </script>
+  
+<script src="https://npm.webcache.cn/mouse-firework@0.2.0/dist/index.umd.js" integrity="sha384-qi9WggRt19tv8Vc7pCHW3ulMNLwrn515zaLEWZjl1px07vz8+pUoWX8n1rgq282T" crossorigin="anonymous" onload="setupFirework()" defer></script>
+
+
+  
+<script src="https://npm.webcache.cn/theme-shokax-pjax@0.0.3/dist/index.umd.js" integrity="sha384-xneY1WY8hOfUzswrE4CrYq35N4BdVcxqxwHPr9zawE&#x2F;jMSCxD+jAPU55x&#x2F;jj3wlf" crossorigin="anonymous"></script>
+
+  
+<script src="/js/pjax.js"></script>
+
+
+
+
+
+<div id="lazy-script">
+  <div>
+      
+      
+      <script data-pjax>
+        window.REIMU_POST = {
+          author: "OnricYF",
+          title: "BRDF(Bidirectional Reflectance Distribution Function)",
+          url: "http://example.com/2026/02/22/Note/PersonalArrange/5.1%20PBR/",
+          excerpt: "",
+          description: "",
+          stripContent: "（一）BRDF(Bidirectional Reflectance Distribution Function)‘双向反射分布函数（漫反射+高光） BSDF(双向散射分布函数) &amp;#x3D; BRDF + BTDF(双向透射分布函数)   作用：入射光方向(点到光源)+出射光方向(点到摄像机)–&amp;gt;反射比例  How计算：Lambert + Phong  一般把反射拆分为反射 和高光反射 。漫反射的算法基本采用Lambert模型  BRDF中的漫反射计算（Lambert）  Kd - 漫反射",
+          date: "Sun Feb 22 2026 22:07:28 GMT+0800",
+          updated: "Thu Jul 16 2026 11:51:15 GMT+0800",
+          cover: "/images/banner.webp",
+        };
+      </script>
+        
+<script src="/js/insert_highlight.js" data-pjax></script>
+
+      
+<script src="/js/tabs.js" data-pjax defer></script>
+
+      <script type="module" data-pjax>
+        (async () => {
+          const PhotoSwipeLightbox = (await safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe-lightbox.esm.min.js", "sha384-DiL6M/gG+wmTxmCRZyD1zee6lIhawn5TGvED0FOh7fXcN9B0aZ9dexSF/N6lrZi/")).default;
+          const initPswp = (gallery, children) => {
+            if (_$$(`${gallery} ${children}`).length > 0) {
+              new PhotoSwipeLightbox({
+                gallery,
+                children,
+                pswpModule: () => safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.esm.min.js", "sha384-WkkO3GCmgkC3VQWpaV8DqhKJqpzpF9JoByxDmnV8+oTJ7m3DfYEWX1fu1scuS4+s")
+              }).init();
+            }
+          }
+          const pswp = () => {
+            initPswp('.article-entry', 'a.article-gallery-item');
+            initPswp('.article-gallery', 'a.article-gallery-item');
+          }
+          pswp();
+        })();
+      </script>
+  </div>
+</div>
+
+
+  <script>
+    console.log(String.raw`%c 
+ ______     ______     __     __    __     __  __    
+/\  == \   /\  ___\   /\ \   /\ "-./  \   /\ \/\ \   
+\ \  __<   \ \  __\   \ \ \  \ \ \-./\ \  \ \ \_\ \  
+ \ \_\ \_\  \ \_____\  \ \_\  \ \_\ \ \_\  \ \_____\ 
+  \/_/ /_/   \/_____/   \/_/   \/_/  \/_/   \/_____/ 
+                                                  
+`,'color: #ff5252;')
+    console.log('%c Theme.Reimu v' + '1.12.0' + ' %c https://github.com/D-Sketon/hexo-theme-reimu ', 'color: white; background: #ff5252; padding:5px 0;', 'padding:4px;border:1px solid #ff5252;')
+  </script>
+  
+
+
+  
+<script src="https://npm.webcache.cn/busuanzi@2.3.0/bsz.pure.mini.js" integrity="sha384-0M75wtSkhjIInv4coYlaJU83+OypaRCIq2SukQVQX04eGTCBXJDuWAbJet56id+S" crossorigin="anonymous" async></script>
+
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      for (let registration of registrations) {
+        registration.unregister();
+      }
+    });
+  }
+</script>
+
+
+    <script>
+      var setupAPlayer = () => {
+        if (!true || !window.matchMedia('(max-width: 768px)').matches) {
+          if (window.matchMedia('(max-width: 959px)').matches) {
+            const meting = _$('meting-js');
+            if (meting) {
+              meting.setAttribute('fixed', 'true');
+              const aside = meting.parentNode?.parentNode;
+              if (aside?.tagName === 'ASIDE') {
+                meting.parentNode.removeChild(meting);
+                document.body.appendChild(meting);
+              }
+            }
+          }
+        }
+      };
+    </script>
+  
+<script src="https://npm.webcache.cn/aplayer@1.10.1/dist/APlayer.min.js" integrity="sha384-gdGYZwHnfJM54evoZhpO0s6ZF5BQiybkiyW7VXr+h5UfruuRL&#x2F;aORyw+5+HZoU6e" crossorigin="anonymous" defer onload="setupAPlayer()"></script>
+
+    
+<script src="https://npm.webcache.cn/meting@2.0.1/dist/Meting.min.js" integrity="sha384-ASVlpKF80A22OXTK3tfEjZm1EL6uFMKIC4p8+0maanw1S&#x2F;IyB+Y4JG+ZDU7GpKE8" crossorigin="anonymous" defer></script>
+
+
+
+  </body>
+  </html>

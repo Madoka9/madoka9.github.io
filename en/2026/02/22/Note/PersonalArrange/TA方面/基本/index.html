@@ -1,0 +1,819 @@
+  <!DOCTYPE html>
+  <html lang="en"  
+      data-theme-mode="auto"
+  >
+  <head>
+  <meta charset="utf-8">
+  
+  
+  
+  <script>window.REIMU_CONFIG = {};window.REIMU_CONFIG.icon_font = '4552607_4k4bc36ef96';window.REIMU_CONFIG.clipboard_tips = {"success":{"zh-CN":"复制成功 (*^▽^*)","en":"Copy successfully (*^▽^*)"},"fail":{"zh-CN":"复制失败 (ﾟ⊿ﾟ)ﾂ","en":"Copy failed (ﾟ⊿ﾟ)ﾂ"},"copyright":{"enable":false,"count":50,"license_type":"by-nc-sa"}};window.REIMU_CONFIG.clipboard_tips.copyright.content = '本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！';window.REIMU_CONFIG.code_block = {"expand":true};window.REIMU_CONFIG.base = 'http://example.com';window.REIMU_CONFIG.i18n_languages = ["en"];</script>
+  <title>
+    技术美术 - 渲染管线 | YF&#39;s Blog
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic|Noto Serif SC:400,400italic,700,700italic&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic|Noto Serif SC:400,400italic,700,700italic&display=swap" media="print" onload="this.media='all'">
+    <link rel="preload" href="//at.alicdn.com/t/c/font_4552607_4k4bc36ef96.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+    
+<link rel="stylesheet" href="/css/loader.css">
+
+    <meta name="description" content="渲染管线1）渲染管线的作用：将3D场景转换到屏幕显示的2D图像的一个处理流程。 应用阶段1）准备好渲染数据 ，并加载到显存中	- 渲染数据：硬盘–&gt;系统内存–&gt;显存 （显卡不能直接访问系统内存，而且对显存的访问速度更快2）粗粒度剔除3）设置好渲染状态  渲染状态：定义了场景中的网格是怎么被渲染的（如：使用哪个顶点着色器&#x2F;片元着色器、光源属性、材质属性…4）调用Draw Ca">
+<meta property="og:type" content="article">
+<meta property="og:title" content="技术美术 - 渲染管线">
+<meta property="og:url" content="http://example.com/en/2026/02/22/Note/PersonalArrange/TA%E6%96%B9%E9%9D%A2/%E5%9F%BA%E6%9C%AC/index.html">
+<meta property="og:site_name" content="YF&#39;s Blog">
+<meta property="og:description" content="渲染管线1）渲染管线的作用：将3D场景转换到屏幕显示的2D图像的一个处理流程。 应用阶段1）准备好渲染数据 ，并加载到显存中	- 渲染数据：硬盘–&gt;系统内存–&gt;显存 （显卡不能直接访问系统内存，而且对显存的访问速度更快2）粗粒度剔除3）设置好渲染状态  渲染状态：定义了场景中的网格是怎么被渲染的（如：使用哪个顶点着色器&#x2F;片元着色器、光源属性、材质属性…4）调用Draw Ca">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020230816175620.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020230815132341.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020230815132245.png">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-029a9eb22356497d90c341c739757770_720w.webp">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-4831d005249769bae401e5fe9d368f7a_720w.webp">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-80b67f7dacd8de19620afce45ef32b7e_720w.webp">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-f22b09efd0a20abc60f8dfc1497f36ca_720w.webp">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-c89383d670da0ca40dfc30ffb26aa36c_720w.webp">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-6e6d0368207e711ef05235a367ead0a1_720w.webp">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-5d22bcb95fd2bfff1b236ffcb190a6d4_720w.webp">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-6705e81b90b054498320036e48531b4c_720w.webp">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-662ed47c62223f0e7fa4037e69ee29b9_720w.webp">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-e127e759b9d3c79de7bba1103970c53c_720w.webp">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-799858b99388cfd127f51b4d8041661c_720w.webp">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-f498555db0ac772d21af3dbc87a2267f_720w.webp">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-2e224127cc5f837f6b4b0fcab6257fea_720w.webp">
+<meta property="og:image" content="https://pics4.baidu.com/feed/5243fbf2b2119313a96800b12c4935dc91238d00.jpeg@f_auto?token=39daf5e7f22103a354306588bef63d9c">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020230627114117.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020230627114128.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020230627114252.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020230627114422.png">
+<meta property="og:image" content="https://pics4.baidu.com/feed/f9dcd100baa1cd1100898b23f763f1f7c3ce2d76.jpeg@f_auto?token=108899910a1260130cae57ed9c4a9324">
+<meta property="og:image" content="https://pics7.baidu.com/feed/d009b3de9c82d158fad09cdec97b20d3bd3e428f.jpeg@f_auto?token=fff9650bdf13626f91d8a564b2b06cef">
+<meta property="og:image" content="https://pics3.baidu.com/feed/6f061d950a7b02089000bc4f2aa8cbd8552cc8d4.jpeg@f_auto?token=f2b824acad619ef62e0505da426fd55a">
+<meta property="og:image" content="https://pics4.baidu.com/feed/5243fbf2b2119313a96800b12c4935dc91238d00.jpeg@f_auto?token=39daf5e7f22103a354306588bef63d9c">
+<meta property="og:image" content="https://pics6.baidu.com/feed/55e736d12f2eb9382b8c037f9b13bc3ee7dd6fd2.jpeg@f_auto?token=6400f525d1d19ade5b4319fe6ccb90d6">
+<meta property="article:published_time" content="2026-02-22T13:10:27.000Z">
+<meta property="article:modified_time" content="2026-07-16T03:38:13.915Z">
+<meta property="article:author" content="OnricYF">
+<meta property="article:tag" content="GPU">
+<meta property="article:tag" content="PersonalArrange">
+<meta property="article:tag" content="TA方面">
+<meta property="article:tag" content="着色器">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/blog/Pasted%20image%2020230816175620.png">
+    <link rel="alternate" href="/atom.xml" title="YF's Blog" type="application/atom+xml">
+    <link rel="shortcut icon" href="/images/favicon.ico">
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.css" integrity="sha384-IfxC36XL/toUyJ939C73PcgMuRzAZuIzZxE38drsmO5p6jD7ei+Zx/1oA/0l8ysE" crossorigin="anonymous">
+    
+<script src="https://npm.webcache.cn/pace-js@1.2.4/pace.min.js" integrity="sha384-k6YtvFUEIuEFBdrLKJ3YAUbBki333tj1CSUisai5Cswsg9wcLNaPzsTHDswp4Az8" crossorigin="anonymous"></script>
+
+    
+<link rel="stylesheet" href="https://npm.webcache.cn/@reimujs/aos@0.1.2/dist/aos.css" integrity="sha384-GMRP93c6Hkz9JVKGAuRR3nTS7M07RwPgTFenXiosjq2VbVgvdDNcz1g6Mkj8AONa" crossorigin="anonymous">
+
+    <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://npm.webcache.cn/aplayer@1.10.1/dist/APlayer.min.css" integrity="sha384-tLMkTWh2pfXNWGFlUS0w1TFtRG5xZ9lPWFOooj+vDDLIL+xBGQU/voDBY5XE2lVh" crossorigin="anonymous">
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+  <body>
+      <div id='loader'>
+    <div class="loading-left-bg loading-bg"></div>
+    <div class="loading-right-bg loading-bg"></div>
+    <div class="spinner-box">
+      <div class="loading-taichi rotate">
+          <svg width="150" height="150" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="https://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
+            <path d="M303.5 432A80 80 0 0 1 291.5 592A80 80 0 0 1 303.5 432z" fill="var(--red-1, #ff5252)" />
+            <path d="M512 65A447 447 0 0 1 512 959L512 929A417 417 0 0 0 512 95A417 417 0 0 0 512 929L512 959A447 447 0 0 1 512 65z 
+           M512 95A417 417 0 0 1 929 512A208.5 208.5 0 0 1 720.5 720.5L720.5 592A80 80 0 0 0 720.5 432A80 80 0 0 0 720.5 592L720.5 720.5A208.5 208.5 0 0 1 512 512A208.5 208.5 0 0 0 303.5 303.5A208.5 208.5 0 0 0 95 512A417 417 0 0 1 512 95z" fill="var(--red-1, #ff5252)" />
+          </svg>
+      </div>
+      <div class="loading-word">Loading...</div>
+    </div>
+  </div>
+  </div>
+  <script>
+    var time = null;
+    var loaderEl = document.getElementById('loader');
+    var startLoading = () => {
+      time = Date.now();
+      loaderEl.classList.remove("loading");
+    }
+    var hideLoader = () => {
+      document.body.style.overflow = 'auto';
+      loader.classList.add('loading');
+    };
+
+    var endLoading = () => {
+      if (!time) {
+        hideLoader();
+      } else {
+        if (Date.now() - time > 500) {
+          time = null;
+          hideLoader();
+        } else {
+          setTimeout(endLoading, 500 - (Date.now() - time));
+          time = null;
+        }
+      }
+    }
+    window.addEventListener('DOMContentLoaded', endLoading);
+    loaderEl.addEventListener('click', endLoading);
+  </script>
+<div id="copy-tooltip"></div>
+<div id="heatmap-tooltip"></div>
+
+
+    <div id="container">
+      <div id="wrap">
+        <div id="header-nav">
+  <nav id="main-nav" aria-label="Primary navigation">
+        <a class="main-nav-link-wrap" href="/en/">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Home</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/archives">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Archives</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/about">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">About</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/friend">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Friend</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/portfolio">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Portfolio</span>
+        </span>
+    <a id="main-nav-toggle" class="nav-icon" aria-label="Toggle navigation" role="button"></a>
+  </nav>
+  <nav id="sub-nav" aria-label="Secondary navigation">
+  </nav>
+    <nav id="i18n-nav" aria-label="Language selection">
+      <div class="custom-dropdown">
+        <div class="select-selected" id="select-selected" role="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Language menu">
+          <span id="nav-language-btn" class="nav-icon" style="padding: 0 20px 0 0"></span>
+          <span id="selected-lang">English</span>
+        </div>
+        <ul class="select-items" id="select-items" role="listbox" aria-label="Languages">
+            <li data-value="zh-CN" role="option" aria-selected="false">简体中文</li>
+            <li data-value="en" role="option" class="selected" aria-selected="true">English</li>
+        </ul>
+      </div>
+      <script>
+        var selectSelected = document.getElementById("select-selected");
+        var selectedLang = document.getElementById("selected-lang");
+        var selectItems = document.getElementById("select-items");
+        var selectOptions = selectItems.querySelectorAll("li");
+
+        selectSelected.addEventListener("click", () => {
+          selectItems.classList.toggle("show");
+          var expanded = selectSelected.getAttribute("aria-expanded") === "true";
+          selectSelected.setAttribute("aria-expanded", (!expanded).toString());
+        });
+
+        selectOptions.forEach((item) => {
+          item.addEventListener("click", () => {
+            const langMap = {};
+              langMap['zh-CN'] = '/2026/02/22/Note/PersonalArrange/TA方面/基本/';
+              langMap['en'] = '/en/2026/02/22/Note/PersonalArrange/TA方面/基本/';
+            selectedLang.textContent = item.textContent;
+            selectItems.classList.remove("show");
+            selectOptions.forEach((option) => {
+              option.classList.remove("selected");
+            });
+            item.classList.add("selected");
+            window.location = langMap[item.dataset.value];
+          });
+        });
+
+        document.addEventListener("click", (event) => {
+          if (!event.target.closest(".custom-dropdown")) {
+            selectItems.classList.remove("show");
+            selectSelected.setAttribute("aria-expanded", "false");
+          }
+        });
+      </script>
+    </nav>
+</div>
+<header id="header" aria-label="Site header">
+        <picture>
+        </picture>
+          <img  fetchpriority="high" src="/images/banner.webp" alt="技术美术 - 渲染管线">
+  <div id="header-outer">
+    <div id="header-title">
+          <span id="logo">
+            <h1 data-aos="slide-up">技术美术 - 渲染管线</h1>
+          </span>
+        <h2 id="subtitle-wrap" data-aos="slide-down">
+        </h2>
+    </div>
+  </div>
+</header>
+
+        <div id="content" aria-label="Page content"  class="sidebar-right" >
+          <aside id="sidebar" aria-label="Sidebar">
+  <div class="sidebar-wrapper-container sticky">
+  <div class="sidebar-wrapper">
+    <div class="sidebar-wrap" data-aos="fade-up">
+          <div class="sidebar-toc-sidebar"><h3 class="toc-title">Contents</h3>
+<div class="sidebar-toc-wrapper toc-div-class" >
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF"><span class="toc-number">1.</span> <span class="toc-text">渲染管线</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E9%98%B6%E6%AE%B5"><span class="toc-number">1.1.</span> <span class="toc-text">应用阶段</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%A0%E4%BD%95%E9%98%B6%E6%AE%B5-Vertex-Shader"><span class="toc-number">1.2.</span> <span class="toc-text">几何阶段 Vertex Shader</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%89%E6%A0%85%E5%8C%96%E9%98%B6%E6%AE%B5%E5%92%8CG-Buffer"><span class="toc-number">1.3.</span> <span class="toc-text">光栅化阶段和G-Buffer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GPU%E6%B5%81%E6%B0%B4%E7%BA%BF%EF%BC%88%E5%87%A0%E4%BD%95%E9%98%B6%E6%AE%B5%E3%80%81%E5%85%89%E6%A0%85%E5%8C%96%E9%98%B6%E6%AE%B5%EF%BC%89"><span class="toc-number">1.4.</span> <span class="toc-text">GPU流水线（几何阶段、光栅化阶段）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%A0%E4%BD%95%E9%98%B6%E6%AE%B5"><span class="toc-number">1.4.1.</span> <span class="toc-text">几何阶段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%89%E6%A0%85%E5%8C%96%E9%98%B6%E6%AE%B5"><span class="toc-number">1.4.2.</span> <span class="toc-text">光栅化阶段</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%82%B9%E4%B9%98-%E5%8F%89%E4%B9%98"><span class="toc-number">2.</span> <span class="toc-text">点乘 叉乘</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E7%82%B9%E7%A7%AF-dot-product-%E5%86%85%E7%A7%AF-inner-product"><span class="toc-number">2.1.</span> <span class="toc-text">1. 点积 dot product &#x3D;内积 inner product</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E5%87%A0%E4%BD%95%E6%84%8F%E4%B9%89%EF%BC%9A"><span class="toc-number">2.1.1.</span> <span class="toc-text">1.1 几何意义：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E5%BA%94%E7%94%A8%EF%BC%9A"><span class="toc-number">2.1.2.</span> <span class="toc-text">1.2 应用：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E5%9B%BE%E5%BD%A2%E5%AD%A6%E5%BA%94%E7%94%A8"><span class="toc-number">2.1.3.</span> <span class="toc-text">1.3 图形学应用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%8F%89%E7%A7%AF-cross-product-%E5%A4%96%E7%A7%AF-outer-product"><span class="toc-number">2.2.</span> <span class="toc-text">2. 叉积 cross product &#x3D; 外积 outer product</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E5%87%A0%E4%BD%95%E6%84%8F%E4%B9%89%EF%BC%9A"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.1 几何意义：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E5%BA%94%E7%94%A8%EF%BC%9A"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2 应用：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E5%9B%BE%E5%BD%A2%E5%AD%A6%E5%BA%94%E7%94%A8"><span class="toc-number">2.2.3.</span> <span class="toc-text">2.3 图形学应用</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MVP%E7%9F%A9%E9%98%B5"><span class="toc-number">3.</span> <span class="toc-text">MVP矩阵</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#M%EF%BC%9A%E6%A8%A1%E5%9E%8B%E7%A9%BA%E9%97%B4%EF%BC%88%E4%BB%A5%E8%87%AA%E8%BA%AB%E4%B8%BA%E4%B8%AD%E5%BF%83%EF%BC%89%E2%80%94-%E4%B8%96%E7%95%8C%E7%A9%BA%E9%97%B4%EF%BC%88%E4%BB%A5%E4%B8%96%E7%95%8C%E4%B8%BA%E4%B8%AD%E5%BF%83%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">M：模型空间（以自身为中心）—&gt;世界空间（以世界为中心）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#V%EF%BC%9A%E4%B8%96%E7%95%8C%E7%A9%BA%E9%97%B4%E2%80%94-%E8%A7%86%E8%A7%89%E7%A9%BA%E9%97%B4%EF%BC%88%E4%BB%A5%E6%91%84%E5%83%8F%E6%9C%BA%E4%B8%BA%E4%B8%AD%E5%BF%83%EF%BC%89"><span class="toc-number">3.2.</span> <span class="toc-text">V：世界空间—&gt;视觉空间（以摄像机为中心）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#P%EF%BC%9A%E8%A7%86%E8%A7%89%E7%A9%BA%E9%97%B4%E2%80%94-%E8%A3%81%E5%89%AA%E7%A9%BA%E9%97%B4"><span class="toc-number">3.3.</span> <span class="toc-text">P：视觉空间—&gt;裁剪空间</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#PBR"><span class="toc-number">4.</span> <span class="toc-text">PBR</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%BC%96%E7%A8%8B%E7%9A%84%E7%89%B9%E7%82%B9"><span class="toc-number">5.</span> <span class="toc-text">面向对象编程的特点</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A0%86%E5%92%8C%E6%A0%88"><span class="toc-number">6.</span> <span class="toc-text">堆和栈</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%88%E5%88%86%E9%85%8D"><span class="toc-number">6.1.</span> <span class="toc-text">栈分配</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E6%96%B9%E5%BC%8F"><span class="toc-number">6.1.1.</span> <span class="toc-text">创建方式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A0%86%E5%88%86%E9%85%8D"><span class="toc-number">6.2.</span> <span class="toc-text">堆分配</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E6%96%B9%E5%BC%8F-1"><span class="toc-number">6.2.1.</span> <span class="toc-text">创建方式</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%A4%E6%96%AD%E7%82%B9%E5%9C%A8%E4%B8%89%E8%A7%92%E5%BD%A2%E5%86%85%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">7.</span> <span class="toc-text">判断点在三角形内的方法</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%8D%E5%BC%80%E8%BE%9F%E5%86%85%E5%AD%98-%E6%80%8E%E6%A0%B7%E4%BA%A4%E6%8D%A2%E4%B8%A4%E4%B8%AA%E6%95%B0a%E5%92%8Cb"><span class="toc-number">8.</span> <span class="toc-text">不开辟内存 怎样交换两个数a和b</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#GI-Global-Illumination-%E5%85%A8%E5%B1%80%E7%85%A7%E6%98%8E"><span class="toc-number">9.</span> <span class="toc-text">GI (# Global Illumination) - 全局照明</span></a></li></ol>
+</div>
+</div>
+          <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/avatar.webp" data-sizes="auto" alt="OnricYF" class="lazyload">
+  <div class="sidebar-author-name">OnricYF</div>
+  <div class="sidebar-description">TRASH ARTIST</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>Post</div>
+    <div class="sidebar-state-number">144</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>Category</div>
+    <div class="sidebar-state-number">33</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>Tag</div>
+    <div class="sidebar-state-number">82</div>
+  </div>
+</div>
+<div class="sidebar-social" >
+    <div class="icon-email sidebar-social-icon">
+      <a href=mailto:a1521070145@gmail.com itemprop="url" target="_blank" aria-label="email" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-github sidebar-social-icon">
+      <a href=https://github.com/Madoka9 itemprop="url" target="_blank" aria-label="github" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-bilibili sidebar-social-icon">
+      <a href=https://space.bilibili.com/5862963 itemprop="url" target="_blank" aria-label="bilibili" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-zhihu sidebar-social-icon">
+      <a href=https://www.zhihu.com/people/lan-mei-sheng-dai-77 itemprop="url" target="_blank" aria-label="zhihu" rel="noopener nofollow noreferrer"></a>
+    </div>
+</div>
+<div class="sidebar-menu">
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/" aria-label="Home"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Home</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/archives" aria-label="Archives"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Archives</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/about" aria-label="About"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">About</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/friend" aria-label="Friend"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Friend</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/portfolio" aria-label="Portfolio"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Portfolio</div>
+      </div>
+</div>
+</div>
+          <div class="sidebar-btn-wrapper" style="position:static">
+            <div class="sidebar-toc-btn current"></div>
+            <div class="sidebar-common-btn"></div>
+          </div>
+    </div>
+  </div>
+      <meting-js
+        theme="var(--color-link)"
+        id="385907592"
+        server="netease"
+        type="playlist"
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        class="aplayer-after-sidebar"
+      ></meting-js>
+  <div class="sidebar-widget">
+  </div>
+  </div>
+</aside>
+
+          <section id="main" aria-label="Main content"><article id="post-Note/PersonalArrange/TA方面/基本" class="h-entry article" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner" data-aos="fade-up">
+    <div class="article-meta">
+      <div class="article-date">
+  <span class="article-date-link icon-calendar" data-aos="zoom-in">
+    <time datetime="2026-02-22T13:10:27.000Z" itemprop="datePublished">2026-02-22</time>
+    <time style="display: none;" id="post-update-time">2026-07-16</time>
+  </span>
+</div>
+
+    </div>
+    
+    <div class="hr-line"></div>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+        <p><img src="/images/blog/Pasted%20image%2020230816175620.png"></p>
+<h1 id="渲染管线"><a href="#渲染管线" class="headerlink" title="渲染管线"></a>渲染管线</h1><p>1）渲染管线的作用：将3D场景转换到屏幕显示的2D图像的一个处理流程。</p>
+<h2 id="应用阶段"><a href="#应用阶段" class="headerlink" title="应用阶段"></a>应用阶段</h2><p>1）准备好渲染数据 ，并加载到显存中<br>	- 渲染数据：硬盘–&gt;系统内存–&gt;显存 （显卡不能直接访问系统内存，而且对显存的访问速度更快<br>2）粗粒度剔除<br>3）设置好渲染状态</p>
+<ul>
+<li>渲染状态：定义了场景中的网格是怎么被渲染的（如：使用哪个顶点着色器&#x2F;片元着色器、光源属性、材质属性…<br>4）调用Draw Call</li>
+<li>DrawCall：CPU–&gt;GPU的指令，指向一个需要被渲染的图元列表</li>
+</ul>
+<p>–&gt;输出渲染图元到几何阶段</p>
+<h2 id="几何阶段-Vertex-Shader"><a href="#几何阶段-Vertex-Shader" class="headerlink" title="几何阶段 Vertex Shader"></a>几何阶段 Vertex Shader</h2><p>1）坐标转换（Local-&gt;World-&gt;View）<br>2）处理顶点色（逐顶点、逐多边形操作）。<br>3）应用WPO。</p>
+<p>–&gt;输出顶点信息到光栅阶段（光栅器</p>
+<h2 id="光栅化阶段和G-Buffer"><a href="#光栅化阶段和G-Buffer" class="headerlink" title="光栅化阶段和G-Buffer"></a>光栅化阶段和G-Buffer</h2><p>1）使用几何阶段传递过来的顶点数据来产生屏幕上的像素，并渲染出最终图像<br>2）决定哪些像素应该被绘制到屏幕上。<br>3）使用顶点数据（纹理颜色，顶点色）进行插值<br><img src="/images/blog/Pasted%20image%2020230815132341.png"><br><img src="/images/blog/Pasted%20image%2020230815132245.png"><br>顶点计算多次（OverShading）</p>
+<h2 id="GPU流水线（几何阶段、光栅化阶段）"><a href="#GPU流水线（几何阶段、光栅化阶段）" class="headerlink" title="GPU流水线（几何阶段、光栅化阶段）"></a>GPU流水线（几何阶段、光栅化阶段）</h2><h3 id="几何阶段"><a href="#几何阶段" class="headerlink" title="几何阶段"></a>几何阶段</h3><p>1）顶点着色器（VertexShader）：实现顶点的空间变换（将顶点坐标从模型空间转换到齐次裁剪空间[[几种基础坐标空间]]）、顶点着色等<br>2）曲面细分着色器（Tessellation Shader）：可选的着色器，用于细分图元。[[3.3 曲面细分着色器]]<br>3）<mark style="background: #FF5582A6;">几何着色器</mark> （Geometry Shader）：可选的着色器，用于执行逐图元的着色操作，或者用于产生更多的图元（[[几何着色器]]）<br>4）裁剪（Clipping）：将不在摄像机视野内的顶点裁剪掉，并剔除某些三角图元的面片。<br>5）屏幕映射（Screen Mapping）：将每个图元的坐标转换到屏幕坐标系。</p>
+<h3 id="光栅化阶段"><a href="#光栅化阶段" class="headerlink" title="光栅化阶段"></a>光栅化阶段</h3><p>1）三角形设置（Triangle Setup）</p>
+<ul>
+<li>计算三角形网格表示数据<br>2）三角形遍历（Triangle Traversal）</li>
+<li>查找被三角形网格覆盖了的像素<br>3）<mark style="background: #FF5582A6;">片元着色器</mark> （Fragment Shader）<br>  -可编程的<br>  -输入时上一个阶段对顶点信息的插值结果，输出是一个或多个颜色信息<br>4）逐片元操作：修改颜色、深度缓冲、深度测试、模板测试、混合。（不可编程，可配置</li>
+<li>片元要经过 模板测试–&gt;深度测试–&gt;混合 之后才会进入颜色缓冲区。</li>
+</ul>
+<h1 id="点乘-叉乘"><a href="#点乘-叉乘" class="headerlink" title="点乘 叉乘"></a>点乘 叉乘</h1><h2 id="1-点积-dot-product-内积-inner-product"><a href="#1-点积-dot-product-内积-inner-product" class="headerlink" title="1. 点积 dot product &#x3D;内积 inner product"></a>1. 点积 dot product &#x3D;内积 inner product</h2><p><img src="https://pic1.zhimg.com/80/v2-029a9eb22356497d90c341c739757770_720w.webp"></p>
+<p>结果是标量，满足交换律</p>
+<p><img src="https://pic3.zhimg.com/80/v2-4831d005249769bae401e5fe9d368f7a_720w.webp"></p>
+<h3 id="1-1-几何意义："><a href="#1-1-几何意义：" class="headerlink" title="1.1 几何意义："></a>1.1 几何意义：</h3><ul>
+<li>投影（projection）</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-80b67f7dacd8de19620afce45ef32b7e_720w.webp"></p>
+<p>一个单位矢量点击一个向量，可以求这个向量在单位矢量方向上的投影</p>
+<h3 id="1-2-应用："><a href="#1-2-应用：" class="headerlink" title="1.2 应用："></a>1.2 应用：</h3><ul>
+<li>1 求投影</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-f22b09efd0a20abc60f8dfc1497f36ca_720w.webp"></p>
+<ul>
+<li>2 <strong>点积的符号</strong>可以让我们知道两个矢量的<strong>方向关系</strong></li>
+<li>3 可以直接利用<strong>点积来求矢量的模</strong>，自己与自己点积后开方</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-c89383d670da0ca40dfc30ffb26aa36c_720w.webp"></p>
+<ul>
+<li>4 <strong>比较两个矢量的长度（模）大小</strong>，也可以直接利用点积结果比较，不需开平方（开方运算耗性能）</li>
+<li>5 <strong>两个单位矢量的点积</strong>等于他们之间<strong>夹角</strong>的<strong>余弦值</strong></li>
+<li>6 可以以此<strong>求两个向量间的夹角（反余弦）</strong></li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-6e6d0368207e711ef05235a367ead0a1_720w.webp"></p>
+<ul>
+<li>7 两个矢量的点积，等于他们的模相乘，再乘夹角的余弦值</li>
+</ul>
+<h3 id="1-3-图形学应用"><a href="#1-3-图形学应用" class="headerlink" title="1.3 图形学应用"></a>1.3 图形学应用</h3><ol>
+<li>计算两个方向（角度）有多么接近（如光线方向）</li>
+<li>告诉向量的方向性（垂直、方向基本一致、方向基本相反）</li>
+<li>告诉前与后（正面反面）的信息</li>
+</ol>
+<p>菲涅尔、phong、Lambert</p>
+<h2 id="2-叉积-cross-product-外积-outer-product"><a href="#2-叉积-cross-product-外积-outer-product" class="headerlink" title="2. 叉积 cross product &#x3D; 外积 outer product"></a>2. 叉积 cross product &#x3D; 外积 outer product</h2><p><img src="https://pic1.zhimg.com/80/v2-5d22bcb95fd2bfff1b236ffcb190a6d4_720w.webp"></p>
+<p>结果是矢量，不满足交换律和结合律</p>
+<h3 id="2-1-几何意义："><a href="#2-1-几何意义：" class="headerlink" title="2.1 几何意义："></a>2.1 几何意义：</h3><ul>
+<li>对两矢量叉积<strong>结果是得到</strong>一个<strong>同时垂直于这两个矢量的新矢量，那么这个新矢量的长度（模）呢？</strong></li>
+<li>新矢量的<strong>方向</strong>呢？（两个方向）和<strong>使用左手坐标系还是右手坐标系有关（不会影响计算结果，只是对出来呈现的图像正反有关）</strong>，</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-6705e81b90b054498320036e48531b4c_720w.webp"></p>
+<ul>
+<li><strong>模</strong>的计算和这两<strong>个夹角组成的平行四边形的面积</strong>一样</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-662ed47c62223f0e7fa4037e69ee29b9_720w.webp"></p>
+<p><img src="https://pic1.zhimg.com/80/v2-e127e759b9d3c79de7bba1103970c53c_720w.webp"></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">|axb|=|a||b|sin0 </span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-应用："><a href="#2-2-应用：" class="headerlink" title="2.2 应用："></a>2.2 应用：</h3><ol>
+<li>计算<strong>垂直于一个平面、三角形的矢量</strong></li>
+<li>判断<strong>三角面片的朝向</strong></li>
+<li>判断三角形是哪个顶点在当前空间是顺时针还是逆时针</li>
+<li><strong>知道x轴y轴，计算z轴方向</strong></li>
+<li>如果 <strong>x 叉乘 y， &#x3D; z</strong> 则说明这是一个<strong>右手坐标系</strong></li>
+<li><strong>x 叉乘 y， &#x3D;- z 是左手坐标系</strong></li>
+</ol>
+<h3 id="2-3-图形学应用"><a href="#2-3-图形学应用" class="headerlink" title="2.3 图形学应用"></a>2.3 图形学应用</h3><ol>
+<li><strong>判定向量的左&#x2F;右关系</strong><br> 给定右下角的坐标系，怎么知道b在a的左侧还是右侧：眼睛可以看出b在a的左侧，怎么证明呢？</li>
+</ol>
+<ul>
+<li>a叉乘b得到的结果z值是正的（右手定则四指从a到b，大拇指指向正z方向），说明b在a的左侧</li>
+<li>b叉乘a得到的结果z值是负的，说明a在b的右侧</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-799858b99388cfd127f51b4d8041661c_720w.webp"></p>
+<p>**<br>2. 判断p点在三角形内部还是外部【相当广泛】**  </p>
+<p><img src="https://pic4.zhimg.com/80/v2-f498555db0ac772d21af3dbc87a2267f_720w.webp"></p>
+<ul>
+<li>判断每条边与p点的方向，如ABXAP可以得到z是正还是负，从而得到AP在AB的左侧还是右侧，从而得到点P在AB边的左侧还是右侧。</li>
+<li>无论三条边的方向是ABC 还是ACB,如果p点一定<strong>都在</strong>三条边的左边，或<strong>都在</strong>三条边的右边，那么p点就在三角形<strong>内部（都在左侧或都在右侧），有任意一条方向不一致，则p在外部。如果结果正好为0，由自己决定是内部还是外部。</strong></li>
+</ul>
+<p><strong>3. 利用叉积得到的平行四边形的面积，计算点到矢量的垂直距离。</strong></p>
+<p><img src="https://pic3.zhimg.com/80/v2-2e224127cc5f837f6b4b0fcab6257fea_720w.webp"></p>
+<ul>
+<li><p>|<strong>a</strong>x<strong>b</strong>|等于它们所张开的平行四边形的面积S。S除以|<strong>b</strong>|即等于点到直线的距离。</p>
+</li>
+<li><p>用于求坐标，已知两个向量求坐标的第三个向量，如TBN矩阵：已知Normal、Tangent求bitangent。</p>
+</li>
+<li><p>判断点是否在三角形内部</p>
+<ul>
+<li><strong>同侧法：</strong></li>
+</ul>
+</li>
+</ul>
+<p><img src="https://pics4.baidu.com/feed/5243fbf2b2119313a96800b12c4935dc91238d00.jpeg@f_auto?token=39daf5e7f22103a354306588bef63d9c"><br>若p在ab的左侧，且p在bc的左侧，且p在ca的左侧，则p在三角形内，否则不在三角形内<br>判断方法：<br>如图分别构造红、绿、蓝三组向量，分别进行叉乘，同号为同一侧<br>t0 &#x3D; ab CROSS pa<br>t1 &#x3D; bc CROSS pb<br>t2 &#x3D; ca CROSS pc<br>t0,t1,t2同号为真，否则为假</p>
+<h1 id="MVP矩阵"><a href="#MVP矩阵" class="headerlink" title="MVP矩阵"></a>MVP矩阵</h1><p>MVP矩阵：<br>MVP矩阵分别是模型(Model)、观察(View)、投影(Projection) 三个矩阵。我们的顶点坐标起始于局部空间(Local Space),在这里它称为局部坐标(Local Coordinate),它在之后会变为世界坐标(World Coordinate)，观察坐标(View Coordinate)，裁剪坐标(Clip Coordinate),并最后以屏幕坐标(Screen Coordinate)的形式结束。<br><img src="/images/blog/Pasted%20image%2020230627114117.png"></p>
+<h3 id="M：模型空间（以自身为中心）—-世界空间（以世界为中心）"><a href="#M：模型空间（以自身为中心）—-世界空间（以世界为中心）" class="headerlink" title="M：模型空间（以自身为中心）—&gt;世界空间（以世界为中心）"></a>M：模型空间（以自身为中心）—&gt;世界空间（以世界为中心）</h3><p>对应依次进行矩阵变换：<br>平移 . 旋转. 缩放<br><img src="/images/blog/Pasted%20image%2020230627114128.png"></p>
+<h3 id="V：世界空间—-视觉空间（以摄像机为中心）"><a href="#V：世界空间—-视觉空间（以摄像机为中心）" class="headerlink" title="V：世界空间—&gt;视觉空间（以摄像机为中心）"></a>V：世界空间—&gt;视觉空间（以摄像机为中心）</h3><p>从世界空间变换到摄像机空间—&gt;平移整个观察空间,摄像机原点和世界坐标原点重合，坐标轴重合—&gt;摄像机是在世界空间中是先旋转，再平移—&gt;为了让摄像机与世界坐标重合,逆变换</p>
+<p>对应的矩阵变换：<br>旋转、平移、Z分量取反<br><img src="/images/blog/Pasted%20image%2020230627114252.png"></p>
+<h3 id="P：视觉空间—-裁剪空间"><a href="#P：视觉空间—-裁剪空间" class="headerlink" title="P：视觉空间—&gt;裁剪空间"></a>P：视觉空间—&gt;裁剪空间</h3><p>1.不是真正的投影，为投影做准备。<br>2.目的:判断顶点是否在可见范围内。<br>3.P矩阵:对x,y,z分 量进行缩放，用w分量做范围值。如果x,y,z都在w范围内，那么该点在裁剪空间内。<br><img src="/images/blog/Pasted%20image%2020230627114422.png"></p>
+<h1 id="PBR"><a href="#PBR" class="headerlink" title="PBR"></a>PBR</h1><p>[[5.1 PBR]]</p>
+<h1 id="面向对象编程的特点"><a href="#面向对象编程的特点" class="headerlink" title="面向对象编程的特点"></a>面向对象编程的特点</h1><p>（一）抽象性： 通过对象来分析具体问题<br>（二）封装性： 将属性和方法，全部都封装到对象中，便于维护 ，节约<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=%E4%BA%8C%E6%AC%A1%E5%BC%80%E5%8F%91&spm=1001.2101.3001.7020">二次开发</a>成本 ，安全<br>（三）<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=%E5%A4%9A%E6%80%81%E6%80%A7&spm=1001.2101.3001.7020">多态性</a>：一个类 产生多种对象<br>（四）继承性：将对象直接属性或者方法，进行传递</p>
+<h1 id="堆和栈"><a href="#堆和栈" class="headerlink" title="堆和栈"></a>堆和栈</h1><h2 id="栈分配"><a href="#栈分配" class="headerlink" title="栈分配"></a>栈分配</h2><ul>
+<li>容量小，通常为1~2M</li>
+<li>速度快<ul>
+<li>根据分配的大小往低地址移动指针，速度快。</li>
+</ul>
+</li>
+<li>分配地址从高到低</li>
+<li>操作简单</li>
+<li>作用域结束后会被释放，指针返回到作用域起始位</li>
+</ul>
+<h3 id="创建方式"><a href="#创建方式" class="headerlink" title="创建方式"></a>创建方式</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> a;</span><br><span class="line">Vector3 vector;</span><br></pre></td></tr></table></figure>
+
+<h2 id="堆分配"><a href="#堆分配" class="headerlink" title="堆分配"></a>堆分配</h2><ul>
+<li>容量大，有空闲列表</li>
+<li>速度慢，先查找空闲列表，记录，再分配指针</li>
+<li>分配后需要手动调用delete释放。</li>
+<li>直到手动delete之前都不会被释放</li>
+</ul>
+<h3 id="创建方式-1"><a href="#创建方式-1" class="headerlink" title="创建方式"></a>创建方式</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span>* a = <span class="keyword">new</span> <span class="type">int</span>;</span><br><span class="line">Vector3* vector = <span class="keyword">new</span> <span class="built_in">Vector3</span>();</span><br><span class="line"></span><br><span class="line"><span class="keyword">delete</span> a;</span><br><span class="line"><span class="keyword">delete</span> vector;</span><br></pre></td></tr></table></figure>
+<h1 id="判断点在三角形内的方法"><a href="#判断点在三角形内的方法" class="headerlink" title="判断点在三角形内的方法"></a>判断点在三角形内的方法</h1><p><strong>1、重心坐标法：</strong>  </p>
+<p><img src="https://pics4.baidu.com/feed/f9dcd100baa1cd1100898b23f763f1f7c3ce2d76.jpeg@f_auto?token=108899910a1260130cae57ed9c4a9324"></p>
+<p>点在三角形内满足以下等式：</p>
+<p><img src="https://pics7.baidu.com/feed/d009b3de9c82d158fad09cdec97b20d3bd3e428f.jpeg@f_auto?token=fff9650bdf13626f91d8a564b2b06cef"></p>
+<p>点在三角形外满足以下等式：</p>
+<p><img src="https://pics3.baidu.com/feed/6f061d950a7b02089000bc4f2aa8cbd8552cc8d4.jpeg@f_auto?token=f2b824acad619ef62e0505da426fd55a"></p>
+<p>其中S表示面积</p>
+<p><strong>2、同侧法：</strong>  </p>
+<p><img src="https://pics4.baidu.com/feed/5243fbf2b2119313a96800b12c4935dc91238d00.jpeg@f_auto?token=39daf5e7f22103a354306588bef63d9c"></p>
+<p>若p在ab的左侧，且p在bc的左侧，且p在ca的左侧，则p在三角形内，否则不在三角形内  </p>
+<p>判断方法：  </p>
+<p>如图分别构造红、绿、蓝三组向量，分别进行叉乘，同号为同一侧</p>
+<p>t0 &#x3D; ab CROSS pa</p>
+<p>t1 &#x3D; bc CROSS pb</p>
+<p>t2 &#x3D; ca CROSS pc</p>
+<p>t0,t1,t2同号为真，否则为假</p>
+<p><strong>3、线性组合法：</strong></p>
+<p><img src="https://pics6.baidu.com/feed/55e736d12f2eb9382b8c037f9b13bc3ee7dd6fd2.jpeg@f_auto?token=6400f525d1d19ade5b4319fe6ccb90d6"></p>
+<p>向量ab和cb确定整个平面，p可以由这两个向量的线性组合所确定，即：</p>
+<p>p&#x3D;t0<em>ab+t1</em>cb</p>
+<p>当p在a点时，t0&#x3D;1，t1&#x3D;0；  </p>
+<p>当p在c点时，t0&#x3D;0，t1&#x3D;1；  </p>
+<p>当p点在ac线上时，p为a和c的线性组合  </p>
+<p>所以ac边就困住了p点，让其不能突破这条边，约束条件为t0+t1&#x3D;1</p>
+<p>综上所述：</p>
+<p>p点在三角形内必须满足：t0&lt;1,t1&lt;1,t0+t1&lt;&#x3D;1</p>
+<h1 id="不开辟内存-怎样交换两个数a和b"><a href="#不开辟内存-怎样交换两个数a和b" class="headerlink" title="不开辟内存 怎样交换两个数a和b"></a>不开辟内存 怎样交换两个数a和b</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;请输入两个整数:&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>,&amp;a,&amp;b);</span><br><span class="line"></span><br><span class="line"><span class="comment">//int a = 56;</span></span><br><span class="line"><span class="comment">//int b = 65;</span></span><br><span class="line"></span><br><span class="line">a = a^b;</span><br><span class="line"></span><br><span class="line">b = a^b;</span><br><span class="line">a = a^b;</span><br><span class="line"><span class="comment">// a 异或 b ， 二进制</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>,a);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>,b);</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="GI-Global-Illumination-全局照明"><a href="#GI-Global-Illumination-全局照明" class="headerlink" title="GI (# Global Illumination) - 全局照明"></a>GI (# Global Illumination) - 全局照明</h1><p>GI：Global Illumination 全局照明&#x3D;Direct Illumination 直接照明 + indirect Illumination 间接照明</p>
+
+    </div>
+    <footer class="article-footer">
+        <a class="article-category-link" href="/en/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" title="技术笔记" data-aos="zoom-in">技术笔记</a><a class="article-category-link" href="/en/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E6%8A%80%E6%9C%AF%E7%BE%8E%E6%9C%AF/" title="技术美术" data-aos="zoom-in">技术美术</a>
+
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/en/tags/GPU/" rel="tag" title="GPU">GPU</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/en/tags/PersonalArrange/" rel="tag" title="PersonalArrange">PersonalArrange</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/en/tags/TA%E6%96%B9%E9%9D%A2/" rel="tag" title="TA方面">TA方面</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/en/tags/%E7%9D%80%E8%89%B2%E5%99%A8/" rel="tag" title="着色器">着色器</a></li></ul>
+
+    </footer>
+  </div>
+    <nav id="article-nav" aria-label="Article navigation" data-aos="fade-up">
+      <div class="article-nav-link-wrap left">
+            <img data-src="/images/banner.webp" data-sizes="auto" alt="技术美术 - 作品集" class="lazyload">
+        <a href="/en/2026/02/22/Note/PersonalArrange/TA%E6%96%B9%E9%9D%A2/%E4%BD%9C%E5%93%81%E9%9B%86/" aria-label="Prev: 技术美术 - 作品集" title="Prev: 技术美术 - 作品集"></a>
+        <div class="article-nav-caption">Prev</div>
+        <h3 class="article-nav-title">
+            技术美术 - 作品集
+        </h3>
+      </div>
+    <div class="article-nav-link-wrap right">
+          <img data-src="/images/banner.webp" data-sizes="auto" alt="技术美术 - 测试题" class="lazyload">
+      <a href="/en/2026/02/22/Note/PersonalArrange/TA%E6%96%B9%E9%9D%A2/%E6%B5%8B%E8%AF%95%E9%A2%98/" aria-label="Next: 技术美术 - 测试题"  title="Next: 技术美术 - 测试题"></a>
+      <div class="article-nav-caption">Next</div>
+      <h3 class="article-nav-title">
+          技术美术 - 测试题
+      </h3>
+    </div>
+  </nav>
+
+</article>
+
+
+</section>
+        </div>
+        <footer id="footer" aria-label="Site footer">
+  <div style="width: 100%; overflow: hidden">
+    <div class="footer-line"></div>
+  </div>
+  <div id="footer-info">
+    <div>
+      <span class="icon-copyright"></span>
+        2020-2026
+        <span class="footer-info-sep rotate"></span>
+      OnricYF
+    </div>
+      <div>
+        Powered by&nbsp;<a href="https://hexo.io/" rel="noopener nofollow noreferrer" target="_blank">Hexo</a>&nbsp;
+        Theme.<a href="https://github.com/D-Sketon/hexo-theme-reimu" rel="noopener nofollow noreferrer" target="_blank">Reimu</a>
+      </div>
+      <div>
+        <span class="icon-brush"></span>
+        87.2k
+        &nbsp;|&nbsp;
+        <span class="icon-coffee"></span>
+        07:26
+      </div>
+      <div>
+        <span class="icon-eye"></span>
+        <span id="busuanzi_container_site_pv">Number of visits&nbsp;<span id="busuanzi_value_site_pv"></span></span>
+        &nbsp;|&nbsp;
+        <span class="icon-user"></span>
+        <span id="busuanzi_container_site_uv">Number of visitors&nbsp;<span id="busuanzi_value_site_uv"></span></span>
+      </div>
+  </div>
+</footer>
+
+          <div class="sidebar-top">
+            <div class="sidebar-top-taichi rotate"></div>
+            <div class="arrow-up"></div>
+          </div>
+        <div id="mask" class="hide"></div>
+      </div>
+      <nav id="mobile-nav" aria-label="Mobile navigation">
+  <div class="sidebar-wrap">
+        <div class="sidebar-toc-sidebar"><h3 class="toc-title">Contents</h3>
+<div class="sidebar-toc-wrapper toc-div-class" >
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF"><span class="toc-number">1.</span> <span class="toc-text">渲染管线</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E9%98%B6%E6%AE%B5"><span class="toc-number">1.1.</span> <span class="toc-text">应用阶段</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%A0%E4%BD%95%E9%98%B6%E6%AE%B5-Vertex-Shader"><span class="toc-number">1.2.</span> <span class="toc-text">几何阶段 Vertex Shader</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%89%E6%A0%85%E5%8C%96%E9%98%B6%E6%AE%B5%E5%92%8CG-Buffer"><span class="toc-number">1.3.</span> <span class="toc-text">光栅化阶段和G-Buffer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GPU%E6%B5%81%E6%B0%B4%E7%BA%BF%EF%BC%88%E5%87%A0%E4%BD%95%E9%98%B6%E6%AE%B5%E3%80%81%E5%85%89%E6%A0%85%E5%8C%96%E9%98%B6%E6%AE%B5%EF%BC%89"><span class="toc-number">1.4.</span> <span class="toc-text">GPU流水线（几何阶段、光栅化阶段）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%A0%E4%BD%95%E9%98%B6%E6%AE%B5"><span class="toc-number">1.4.1.</span> <span class="toc-text">几何阶段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%89%E6%A0%85%E5%8C%96%E9%98%B6%E6%AE%B5"><span class="toc-number">1.4.2.</span> <span class="toc-text">光栅化阶段</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%82%B9%E4%B9%98-%E5%8F%89%E4%B9%98"><span class="toc-number">2.</span> <span class="toc-text">点乘 叉乘</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E7%82%B9%E7%A7%AF-dot-product-%E5%86%85%E7%A7%AF-inner-product"><span class="toc-number">2.1.</span> <span class="toc-text">1. 点积 dot product &#x3D;内积 inner product</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E5%87%A0%E4%BD%95%E6%84%8F%E4%B9%89%EF%BC%9A"><span class="toc-number">2.1.1.</span> <span class="toc-text">1.1 几何意义：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E5%BA%94%E7%94%A8%EF%BC%9A"><span class="toc-number">2.1.2.</span> <span class="toc-text">1.2 应用：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E5%9B%BE%E5%BD%A2%E5%AD%A6%E5%BA%94%E7%94%A8"><span class="toc-number">2.1.3.</span> <span class="toc-text">1.3 图形学应用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%8F%89%E7%A7%AF-cross-product-%E5%A4%96%E7%A7%AF-outer-product"><span class="toc-number">2.2.</span> <span class="toc-text">2. 叉积 cross product &#x3D; 外积 outer product</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E5%87%A0%E4%BD%95%E6%84%8F%E4%B9%89%EF%BC%9A"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.1 几何意义：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E5%BA%94%E7%94%A8%EF%BC%9A"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2 应用：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E5%9B%BE%E5%BD%A2%E5%AD%A6%E5%BA%94%E7%94%A8"><span class="toc-number">2.2.3.</span> <span class="toc-text">2.3 图形学应用</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MVP%E7%9F%A9%E9%98%B5"><span class="toc-number">3.</span> <span class="toc-text">MVP矩阵</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#M%EF%BC%9A%E6%A8%A1%E5%9E%8B%E7%A9%BA%E9%97%B4%EF%BC%88%E4%BB%A5%E8%87%AA%E8%BA%AB%E4%B8%BA%E4%B8%AD%E5%BF%83%EF%BC%89%E2%80%94-%E4%B8%96%E7%95%8C%E7%A9%BA%E9%97%B4%EF%BC%88%E4%BB%A5%E4%B8%96%E7%95%8C%E4%B8%BA%E4%B8%AD%E5%BF%83%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">M：模型空间（以自身为中心）—&gt;世界空间（以世界为中心）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#V%EF%BC%9A%E4%B8%96%E7%95%8C%E7%A9%BA%E9%97%B4%E2%80%94-%E8%A7%86%E8%A7%89%E7%A9%BA%E9%97%B4%EF%BC%88%E4%BB%A5%E6%91%84%E5%83%8F%E6%9C%BA%E4%B8%BA%E4%B8%AD%E5%BF%83%EF%BC%89"><span class="toc-number">3.2.</span> <span class="toc-text">V：世界空间—&gt;视觉空间（以摄像机为中心）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#P%EF%BC%9A%E8%A7%86%E8%A7%89%E7%A9%BA%E9%97%B4%E2%80%94-%E8%A3%81%E5%89%AA%E7%A9%BA%E9%97%B4"><span class="toc-number">3.3.</span> <span class="toc-text">P：视觉空间—&gt;裁剪空间</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#PBR"><span class="toc-number">4.</span> <span class="toc-text">PBR</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%BC%96%E7%A8%8B%E7%9A%84%E7%89%B9%E7%82%B9"><span class="toc-number">5.</span> <span class="toc-text">面向对象编程的特点</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A0%86%E5%92%8C%E6%A0%88"><span class="toc-number">6.</span> <span class="toc-text">堆和栈</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%88%E5%88%86%E9%85%8D"><span class="toc-number">6.1.</span> <span class="toc-text">栈分配</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E6%96%B9%E5%BC%8F"><span class="toc-number">6.1.1.</span> <span class="toc-text">创建方式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A0%86%E5%88%86%E9%85%8D"><span class="toc-number">6.2.</span> <span class="toc-text">堆分配</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E6%96%B9%E5%BC%8F-1"><span class="toc-number">6.2.1.</span> <span class="toc-text">创建方式</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%A4%E6%96%AD%E7%82%B9%E5%9C%A8%E4%B8%89%E8%A7%92%E5%BD%A2%E5%86%85%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">7.</span> <span class="toc-text">判断点在三角形内的方法</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%8D%E5%BC%80%E8%BE%9F%E5%86%85%E5%AD%98-%E6%80%8E%E6%A0%B7%E4%BA%A4%E6%8D%A2%E4%B8%A4%E4%B8%AA%E6%95%B0a%E5%92%8Cb"><span class="toc-number">8.</span> <span class="toc-text">不开辟内存 怎样交换两个数a和b</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#GI-Global-Illumination-%E5%85%A8%E5%B1%80%E7%85%A7%E6%98%8E"><span class="toc-number">9.</span> <span class="toc-text">GI (# Global Illumination) - 全局照明</span></a></li></ol>
+</div>
+</div>
+        <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/avatar.webp" data-sizes="auto" alt="OnricYF" class="lazyload">
+  <div class="sidebar-author-name">OnricYF</div>
+  <div class="sidebar-description">TRASH ARTIST</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>Post</div>
+    <div class="sidebar-state-number">144</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>Category</div>
+    <div class="sidebar-state-number">33</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>Tag</div>
+    <div class="sidebar-state-number">82</div>
+  </div>
+</div>
+<div class="sidebar-social" >
+    <div class="icon-email sidebar-social-icon">
+      <a href=mailto:a1521070145@gmail.com itemprop="url" target="_blank" aria-label="email" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-github sidebar-social-icon">
+      <a href=https://github.com/Madoka9 itemprop="url" target="_blank" aria-label="github" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-bilibili sidebar-social-icon">
+      <a href=https://space.bilibili.com/5862963 itemprop="url" target="_blank" aria-label="bilibili" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-zhihu sidebar-social-icon">
+      <a href=https://www.zhihu.com/people/lan-mei-sheng-dai-77 itemprop="url" target="_blank" aria-label="zhihu" rel="noopener nofollow noreferrer"></a>
+    </div>
+</div>
+<div class="sidebar-menu">
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/" aria-label="Home"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Home</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/archives" aria-label="Archives"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Archives</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/about" aria-label="About"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">About</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/friend" aria-label="Friend"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Friend</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/portfolio" aria-label="Portfolio"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Portfolio</div>
+      </div>
+</div>
+</div>
+  </div>
+      <div class="sidebar-btn-wrapper">
+        <div class="sidebar-toc-btn current"></div>
+        <div class="sidebar-common-btn"></div>
+      </div>
+</nav>
+
+    </div>
+    
+<script src="https://npm.webcache.cn/lazysizes@5.3.2/lazysizes.min.js" integrity="sha384-3gT&#x2F;vsepWkfz&#x2F;ff7PpWNUeMzeWoH3cDhm&#x2F;A8jM7ouoAK0&#x2F;fP&#x2F;9bcHHR5kHq2nf+e" crossorigin="anonymous"></script>
+
+
+<script src="https://npm.webcache.cn/clipboard@2.0.11/dist/clipboard.min.js" integrity="sha384-J08i8An&#x2F;QeARD9ExYpvphB8BsyOj3Gh2TSh1aLINKO3L0cMSH2dN3E22zFoXEi0Q" crossorigin="anonymous"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+  
+<script src="/js/aos.js"></script>
+
+  <script>
+    var aosInit = () => {
+      AOS.init({
+        duration: 1000,
+        easing: "ease",
+        once: true,
+        offset: 50,
+      });
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', aosInit);
+    } else {
+      aosInit();
+    }
+  </script>
+
+
+<script src="/js/pjax_script.js" data-pjax></script>
+
+
+
+
+  <script>
+    var setupFirework = () => {
+      if (!false || !window.matchMedia('(max-width: 768px)').matches) {
+        window.firework && window.firework(JSON.parse('{"excludeElements":["a","button"],"particles":[{"shape":"circle","move":["emit"],"easing":"easeOutExpo","colors":["var(--red-1)","var(--red-2)","var(--red-3)","var(--red-4)"],"number":20,"duration":[1200,1800],"shapeOptions":{"radius":[16,32],"alpha":[0.3,0.5]}},{"shape":"circle","move":["diffuse"],"easing":"easeOutExpo","colors":["var(--red-0)"],"number":1,"duration":[1200,1800],"shapeOptions":{"radius":20,"alpha":[0.2,0.5],"lineWidth":6}}]}'));
+      }
+    }
+  </script>
+  
+<script src="https://npm.webcache.cn/mouse-firework@0.2.0/dist/index.umd.js" integrity="sha384-qi9WggRt19tv8Vc7pCHW3ulMNLwrn515zaLEWZjl1px07vz8+pUoWX8n1rgq282T" crossorigin="anonymous" onload="setupFirework()" defer></script>
+
+
+  
+<script src="https://npm.webcache.cn/theme-shokax-pjax@0.0.3/dist/index.umd.js" integrity="sha384-xneY1WY8hOfUzswrE4CrYq35N4BdVcxqxwHPr9zawE&#x2F;jMSCxD+jAPU55x&#x2F;jj3wlf" crossorigin="anonymous"></script>
+
+  
+<script src="/js/pjax.js"></script>
+
+
+
+
+
+<div id="lazy-script">
+  <div>
+      
+      
+      <script data-pjax>
+        window.REIMU_POST = {
+          author: "OnricYF",
+          title: "技术美术 - 渲染管线",
+          url: "http://example.com/2026/02/22/Note/PersonalArrange/TA%E6%96%B9%E9%9D%A2/%E5%9F%BA%E6%9C%AC/",
+          excerpt: "",
+          description: "",
+          stripContent: " 渲染管线1）渲染管线的作用：将3D场景转换到屏幕显示的2D图像的一个处理流程。 应用阶段1）准备好渲染数据 ，并加载到显存中 - 渲染数据：硬盘–&amp;gt;系统内存–&amp;gt;显存 （显卡不能直接访问系统内存，而且对显存的访问速度更快2）粗粒度剔除3）设置好渲染状态  渲染状态：定义了场景中的网格是怎么被渲染的（如：使用哪个顶点着色器&amp;#x2F;片元着色器、光源属性、材质属性…4）调用Draw Call DrawCall：CPU–&amp;gt;GPU的指令，指向一个需要被渲染的图元列表  –&amp;gt;输出",
+          date: "Sun Feb 22 2026 21:10:27 GMT+0800",
+          updated: "Thu Jul 16 2026 11:38:13 GMT+0800",
+          cover: "/images/banner.webp",
+        };
+      </script>
+        
+<script src="/js/insert_highlight.js" data-pjax></script>
+
+      
+<script src="/js/tabs.js" data-pjax defer></script>
+
+      <script type="module" data-pjax>
+        (async () => {
+          const PhotoSwipeLightbox = (await safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe-lightbox.esm.min.js", "sha384-DiL6M/gG+wmTxmCRZyD1zee6lIhawn5TGvED0FOh7fXcN9B0aZ9dexSF/N6lrZi/")).default;
+          const initPswp = (gallery, children) => {
+            if (_$$(`${gallery} ${children}`).length > 0) {
+              new PhotoSwipeLightbox({
+                gallery,
+                children,
+                pswpModule: () => safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.esm.min.js", "sha384-WkkO3GCmgkC3VQWpaV8DqhKJqpzpF9JoByxDmnV8+oTJ7m3DfYEWX1fu1scuS4+s")
+              }).init();
+            }
+          }
+          const pswp = () => {
+            initPswp('.article-entry', 'a.article-gallery-item');
+            initPswp('.article-gallery', 'a.article-gallery-item');
+          }
+          pswp();
+        })();
+      </script>
+  </div>
+</div>
+
+
+  <script>
+    console.log(String.raw`%c 
+ ______     ______     __     __    __     __  __    
+/\  == \   /\  ___\   /\ \   /\ "-./  \   /\ \/\ \   
+\ \  __<   \ \  __\   \ \ \  \ \ \-./\ \  \ \ \_\ \  
+ \ \_\ \_\  \ \_____\  \ \_\  \ \_\ \ \_\  \ \_____\ 
+  \/_/ /_/   \/_____/   \/_/   \/_/  \/_/   \/_____/ 
+                                                  
+`,'color: #ff5252;')
+    console.log('%c Theme.Reimu v' + '1.12.0' + ' %c https://github.com/D-Sketon/hexo-theme-reimu ', 'color: white; background: #ff5252; padding:5px 0;', 'padding:4px;border:1px solid #ff5252;')
+  </script>
+  
+
+
+  
+<script src="https://npm.webcache.cn/busuanzi@2.3.0/bsz.pure.mini.js" integrity="sha384-0M75wtSkhjIInv4coYlaJU83+OypaRCIq2SukQVQX04eGTCBXJDuWAbJet56id+S" crossorigin="anonymous" async></script>
+
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      for (let registration of registrations) {
+        registration.unregister();
+      }
+    });
+  }
+</script>
+
+
+    <script>
+      var setupAPlayer = () => {
+        if (!true || !window.matchMedia('(max-width: 768px)').matches) {
+          if (window.matchMedia('(max-width: 959px)').matches) {
+            const meting = _$('meting-js');
+            if (meting) {
+              meting.setAttribute('fixed', 'true');
+              const aside = meting.parentNode?.parentNode;
+              if (aside?.tagName === 'ASIDE') {
+                meting.parentNode.removeChild(meting);
+                document.body.appendChild(meting);
+              }
+            }
+          }
+        }
+      };
+    </script>
+  
+<script src="https://npm.webcache.cn/aplayer@1.10.1/dist/APlayer.min.js" integrity="sha384-gdGYZwHnfJM54evoZhpO0s6ZF5BQiybkiyW7VXr+h5UfruuRL&#x2F;aORyw+5+HZoU6e" crossorigin="anonymous" defer onload="setupAPlayer()"></script>
+
+    
+<script src="https://npm.webcache.cn/meting@2.0.1/dist/Meting.min.js" integrity="sha384-ASVlpKF80A22OXTK3tfEjZm1EL6uFMKIC4p8+0maanw1S&#x2F;IyB+Y4JG+ZDU7GpKE8" crossorigin="anonymous" defer></script>
+
+
+
+  </body>
+  </html>

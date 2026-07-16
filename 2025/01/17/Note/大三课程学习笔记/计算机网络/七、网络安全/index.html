@@ -1,0 +1,690 @@
+  <!DOCTYPE html>
+  <html lang="zh-CN"  
+      data-theme-mode="auto"
+  >
+  <head>
+  <meta charset="utf-8">
+  
+  
+  
+  <script>window.REIMU_CONFIG = {};window.REIMU_CONFIG.icon_font = '4552607_4k4bc36ef96';window.REIMU_CONFIG.clipboard_tips = {"success":{"zh-CN":"复制成功 (*^▽^*)","en":"Copy successfully (*^▽^*)"},"fail":{"zh-CN":"复制失败 (ﾟ⊿ﾟ)ﾂ","en":"Copy failed (ﾟ⊿ﾟ)ﾂ"},"copyright":{"enable":false,"count":50,"license_type":"by-nc-sa"}};window.REIMU_CONFIG.clipboard_tips.copyright.content = '本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！';window.REIMU_CONFIG.code_block = {"expand":true};window.REIMU_CONFIG.base = 'http://example.com';window.REIMU_CONFIG.i18n_languages = ["en"];</script>
+  <title>
+    计算机网络 - 1.网络安全概论 | YF&#39;s Blog
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic|Noto Serif SC:400,400italic,700,700italic&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic|Noto Serif SC:400,400italic,700,700italic&display=swap" media="print" onload="this.media='all'">
+    <link rel="preload" href="//at.alicdn.com/t/c/font_4552607_4k4bc36ef96.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+    
+<link rel="stylesheet" href="/css/loader.css">
+
+    <meta name="description" content="1.网络安全概论1.1网络安全网络安全（Cyber Security）是指网络系统的硬件，软件及其系统中的数据受到保护，不因偶然的或者恶意的原因而遭到破坏，更改，泄露。系统连续可靠正常的运行，网络服务不中断。 1.2计算机网络面临的威胁主要分为两类1.2.1主动攻击 主动的去做一些在网络基础上的恶意行为。恶意串改信息数据，发布恶意程序脚本等 篡改 恶意程序 拒绝服务  1.2.2被动攻击 被动攻击">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机网络 - 1.网络安全概论">
+<meta property="og:url" content="http://example.com/2025/01/17/Note/%E5%A4%A7%E4%B8%89%E8%AF%BE%E7%A8%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E4%B8%83%E3%80%81%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/index.html">
+<meta property="og:site_name" content="YF&#39;s Blog">
+<meta property="og:description" content="1.网络安全概论1.1网络安全网络安全（Cyber Security）是指网络系统的硬件，软件及其系统中的数据受到保护，不因偶然的或者恶意的原因而遭到破坏，更改，泄露。系统连续可靠正常的运行，网络服务不中断。 1.2计算机网络面临的威胁主要分为两类1.2.1主动攻击 主动的去做一些在网络基础上的恶意行为。恶意串改信息数据，发布恶意程序脚本等 篡改 恶意程序 拒绝服务  1.2.2被动攻击 被动攻击">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-01-17T14:04:11.000Z">
+<meta property="article:modified_time" content="2026-07-16T03:38:25.205Z">
+<meta property="article:author" content="OnricYF">
+<meta property="article:tag" content="大三课程学习笔记">
+<meta property="article:tag" content="计算机网络">
+<meta name="twitter:card" content="summary">
+    <link rel="alternate" href="/atom.xml" title="YF's Blog" type="application/atom+xml">
+    <link rel="shortcut icon" href="/images/favicon.ico">
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.css" integrity="sha384-IfxC36XL/toUyJ939C73PcgMuRzAZuIzZxE38drsmO5p6jD7ei+Zx/1oA/0l8ysE" crossorigin="anonymous">
+    
+<script src="https://npm.webcache.cn/pace-js@1.2.4/pace.min.js" integrity="sha384-k6YtvFUEIuEFBdrLKJ3YAUbBki333tj1CSUisai5Cswsg9wcLNaPzsTHDswp4Az8" crossorigin="anonymous"></script>
+
+    
+<link rel="stylesheet" href="https://npm.webcache.cn/@reimujs/aos@0.1.2/dist/aos.css" integrity="sha384-GMRP93c6Hkz9JVKGAuRR3nTS7M07RwPgTFenXiosjq2VbVgvdDNcz1g6Mkj8AONa" crossorigin="anonymous">
+
+    <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://npm.webcache.cn/aplayer@1.10.1/dist/APlayer.min.css" integrity="sha384-tLMkTWh2pfXNWGFlUS0w1TFtRG5xZ9lPWFOooj+vDDLIL+xBGQU/voDBY5XE2lVh" crossorigin="anonymous">
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+  <body>
+      <div id='loader'>
+    <div class="loading-left-bg loading-bg"></div>
+    <div class="loading-right-bg loading-bg"></div>
+    <div class="spinner-box">
+      <div class="loading-taichi rotate">
+          <svg width="150" height="150" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="https://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
+            <path d="M303.5 432A80 80 0 0 1 291.5 592A80 80 0 0 1 303.5 432z" fill="var(--red-1, #ff5252)" />
+            <path d="M512 65A447 447 0 0 1 512 959L512 929A417 417 0 0 0 512 95A417 417 0 0 0 512 929L512 959A447 447 0 0 1 512 65z 
+           M512 95A417 417 0 0 1 929 512A208.5 208.5 0 0 1 720.5 720.5L720.5 592A80 80 0 0 0 720.5 432A80 80 0 0 0 720.5 592L720.5 720.5A208.5 208.5 0 0 1 512 512A208.5 208.5 0 0 0 303.5 303.5A208.5 208.5 0 0 0 95 512A417 417 0 0 1 512 95z" fill="var(--red-1, #ff5252)" />
+          </svg>
+      </div>
+      <div class="loading-word">少女祈祷中...</div>
+    </div>
+  </div>
+  </div>
+  <script>
+    var time = null;
+    var loaderEl = document.getElementById('loader');
+    var startLoading = () => {
+      time = Date.now();
+      loaderEl.classList.remove("loading");
+    }
+    var hideLoader = () => {
+      document.body.style.overflow = 'auto';
+      loader.classList.add('loading');
+    };
+
+    var endLoading = () => {
+      if (!time) {
+        hideLoader();
+      } else {
+        if (Date.now() - time > 500) {
+          time = null;
+          hideLoader();
+        } else {
+          setTimeout(endLoading, 500 - (Date.now() - time));
+          time = null;
+        }
+      }
+    }
+    window.addEventListener('DOMContentLoaded', endLoading);
+    loaderEl.addEventListener('click', endLoading);
+  </script>
+<div id="copy-tooltip"></div>
+<div id="heatmap-tooltip"></div>
+
+
+    <div id="container">
+      <div id="wrap">
+        <div id="header-nav">
+  <nav id="main-nav" aria-label="Primary navigation">
+        <a class="main-nav-link-wrap" href="/">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">首页</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/archives">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">归档</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/about">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">关于</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/friend">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">友链</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/portfolio">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">作品集</span>
+        </span>
+    <a id="main-nav-toggle" class="nav-icon" aria-label="Toggle navigation" role="button"></a>
+  </nav>
+  <nav id="sub-nav" aria-label="Secondary navigation">
+  </nav>
+    <nav id="i18n-nav" aria-label="Language selection">
+      <div class="custom-dropdown">
+        <div class="select-selected" id="select-selected" role="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Language menu">
+          <span id="nav-language-btn" class="nav-icon" style="padding: 0 20px 0 0"></span>
+          <span id="selected-lang">简体中文</span>
+        </div>
+        <ul class="select-items" id="select-items" role="listbox" aria-label="Languages">
+            <li data-value="zh-CN" role="option" class="selected" aria-selected="true">简体中文</li>
+            <li data-value="en" role="option" aria-selected="false">English</li>
+        </ul>
+      </div>
+      <script>
+        var selectSelected = document.getElementById("select-selected");
+        var selectedLang = document.getElementById("selected-lang");
+        var selectItems = document.getElementById("select-items");
+        var selectOptions = selectItems.querySelectorAll("li");
+
+        selectSelected.addEventListener("click", () => {
+          selectItems.classList.toggle("show");
+          var expanded = selectSelected.getAttribute("aria-expanded") === "true";
+          selectSelected.setAttribute("aria-expanded", (!expanded).toString());
+        });
+
+        selectOptions.forEach((item) => {
+          item.addEventListener("click", () => {
+            const langMap = {};
+              langMap['zh-CN'] = '/2025/01/17/Note/大三课程学习笔记/计算机网络/七、网络安全/';
+              langMap['en'] = '/en/2025/01/17/Note/大三课程学习笔记/计算机网络/七、网络安全/';
+            selectedLang.textContent = item.textContent;
+            selectItems.classList.remove("show");
+            selectOptions.forEach((option) => {
+              option.classList.remove("selected");
+            });
+            item.classList.add("selected");
+            window.location = langMap[item.dataset.value];
+          });
+        });
+
+        document.addEventListener("click", (event) => {
+          if (!event.target.closest(".custom-dropdown")) {
+            selectItems.classList.remove("show");
+            selectSelected.setAttribute("aria-expanded", "false");
+          }
+        });
+      </script>
+    </nav>
+</div>
+<header id="header" aria-label="Site header">
+        <picture>
+        </picture>
+          <img  fetchpriority="high" src="/images/banner.webp" alt="计算机网络 - 1.网络安全概论">
+  <div id="header-outer">
+    <div id="header-title">
+          <span id="logo">
+            <h1 data-aos="slide-up">计算机网络 - 1.网络安全概论</h1>
+          </span>
+        <h2 id="subtitle-wrap" data-aos="slide-down">
+        </h2>
+    </div>
+  </div>
+</header>
+
+        <div id="content" aria-label="Page content"  class="sidebar-right" >
+          <aside id="sidebar" aria-label="Sidebar">
+  <div class="sidebar-wrapper-container sticky">
+  <div class="sidebar-wrapper">
+    <div class="sidebar-wrap" data-aos="fade-up">
+          <div class="sidebar-toc-sidebar"><h3 class="toc-title">文章目录</h3>
+<div class="sidebar-toc-wrapper toc-div-class" >
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E6%A6%82%E8%AE%BA"><span class="toc-number">1.</span> <span class="toc-text">1.网络安全概论</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8"><span class="toc-number">1.1.</span> <span class="toc-text">1.1网络安全</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E4%B8%B4%E7%9A%84%E5%A8%81%E8%83%81%E4%B8%BB%E8%A6%81%E5%88%86%E4%B8%BA%E4%B8%A4%E7%B1%BB"><span class="toc-number">1.2.</span> <span class="toc-text">1.2计算机网络面临的威胁主要分为两类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-1%E4%B8%BB%E5%8A%A8%E6%94%BB%E5%87%BB"><span class="toc-number">1.2.1.</span> <span class="toc-text">1.2.1主动攻击</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-2%E8%A2%AB%E5%8A%A8%E6%94%BB%E5%87%BB"><span class="toc-number">1.2.2.</span> <span class="toc-text">1.2.2被动攻击</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2%E7%BD%91%E7%BB%9C%E7%B3%BB%E7%BB%9F%E7%89%B9%E6%80%A7"><span class="toc-number">1.3.</span> <span class="toc-text">1.2网络系统特性</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E5%8A%A0%E5%AF%86%E5%92%8C%E4%BA%A4%E4%BA%92"><span class="toc-number">2.</span> <span class="toc-text">2.加密和交互</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1%E5%8A%A0%E5%AF%86%E5%92%8C%E8%A7%A3%E5%AF%86"><span class="toc-number">2.1.</span> <span class="toc-text">2.1加密和解密</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-1%E5%8A%A0%E5%AF%86"><span class="toc-number">2.1.1.</span> <span class="toc-text">2.1.1加密</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8A%A0%E5%AF%86%E6%89%8B%E6%AE%B5"><span class="toc-number">2.1.1.1.</span> <span class="toc-text">加密手段</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-2%E8%A7%A3%E5%AF%86"><span class="toc-number">2.1.2.</span> <span class="toc-text">2.1.2解密</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2%E5%85%AC%E9%92%A5%E5%92%8C%E7%A7%81%E9%92%A5"><span class="toc-number">2.2.</span> <span class="toc-text">2.2公钥和私钥</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-1%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1对称加密</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-2%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2非对称加密</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3%E9%98%B2%E7%81%AB%E5%A2%99"><span class="toc-number">2.3.</span> <span class="toc-text">2.3防火墙</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%98%B2%E7%81%AB%E5%A2%99%E7%9A%84%E5%8C%BA%E5%9F%9F%E4%BB%AC"><span class="toc-number">2.3.1.</span> <span class="toc-text">防火墙的区域们</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Local%E6%9C%AC%E5%9C%B0%E5%8C%BA%E5%9F%9F"><span class="toc-number">2.3.1.1.</span> <span class="toc-text">Local本地区域</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Trust%E5%8F%97%E4%BF%A1%E5%8C%BA"><span class="toc-number">2.3.1.2.</span> <span class="toc-text">Trust受信区</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DMZ%E9%9D%9E%E5%86%9B%E4%BA%8B%E5%8C%96%E5%8C%BA"><span class="toc-number">2.3.1.3.</span> <span class="toc-text">DMZ非军事化区</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Untrust%E9%9D%9E%E5%8F%97%E4%BF%A1%E5%8C%BA"><span class="toc-number">2.3.1.4.</span> <span class="toc-text">Untrust非受信区</span></a></li></ol></li></ol></li></ol></li></ol>
+</div>
+</div>
+          <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/avatar.webp" data-sizes="auto" alt="OnricYF" class="lazyload">
+  <div class="sidebar-author-name">OnricYF</div>
+  <div class="sidebar-description">TRASH ARTIST</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>文章</div>
+    <div class="sidebar-state-number">144</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>分类</div>
+    <div class="sidebar-state-number">33</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>标签</div>
+    <div class="sidebar-state-number">82</div>
+  </div>
+</div>
+<div class="sidebar-social" >
+    <div class="icon-email sidebar-social-icon">
+      <a href=mailto:a1521070145@gmail.com itemprop="url" target="_blank" aria-label="email" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-github sidebar-social-icon">
+      <a href=https://github.com/Madoka9 itemprop="url" target="_blank" aria-label="github" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-bilibili sidebar-social-icon">
+      <a href=https://space.bilibili.com/5862963 itemprop="url" target="_blank" aria-label="bilibili" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-zhihu sidebar-social-icon">
+      <a href=https://www.zhihu.com/people/lan-mei-sheng-dai-77 itemprop="url" target="_blank" aria-label="zhihu" rel="noopener nofollow noreferrer"></a>
+    </div>
+</div>
+<div class="sidebar-menu">
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/" aria-label="首页"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">首页</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/archives" aria-label="归档"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">归档</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/about" aria-label="关于"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">关于</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/friend" aria-label="友链"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">友链</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/portfolio" aria-label="作品集"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">作品集</div>
+      </div>
+</div>
+</div>
+          <div class="sidebar-btn-wrapper" style="position:static">
+            <div class="sidebar-toc-btn current"></div>
+            <div class="sidebar-common-btn"></div>
+          </div>
+    </div>
+  </div>
+      <meting-js
+        theme="var(--color-link)"
+        id="385907592"
+        server="netease"
+        type="playlist"
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        class="aplayer-after-sidebar"
+      ></meting-js>
+  <div class="sidebar-widget">
+  </div>
+  </div>
+</aside>
+
+          <section id="main" aria-label="Main content"><article id="post-Note/大三课程学习笔记/计算机网络/七、网络安全" class="h-entry article" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner" data-aos="fade-up">
+    <div class="article-meta">
+      <div class="article-date">
+  <span class="article-date-link icon-calendar" data-aos="zoom-in">
+    <time datetime="2025-01-17T14:04:11.000Z" itemprop="datePublished">2025-01-17</time>
+    <time style="display: none;" id="post-update-time">2026-07-16</time>
+  </span>
+</div>
+
+    </div>
+    
+    <div class="hr-line"></div>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+        <h1 id="1-网络安全概论"><a href="#1-网络安全概论" class="headerlink" title="1.网络安全概论"></a>1.网络安全概论</h1><h2 id="1-1网络安全"><a href="#1-1网络安全" class="headerlink" title="1.1网络安全"></a>1.1网络安全</h2><p>网络安全（Cyber Security）是指网络系统的硬件，软件及其系统中的数据受到保护，不因偶然的或者恶意的原因而遭到破坏，更改，泄露。系统连续可靠正常的运行，网络服务不中断。</p>
+<h2 id="1-2计算机网络面临的威胁主要分为两类"><a href="#1-2计算机网络面临的威胁主要分为两类" class="headerlink" title="1.2计算机网络面临的威胁主要分为两类"></a>1.2计算机网络面临的威胁主要分为两类</h2><h3 id="1-2-1主动攻击"><a href="#1-2-1主动攻击" class="headerlink" title="1.2.1主动攻击"></a>1.2.1主动攻击</h3><ul>
+<li>主动的去做一些在网络基础上的恶意行为。恶意串改信息数据，发布恶意程序脚本等</li>
+<li>篡改</li>
+<li>恶意程序</li>
+<li>拒绝服务</li>
+</ul>
+<h3 id="1-2-2被动攻击"><a href="#1-2-2被动攻击" class="headerlink" title="1.2.2被动攻击"></a>1.2.2被动攻击</h3><ul>
+<li>被动攻击主要是收集信息而不是进行访问，不改变数据本身的结构，也不对软硬件数据造成影响</li>
+<li>截取</li>
+<li>窃听</li>
+<li>流量分析</li>
+</ul>
+<h2 id="1-2网络系统特性"><a href="#1-2网络系统特性" class="headerlink" title="1.2网络系统特性"></a>1.2网络系统特性</h2><ul>
+<li>保密性：信息不泄露给非授权用户，实体或过程，或供其利用的特性</li>
+<li>完整性：数据未经授权不能进行改变的特性，即信息在存储或传输过程中保持不被修改，不被破坏和丢失的特性</li>
+<li>可用性：可被授权实体访问并按需求使用的特性。即当需要时能否存取所需信息。例如网络环境下拒绝服务，破坏网络和有关系统的正常运行等后属于对可用性的攻击</li>
+<li>可靠性：对信息的传播及内容具有控制能力</li>
+<li>不可抵赖性：出现安全问题时提供依据与手段</li>
+</ul>
+<h1 id="2-加密和交互"><a href="#2-加密和交互" class="headerlink" title="2.加密和交互"></a>2.加密和交互</h1><h2 id="2-1加密和解密"><a href="#2-1加密和解密" class="headerlink" title="2.1加密和解密"></a>2.1加密和解密</h2><h3 id="2-1-1加密"><a href="#2-1-1加密" class="headerlink" title="2.1.1加密"></a>2.1.1加密</h3><p>是以某种特殊的算法改变原有的信息数据，使得未授权的用户即即使获得了已加密的信息，但因不知解密的方法，仍然无法了解信息的内容</p>
+<h4 id="加密手段"><a href="#加密手段" class="headerlink" title="加密手段"></a>加密手段</h4><ul>
+<li>MD5加密（信息-摘要算法）：128位</li>
+<li>AES加密（称秘钥加密）：128,192,256位</li>
+<li>SHAI加密（安全哈希算法）：160位</li>
+<li>RSA加密：公钥加密，私钥解密：1204位</li>
+</ul>
+<h3 id="2-1-2解密"><a href="#2-1-2解密" class="headerlink" title="2.1.2解密"></a>2.1.2解密</h3><p>加密的逆过程就是解密</p>
+<h2 id="2-2公钥和私钥"><a href="#2-2公钥和私钥" class="headerlink" title="2.2公钥和私钥"></a>2.2公钥和私钥</h2><h3 id="2-2-1对称加密"><a href="#2-2-1对称加密" class="headerlink" title="2.2.1对称加密"></a>2.2.1对称加密</h3><p>采用单钥密码系统的加密方式，同一个秘钥可以同时用作信息的加密和解密，这种加密方法称为对称加密，也称为单秘钥加密。</p>
+<h3 id="2-2-2非对称加密"><a href="#2-2-2非对称加密" class="headerlink" title="2.2.2非对称加密"></a>2.2.2非对称加密</h3><p>使用非对称的加密方式时，会产生两把钥匙。发送方利用自己的公钥加密，接收方利用自己的私钥解密<br>数字签名的四大特点</p>
+<ul>
+<li>防止重放攻击：攻击者利用网络监听或则其他方式盗取认证凭据，之后再把它重新发给认证服务器。在数字签名中，如果采用了对签名报文加盖时间戳等或添加流水号等技术，就可以有效防止重放攻击</li>
+<li>防止数据伪造：其他人不能伪造对消息的签名，因为私有秘钥只能签名者自己知道，所有其他人不可以构造出正确的签名结果数据</li>
+<li>防止数据篡改：数字签名与原始文件或摘要一起发送给接受者，一旦信息被篡改，接受者可以通过计算摘要和验证签名来判断该文件无效，从而保证了文件的完整性</li>
+<li>防止数据抵赖：数字签名既可以作为身份认证的依据，也可以作为签名者签名操作的证据。要防止接受者抵赖，可以在数字签名系统中要求接收者返回一个自己的签名的表示收到报文，给发送者或者信任第三方。如果接受者不返回任何信息，此次通信可终止或重新的开始，签名方也没有任何的损失，由此双方均不可抵赖。</li>
+</ul>
+<h2 id="2-3防火墙"><a href="#2-3防火墙" class="headerlink" title="2.3防火墙"></a>2.3防火墙</h2><p>防火墙是一种访问控制技术，可以严格控制进出网络边界的分组，禁止任何不必要的通信，来减少潜在入侵的发生</p>
+<h3 id="防火墙的区域们"><a href="#防火墙的区域们" class="headerlink" title="防火墙的区域们"></a>防火墙的区域们</h3><h4 id="Local本地区域"><a href="#Local本地区域" class="headerlink" title="Local本地区域"></a>Local本地区域</h4><ul>
+<li>顶级安全区域，安全优先级为100</li>
+<li>local就是防火墙本身的区域比如ping指令等网际控制协议的回复，需要local域的权限凡是由防火墙主动发出的报文均可认为是从local区域中发出是需要防火墙响应并处理（而不是转发）的报文均可认为是Local区域接收</li>
+</ul>
+<h4 id="Trust受信区"><a href="#Trust受信区" class="headerlink" title="Trust受信区"></a>Trust受信区</h4><ul>
+<li>高级安全区域，安全优先级为85</li>
+<li>通常用来定义内部用户所在的网络，也可以理解为应该是防护最严密的地区</li>
+</ul>
+<h4 id="DMZ非军事化区"><a href="#DMZ非军事化区" class="headerlink" title="DMZ非军事化区"></a>DMZ非军事化区</h4><ul>
+<li>中级安全区域，安全优先级50</li>
+<li>通常用来定义内部服务器坐在网络</li>
+<li>作用是把WEB。E-mail等允许外部访问的服务器单独接在该区域端口，使整个需要访问，实现内外网分离，达到用户需求。DMZ可以理解为一个不同于外网或内网的特殊网络区域，DMZ内通常放置一些不含机密信息的公用服务器，比如Web，Mail，FTP中的服务。这样来自外网的访问者可以访问DMZ中服务，但不可能接触到存放在内网中的公司机密或私人信息等，及时DMZ中服务器受到破坏，也不会对内网中的机密信造成影响</li>
+</ul>
+<h4 id="Untrust非受信区"><a href="#Untrust非受信区" class="headerlink" title="Untrust非受信区"></a>Untrust非受信区</h4><ul>
+<li>低级安全区域，安全优先级为5</li>
+<li>通常用来定义Internet等不安全的网络，用于网络入口线的接入。</li>
+</ul>
+
+    </div>
+    <footer class="article-footer">
+        <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="学习笔记" data-aos="zoom-in">学习笔记</a><a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" title="计算机网络" data-aos="zoom-in">计算机网络</a>
+
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/tags/%E5%A4%A7%E4%B8%89%E8%AF%BE%E7%A8%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="tag" title="大三课程学习笔记">大三课程学习笔记</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag" title="计算机网络">计算机网络</a></li></ul>
+
+    </footer>
+  </div>
+    <nav id="article-nav" aria-label="Article navigation" data-aos="fade-up">
+      <div class="article-nav-link-wrap left">
+            <img data-src="/images/banner.webp" data-sizes="auto" alt="计算机网络 - 1.传输层概念" class="lazyload">
+        <a href="/2025/01/17/Note/%E5%A4%A7%E4%B8%89%E8%AF%BE%E7%A8%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E4%BA%94%E3%80%81%E4%BC%A0%E8%BE%93%E5%B1%82/" aria-label="前一篇: 计算机网络 - 1.传输层概念" title="前一篇: 计算机网络 - 1.传输层概念"></a>
+        <div class="article-nav-caption">前一篇</div>
+        <h3 class="article-nav-title">
+            计算机网络 - 1.传输层概念
+        </h3>
+      </div>
+    <div class="article-nav-link-wrap right">
+          <img data-src="/images/banner.webp" data-sizes="auto" alt="计算机网络 - 1.应用层的作用" class="lazyload">
+      <a href="/2025/01/17/Note/%E5%A4%A7%E4%B8%89%E8%AF%BE%E7%A8%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E5%85%AD%E3%80%81%E5%BA%94%E7%94%A8%E5%B1%82/" aria-label="后一篇: 计算机网络 - 1.应用层的作用"  title="后一篇: 计算机网络 - 1.应用层的作用"></a>
+      <div class="article-nav-caption">后一篇</div>
+      <h3 class="article-nav-title">
+          计算机网络 - 1.应用层的作用
+      </h3>
+    </div>
+  </nav>
+
+</article>
+
+
+</section>
+        </div>
+        <footer id="footer" aria-label="Site footer">
+  <div style="width: 100%; overflow: hidden">
+    <div class="footer-line"></div>
+  </div>
+  <div id="footer-info">
+    <div>
+      <span class="icon-copyright"></span>
+        2020-2026
+        <span class="footer-info-sep rotate"></span>
+      OnricYF
+    </div>
+      <div>
+        基于&nbsp;<a href="https://hexo.io/" rel="noopener nofollow noreferrer" target="_blank">Hexo</a>&nbsp;
+        Theme.<a href="https://github.com/D-Sketon/hexo-theme-reimu" rel="noopener nofollow noreferrer" target="_blank">Reimu</a>
+      </div>
+      <div>
+        <span class="icon-brush"></span>
+        87.2k
+        &nbsp;|&nbsp;
+        <span class="icon-coffee"></span>
+        07:26
+      </div>
+      <div>
+        <span class="icon-eye"></span>
+        <span id="busuanzi_container_site_pv">总访问量&nbsp;<span id="busuanzi_value_site_pv"></span></span>
+        &nbsp;|&nbsp;
+        <span class="icon-user"></span>
+        <span id="busuanzi_container_site_uv">总访客量&nbsp;<span id="busuanzi_value_site_uv"></span></span>
+      </div>
+  </div>
+</footer>
+
+          <div class="sidebar-top">
+            <div class="sidebar-top-taichi rotate"></div>
+            <div class="arrow-up"></div>
+          </div>
+        <div id="mask" class="hide"></div>
+      </div>
+      <nav id="mobile-nav" aria-label="Mobile navigation">
+  <div class="sidebar-wrap">
+        <div class="sidebar-toc-sidebar"><h3 class="toc-title">文章目录</h3>
+<div class="sidebar-toc-wrapper toc-div-class" >
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E6%A6%82%E8%AE%BA"><span class="toc-number">1.</span> <span class="toc-text">1.网络安全概论</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8"><span class="toc-number">1.1.</span> <span class="toc-text">1.1网络安全</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%9D%A2%E4%B8%B4%E7%9A%84%E5%A8%81%E8%83%81%E4%B8%BB%E8%A6%81%E5%88%86%E4%B8%BA%E4%B8%A4%E7%B1%BB"><span class="toc-number">1.2.</span> <span class="toc-text">1.2计算机网络面临的威胁主要分为两类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-1%E4%B8%BB%E5%8A%A8%E6%94%BB%E5%87%BB"><span class="toc-number">1.2.1.</span> <span class="toc-text">1.2.1主动攻击</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-2%E8%A2%AB%E5%8A%A8%E6%94%BB%E5%87%BB"><span class="toc-number">1.2.2.</span> <span class="toc-text">1.2.2被动攻击</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2%E7%BD%91%E7%BB%9C%E7%B3%BB%E7%BB%9F%E7%89%B9%E6%80%A7"><span class="toc-number">1.3.</span> <span class="toc-text">1.2网络系统特性</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E5%8A%A0%E5%AF%86%E5%92%8C%E4%BA%A4%E4%BA%92"><span class="toc-number">2.</span> <span class="toc-text">2.加密和交互</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1%E5%8A%A0%E5%AF%86%E5%92%8C%E8%A7%A3%E5%AF%86"><span class="toc-number">2.1.</span> <span class="toc-text">2.1加密和解密</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-1%E5%8A%A0%E5%AF%86"><span class="toc-number">2.1.1.</span> <span class="toc-text">2.1.1加密</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8A%A0%E5%AF%86%E6%89%8B%E6%AE%B5"><span class="toc-number">2.1.1.1.</span> <span class="toc-text">加密手段</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-2%E8%A7%A3%E5%AF%86"><span class="toc-number">2.1.2.</span> <span class="toc-text">2.1.2解密</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2%E5%85%AC%E9%92%A5%E5%92%8C%E7%A7%81%E9%92%A5"><span class="toc-number">2.2.</span> <span class="toc-text">2.2公钥和私钥</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-1%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1对称加密</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-2%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2非对称加密</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3%E9%98%B2%E7%81%AB%E5%A2%99"><span class="toc-number">2.3.</span> <span class="toc-text">2.3防火墙</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%98%B2%E7%81%AB%E5%A2%99%E7%9A%84%E5%8C%BA%E5%9F%9F%E4%BB%AC"><span class="toc-number">2.3.1.</span> <span class="toc-text">防火墙的区域们</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Local%E6%9C%AC%E5%9C%B0%E5%8C%BA%E5%9F%9F"><span class="toc-number">2.3.1.1.</span> <span class="toc-text">Local本地区域</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Trust%E5%8F%97%E4%BF%A1%E5%8C%BA"><span class="toc-number">2.3.1.2.</span> <span class="toc-text">Trust受信区</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DMZ%E9%9D%9E%E5%86%9B%E4%BA%8B%E5%8C%96%E5%8C%BA"><span class="toc-number">2.3.1.3.</span> <span class="toc-text">DMZ非军事化区</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Untrust%E9%9D%9E%E5%8F%97%E4%BF%A1%E5%8C%BA"><span class="toc-number">2.3.1.4.</span> <span class="toc-text">Untrust非受信区</span></a></li></ol></li></ol></li></ol></li></ol>
+</div>
+</div>
+        <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/avatar.webp" data-sizes="auto" alt="OnricYF" class="lazyload">
+  <div class="sidebar-author-name">OnricYF</div>
+  <div class="sidebar-description">TRASH ARTIST</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>文章</div>
+    <div class="sidebar-state-number">144</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>分类</div>
+    <div class="sidebar-state-number">33</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>标签</div>
+    <div class="sidebar-state-number">82</div>
+  </div>
+</div>
+<div class="sidebar-social" >
+    <div class="icon-email sidebar-social-icon">
+      <a href=mailto:a1521070145@gmail.com itemprop="url" target="_blank" aria-label="email" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-github sidebar-social-icon">
+      <a href=https://github.com/Madoka9 itemprop="url" target="_blank" aria-label="github" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-bilibili sidebar-social-icon">
+      <a href=https://space.bilibili.com/5862963 itemprop="url" target="_blank" aria-label="bilibili" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-zhihu sidebar-social-icon">
+      <a href=https://www.zhihu.com/people/lan-mei-sheng-dai-77 itemprop="url" target="_blank" aria-label="zhihu" rel="noopener nofollow noreferrer"></a>
+    </div>
+</div>
+<div class="sidebar-menu">
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/" aria-label="首页"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">首页</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/archives" aria-label="归档"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">归档</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/about" aria-label="关于"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">关于</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/friend" aria-label="友链"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">友链</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/portfolio" aria-label="作品集"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">作品集</div>
+      </div>
+</div>
+</div>
+  </div>
+      <div class="sidebar-btn-wrapper">
+        <div class="sidebar-toc-btn current"></div>
+        <div class="sidebar-common-btn"></div>
+      </div>
+</nav>
+
+    </div>
+    
+<script src="https://npm.webcache.cn/lazysizes@5.3.2/lazysizes.min.js" integrity="sha384-3gT&#x2F;vsepWkfz&#x2F;ff7PpWNUeMzeWoH3cDhm&#x2F;A8jM7ouoAK0&#x2F;fP&#x2F;9bcHHR5kHq2nf+e" crossorigin="anonymous"></script>
+
+
+<script src="https://npm.webcache.cn/clipboard@2.0.11/dist/clipboard.min.js" integrity="sha384-J08i8An&#x2F;QeARD9ExYpvphB8BsyOj3Gh2TSh1aLINKO3L0cMSH2dN3E22zFoXEi0Q" crossorigin="anonymous"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+  
+<script src="/js/aos.js"></script>
+
+  <script>
+    var aosInit = () => {
+      AOS.init({
+        duration: 1000,
+        easing: "ease",
+        once: true,
+        offset: 50,
+      });
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', aosInit);
+    } else {
+      aosInit();
+    }
+  </script>
+
+
+<script src="/js/pjax_script.js" data-pjax></script>
+
+
+
+
+  <script>
+    var setupFirework = () => {
+      if (!false || !window.matchMedia('(max-width: 768px)').matches) {
+        window.firework && window.firework(JSON.parse('{"excludeElements":["a","button"],"particles":[{"shape":"circle","move":["emit"],"easing":"easeOutExpo","colors":["var(--red-1)","var(--red-2)","var(--red-3)","var(--red-4)"],"number":20,"duration":[1200,1800],"shapeOptions":{"radius":[16,32],"alpha":[0.3,0.5]}},{"shape":"circle","move":["diffuse"],"easing":"easeOutExpo","colors":["var(--red-0)"],"number":1,"duration":[1200,1800],"shapeOptions":{"radius":20,"alpha":[0.2,0.5],"lineWidth":6}}]}'));
+      }
+    }
+  </script>
+  
+<script src="https://npm.webcache.cn/mouse-firework@0.2.0/dist/index.umd.js" integrity="sha384-qi9WggRt19tv8Vc7pCHW3ulMNLwrn515zaLEWZjl1px07vz8+pUoWX8n1rgq282T" crossorigin="anonymous" onload="setupFirework()" defer></script>
+
+
+  
+<script src="https://npm.webcache.cn/theme-shokax-pjax@0.0.3/dist/index.umd.js" integrity="sha384-xneY1WY8hOfUzswrE4CrYq35N4BdVcxqxwHPr9zawE&#x2F;jMSCxD+jAPU55x&#x2F;jj3wlf" crossorigin="anonymous"></script>
+
+  
+<script src="/js/pjax.js"></script>
+
+
+
+
+
+<div id="lazy-script">
+  <div>
+      
+      
+      <script data-pjax>
+        window.REIMU_POST = {
+          author: "OnricYF",
+          title: "计算机网络 - 1.网络安全概论",
+          url: "http://example.com/2025/01/17/Note/%E5%A4%A7%E4%B8%89%E8%AF%BE%E7%A8%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E4%B8%83%E3%80%81%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/",
+          excerpt: "",
+          description: "",
+          stripContent: "1.网络安全概论1.1网络安全网络安全（Cyber Security）是指网络系统的硬件，软件及其系统中的数据受到保护，不因偶然的或者恶意的原因而遭到破坏，更改，泄露。系统连续可靠正常的运行，网络服务不中断。 1.2计算机网络面临的威胁主要分为两类1.2.1主动攻击 主动的去做一些在网络基础上的恶意行为。恶意串改信息数据，发布恶意程序脚本等 篡改 恶意程序 拒绝服务  1.2.2被动攻击 被动攻击主要是收集信息而不是进行访问，不改变数据本身的结构，也不对软硬件数据造成影响 截取 窃听 流量分析 ",
+          date: "Fri Jan 17 2025 22:04:11 GMT+0800",
+          updated: "Thu Jul 16 2026 11:38:25 GMT+0800",
+          cover: "/images/banner.webp",
+        };
+      </script>
+        
+<script src="/js/insert_highlight.js" data-pjax></script>
+
+      
+<script src="/js/tabs.js" data-pjax defer></script>
+
+      <script type="module" data-pjax>
+        (async () => {
+          const PhotoSwipeLightbox = (await safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe-lightbox.esm.min.js", "sha384-DiL6M/gG+wmTxmCRZyD1zee6lIhawn5TGvED0FOh7fXcN9B0aZ9dexSF/N6lrZi/")).default;
+          const initPswp = (gallery, children) => {
+            if (_$$(`${gallery} ${children}`).length > 0) {
+              new PhotoSwipeLightbox({
+                gallery,
+                children,
+                pswpModule: () => safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.esm.min.js", "sha384-WkkO3GCmgkC3VQWpaV8DqhKJqpzpF9JoByxDmnV8+oTJ7m3DfYEWX1fu1scuS4+s")
+              }).init();
+            }
+          }
+          const pswp = () => {
+            initPswp('.article-entry', 'a.article-gallery-item');
+            initPswp('.article-gallery', 'a.article-gallery-item');
+          }
+          pswp();
+        })();
+      </script>
+  </div>
+</div>
+
+
+  <script>
+    console.log(String.raw`%c 
+ ______     ______     __     __    __     __  __    
+/\  == \   /\  ___\   /\ \   /\ "-./  \   /\ \/\ \   
+\ \  __<   \ \  __\   \ \ \  \ \ \-./\ \  \ \ \_\ \  
+ \ \_\ \_\  \ \_____\  \ \_\  \ \_\ \ \_\  \ \_____\ 
+  \/_/ /_/   \/_____/   \/_/   \/_/  \/_/   \/_____/ 
+                                                  
+`,'color: #ff5252;')
+    console.log('%c Theme.Reimu v' + '1.12.0' + ' %c https://github.com/D-Sketon/hexo-theme-reimu ', 'color: white; background: #ff5252; padding:5px 0;', 'padding:4px;border:1px solid #ff5252;')
+  </script>
+  
+
+
+  
+<script src="https://npm.webcache.cn/busuanzi@2.3.0/bsz.pure.mini.js" integrity="sha384-0M75wtSkhjIInv4coYlaJU83+OypaRCIq2SukQVQX04eGTCBXJDuWAbJet56id+S" crossorigin="anonymous" async></script>
+
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      for (let registration of registrations) {
+        registration.unregister();
+      }
+    });
+  }
+</script>
+
+
+    <script>
+      var setupAPlayer = () => {
+        if (!true || !window.matchMedia('(max-width: 768px)').matches) {
+          if (window.matchMedia('(max-width: 959px)').matches) {
+            const meting = _$('meting-js');
+            if (meting) {
+              meting.setAttribute('fixed', 'true');
+              const aside = meting.parentNode?.parentNode;
+              if (aside?.tagName === 'ASIDE') {
+                meting.parentNode.removeChild(meting);
+                document.body.appendChild(meting);
+              }
+            }
+          }
+        }
+      };
+    </script>
+  
+<script src="https://npm.webcache.cn/aplayer@1.10.1/dist/APlayer.min.js" integrity="sha384-gdGYZwHnfJM54evoZhpO0s6ZF5BQiybkiyW7VXr+h5UfruuRL&#x2F;aORyw+5+HZoU6e" crossorigin="anonymous" defer onload="setupAPlayer()"></script>
+
+    
+<script src="https://npm.webcache.cn/meting@2.0.1/dist/Meting.min.js" integrity="sha384-ASVlpKF80A22OXTK3tfEjZm1EL6uFMKIC4p8+0maanw1S&#x2F;IyB+Y4JG+ZDU7GpKE8" crossorigin="anonymous" defer></script>
+
+
+
+  </body>
+  </html>

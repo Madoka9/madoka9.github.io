@@ -1,0 +1,691 @@
+  <!DOCTYPE html>
+  <html lang="en"  
+      data-theme-mode="auto"
+  >
+  <head>
+  <meta charset="utf-8">
+  
+  
+  
+  <script>window.REIMU_CONFIG = {};window.REIMU_CONFIG.icon_font = '4552607_4k4bc36ef96';window.REIMU_CONFIG.clipboard_tips = {"success":{"zh-CN":"复制成功 (*^▽^*)","en":"Copy successfully (*^▽^*)"},"fail":{"zh-CN":"复制失败 (ﾟ⊿ﾟ)ﾂ","en":"Copy failed (ﾟ⊿ﾟ)ﾂ"},"copyright":{"enable":false,"count":50,"license_type":"by-nc-sa"}};window.REIMU_CONFIG.clipboard_tips.copyright.content = '本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！';window.REIMU_CONFIG.code_block = {"expand":true};window.REIMU_CONFIG.base = 'http://example.com';window.REIMU_CONFIG.i18n_languages = ["en"];</script>
+  <title>
+    GAMES101 - 判断像素是否在三角形内 | YF&#39;s Blog
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic|Noto Serif SC:400,400italic,700,700italic&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic|Noto Serif SC:400,400italic,700,700italic&display=swap" media="print" onload="this.media='all'">
+    <link rel="preload" href="//at.alicdn.com/t/c/font_4552607_4k4bc36ef96.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+    
+<link rel="stylesheet" href="/css/loader.css">
+
+    <meta name="description" content="Refer：[[基本#光栅化阶段]] 光栅化基本流程以每个三角形为单位，遍历bounding box中的像素点，判断像素点是否在三角形内。如果在，进行深度测试。如果深度测试当前像素深度小于深度缓存，更新深度缓存并赋予颜色值。  创建三角形的2维bounding box。  遍历此 bounding box 内的所有像素（使用其整数索引）。然后，使用像素中 心的屏幕空间坐标来检查中心点是否在三角形内">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GAMES101 - 判断像素是否在三角形内">
+<meta property="og:url" content="http://example.com/en/2026/02/22/Note/PersonalArrange/TA%E6%96%B9%E9%9D%A2/GAMES101/02-Rasterization/index.html">
+<meta property="og:site_name" content="YF&#39;s Blog">
+<meta property="og:description" content="Refer：[[基本#光栅化阶段]] 光栅化基本流程以每个三角形为单位，遍历bounding box中的像素点，判断像素点是否在三角形内。如果在，进行深度测试。如果深度测试当前像素深度小于深度缓存，更新深度缓存并赋予颜色值。  创建三角形的2维bounding box。  遍历此 bounding box 内的所有像素（使用其整数索引）。然后，使用像素中 心的屏幕空间坐标来检查中心点是否在三角形内">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020250202163052.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020250202163348.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020250202165627.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020250202165823.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020250202170303.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020250202170313.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020250202171254.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020250202171354.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020250202171417.png">
+<meta property="article:published_time" content="2026-02-22T13:10:02.000Z">
+<meta property="article:modified_time" content="2026-07-16T03:38:13.914Z">
+<meta property="article:author" content="OnricYF">
+<meta property="article:tag" content="GAMES101">
+<meta property="article:tag" content="PersonalArrange">
+<meta property="article:tag" content="TA方面">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/blog/Pasted%20image%2020250202163052.png">
+    <link rel="alternate" href="/atom.xml" title="YF's Blog" type="application/atom+xml">
+    <link rel="shortcut icon" href="/images/favicon.ico">
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.css" integrity="sha384-IfxC36XL/toUyJ939C73PcgMuRzAZuIzZxE38drsmO5p6jD7ei+Zx/1oA/0l8ysE" crossorigin="anonymous">
+    
+<script src="https://npm.webcache.cn/pace-js@1.2.4/pace.min.js" integrity="sha384-k6YtvFUEIuEFBdrLKJ3YAUbBki333tj1CSUisai5Cswsg9wcLNaPzsTHDswp4Az8" crossorigin="anonymous"></script>
+
+    
+<link rel="stylesheet" href="https://npm.webcache.cn/@reimujs/aos@0.1.2/dist/aos.css" integrity="sha384-GMRP93c6Hkz9JVKGAuRR3nTS7M07RwPgTFenXiosjq2VbVgvdDNcz1g6Mkj8AONa" crossorigin="anonymous">
+
+    <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://npm.webcache.cn/aplayer@1.10.1/dist/APlayer.min.css" integrity="sha384-tLMkTWh2pfXNWGFlUS0w1TFtRG5xZ9lPWFOooj+vDDLIL+xBGQU/voDBY5XE2lVh" crossorigin="anonymous">
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+  <body>
+      <div id='loader'>
+    <div class="loading-left-bg loading-bg"></div>
+    <div class="loading-right-bg loading-bg"></div>
+    <div class="spinner-box">
+      <div class="loading-taichi rotate">
+          <svg width="150" height="150" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="https://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
+            <path d="M303.5 432A80 80 0 0 1 291.5 592A80 80 0 0 1 303.5 432z" fill="var(--red-1, #ff5252)" />
+            <path d="M512 65A447 447 0 0 1 512 959L512 929A417 417 0 0 0 512 95A417 417 0 0 0 512 929L512 959A447 447 0 0 1 512 65z 
+           M512 95A417 417 0 0 1 929 512A208.5 208.5 0 0 1 720.5 720.5L720.5 592A80 80 0 0 0 720.5 432A80 80 0 0 0 720.5 592L720.5 720.5A208.5 208.5 0 0 1 512 512A208.5 208.5 0 0 0 303.5 303.5A208.5 208.5 0 0 0 95 512A417 417 0 0 1 512 95z" fill="var(--red-1, #ff5252)" />
+          </svg>
+      </div>
+      <div class="loading-word">Loading...</div>
+    </div>
+  </div>
+  </div>
+  <script>
+    var time = null;
+    var loaderEl = document.getElementById('loader');
+    var startLoading = () => {
+      time = Date.now();
+      loaderEl.classList.remove("loading");
+    }
+    var hideLoader = () => {
+      document.body.style.overflow = 'auto';
+      loader.classList.add('loading');
+    };
+
+    var endLoading = () => {
+      if (!time) {
+        hideLoader();
+      } else {
+        if (Date.now() - time > 500) {
+          time = null;
+          hideLoader();
+        } else {
+          setTimeout(endLoading, 500 - (Date.now() - time));
+          time = null;
+        }
+      }
+    }
+    window.addEventListener('DOMContentLoaded', endLoading);
+    loaderEl.addEventListener('click', endLoading);
+  </script>
+<div id="copy-tooltip"></div>
+<div id="heatmap-tooltip"></div>
+
+
+    <div id="container">
+      <div id="wrap">
+        <div id="header-nav">
+  <nav id="main-nav" aria-label="Primary navigation">
+        <a class="main-nav-link-wrap" href="/en/">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Home</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/archives">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Archives</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/about">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">About</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/friend">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Friend</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/portfolio">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Portfolio</span>
+        </span>
+    <a id="main-nav-toggle" class="nav-icon" aria-label="Toggle navigation" role="button"></a>
+  </nav>
+  <nav id="sub-nav" aria-label="Secondary navigation">
+  </nav>
+    <nav id="i18n-nav" aria-label="Language selection">
+      <div class="custom-dropdown">
+        <div class="select-selected" id="select-selected" role="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Language menu">
+          <span id="nav-language-btn" class="nav-icon" style="padding: 0 20px 0 0"></span>
+          <span id="selected-lang">English</span>
+        </div>
+        <ul class="select-items" id="select-items" role="listbox" aria-label="Languages">
+            <li data-value="zh-CN" role="option" aria-selected="false">简体中文</li>
+            <li data-value="en" role="option" class="selected" aria-selected="true">English</li>
+        </ul>
+      </div>
+      <script>
+        var selectSelected = document.getElementById("select-selected");
+        var selectedLang = document.getElementById("selected-lang");
+        var selectItems = document.getElementById("select-items");
+        var selectOptions = selectItems.querySelectorAll("li");
+
+        selectSelected.addEventListener("click", () => {
+          selectItems.classList.toggle("show");
+          var expanded = selectSelected.getAttribute("aria-expanded") === "true";
+          selectSelected.setAttribute("aria-expanded", (!expanded).toString());
+        });
+
+        selectOptions.forEach((item) => {
+          item.addEventListener("click", () => {
+            const langMap = {};
+              langMap['zh-CN'] = '/2026/02/22/Note/PersonalArrange/TA方面/GAMES101/02-Rasterization/';
+              langMap['en'] = '/en/2026/02/22/Note/PersonalArrange/TA方面/GAMES101/02-Rasterization/';
+            selectedLang.textContent = item.textContent;
+            selectItems.classList.remove("show");
+            selectOptions.forEach((option) => {
+              option.classList.remove("selected");
+            });
+            item.classList.add("selected");
+            window.location = langMap[item.dataset.value];
+          });
+        });
+
+        document.addEventListener("click", (event) => {
+          if (!event.target.closest(".custom-dropdown")) {
+            selectItems.classList.remove("show");
+            selectSelected.setAttribute("aria-expanded", "false");
+          }
+        });
+      </script>
+    </nav>
+</div>
+<header id="header" aria-label="Site header">
+        <picture>
+        </picture>
+          <img  fetchpriority="high" src="/images/banner.webp" alt="GAMES101 - 判断像素是否在三角形内">
+  <div id="header-outer">
+    <div id="header-title">
+          <span id="logo">
+            <h1 data-aos="slide-up">GAMES101 - 判断像素是否在三角形内</h1>
+          </span>
+        <h2 id="subtitle-wrap" data-aos="slide-down">
+        </h2>
+    </div>
+  </div>
+</header>
+
+        <div id="content" aria-label="Page content"  class="sidebar-right" >
+          <aside id="sidebar" aria-label="Sidebar">
+  <div class="sidebar-wrapper-container sticky">
+  <div class="sidebar-wrapper">
+    <div class="sidebar-wrap" data-aos="fade-up">
+          <div class="sidebar-toc-sidebar"><h3 class="toc-title">Contents</h3>
+<div class="sidebar-toc-wrapper toc-div-class" >
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%89%E6%A0%85%E5%8C%96%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">光栅化基本流程</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%A4%E6%96%AD%E5%83%8F%E7%B4%A0%E6%98%AF%E5%90%A6%E5%9C%A8%E4%B8%89%E8%A7%92%E5%BD%A2%E5%86%85"><span class="toc-number">2.</span> <span class="toc-text">判断像素是否在三角形内</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%89%E6%A0%85%E5%8C%96-Rasterization"><span class="toc-number">3.</span> <span class="toc-text">光栅化(Rasterization)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Bounding-Box"><span class="toc-number">3.1.</span> <span class="toc-text">Bounding Box</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%87%E6%A0%B7"><span class="toc-number">3.2.</span> <span class="toc-text">采样</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Antialiasing"><span class="toc-number">4.</span> <span class="toc-text">Antialiasing</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89"><span class="toc-number">4.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8D%E8%B5%B0%E6%A0%B7%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">4.2.</span> <span class="toc-text">反走样的方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%88%E6%A8%A1%E7%B3%8A%E5%86%8D%E9%87%87%E6%A0%B7-PreFiltering"><span class="toc-number">4.2.1.</span> <span class="toc-text">先模糊再采样 - PreFiltering</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B1%82%E5%B9%B3%E5%9D%87"><span class="toc-number">4.2.2.</span> <span class="toc-text">求平均</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MSAA-%EF%BC%88MultiySample%EF%BC%89"><span class="toc-number">4.3.</span> <span class="toc-text">MSAA （MultiySample）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E7%9A%84%E6%8A%97%E9%94%AF%E9%BD%BF%E6%96%B9%E6%B3%95"><span class="toc-number">4.4.</span> <span class="toc-text">其他的抗锯齿方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Z-Buffer-%E5%8F%AF%E8%A7%81%E5%BA%A6-%E9%81%AE%E6%8C%A1"><span class="toc-number">5.</span> <span class="toc-text">Z-Buffer 可见度&#x2F;遮挡</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9%E4%BA%8E%E6%B7%B1%E5%BA%A6%E7%9A%84%E7%90%86%E8%A7%A3"><span class="toc-number">5.1.</span> <span class="toc-text">对于深度的理解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Z-Buffer%E7%AE%97%E6%B3%95"><span class="toc-number">5.2.</span> <span class="toc-text">Z-Buffer算法</span></a></li></ol></li></ol>
+</div>
+</div>
+          <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/avatar.webp" data-sizes="auto" alt="OnricYF" class="lazyload">
+  <div class="sidebar-author-name">OnricYF</div>
+  <div class="sidebar-description">TRASH ARTIST</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>Post</div>
+    <div class="sidebar-state-number">144</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>Category</div>
+    <div class="sidebar-state-number">33</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>Tag</div>
+    <div class="sidebar-state-number">82</div>
+  </div>
+</div>
+<div class="sidebar-social" >
+    <div class="icon-email sidebar-social-icon">
+      <a href=mailto:a1521070145@gmail.com itemprop="url" target="_blank" aria-label="email" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-github sidebar-social-icon">
+      <a href=https://github.com/Madoka9 itemprop="url" target="_blank" aria-label="github" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-bilibili sidebar-social-icon">
+      <a href=https://space.bilibili.com/5862963 itemprop="url" target="_blank" aria-label="bilibili" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-zhihu sidebar-social-icon">
+      <a href=https://www.zhihu.com/people/lan-mei-sheng-dai-77 itemprop="url" target="_blank" aria-label="zhihu" rel="noopener nofollow noreferrer"></a>
+    </div>
+</div>
+<div class="sidebar-menu">
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/" aria-label="Home"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Home</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/archives" aria-label="Archives"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Archives</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/about" aria-label="About"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">About</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/friend" aria-label="Friend"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Friend</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/portfolio" aria-label="Portfolio"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Portfolio</div>
+      </div>
+</div>
+</div>
+          <div class="sidebar-btn-wrapper" style="position:static">
+            <div class="sidebar-toc-btn current"></div>
+            <div class="sidebar-common-btn"></div>
+          </div>
+    </div>
+  </div>
+      <meting-js
+        theme="var(--color-link)"
+        id="385907592"
+        server="netease"
+        type="playlist"
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        class="aplayer-after-sidebar"
+      ></meting-js>
+  <div class="sidebar-widget">
+  </div>
+  </div>
+</aside>
+
+          <section id="main" aria-label="Main content"><article id="post-Note/PersonalArrange/TA方面/GAMES101/02-Rasterization" class="h-entry article" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner" data-aos="fade-up">
+    <div class="article-meta">
+      <div class="article-date">
+  <span class="article-date-link icon-calendar" data-aos="zoom-in">
+    <time datetime="2026-02-22T13:10:02.000Z" itemprop="datePublished">2026-02-22</time>
+    <time style="display: none;" id="post-update-time">2026-07-16</time>
+  </span>
+</div>
+
+    </div>
+    
+    <div class="hr-line"></div>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+        <p>Refer：<br>[[基本#光栅化阶段]]</p>
+<h2 id="光栅化基本流程"><a href="#光栅化基本流程" class="headerlink" title="光栅化基本流程"></a>光栅化基本流程</h2><p>以每个三角形为单位，遍历bounding box中的像素点，判断像素点是否在三角形内。如果在，进行深度测试。如果深度测试当前像素深度小于深度缓存，更新深度缓存并赋予颜色值。</p>
+<ol>
+<li>创建三角形的2维bounding box。 </li>
+<li>遍历此 bounding box 内的所有像素（使用其整数索引）。然后，使用像素中 心的屏幕空间坐标来检查中心点是否在三角形内。 </li>
+<li>如果在内部，则将其位置处的插值深度值(interpolated depth value) 与深度 缓冲区(depth buffer) 中的相应值进行比较。 </li>
+<li>如果当前点更靠近相机，请设置像素颜色并更新深度缓冲区(depthbuffer)。</li>
+</ol>
+<h1 id="判断像素是否在三角形内"><a href="#判断像素是否在三角形内" class="headerlink" title="判断像素是否在三角形内"></a>判断像素是否在三角形内</h1><p>[[基本#判断点在三角形内的方法]]</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">bool</span> <span class="title function_">insideTriangle</span><span class="params">(<span class="type">float</span> x, <span class="type">float</span> y, <span class="type">const</span> Vector3f* _v)</span></span><br><span class="line">&#123;   </span><br><span class="line">    <span class="comment">// TODO : Implement this function to check if the point (x, y) is inside the triangle represented by _v[0], _v[1], _v[2]</span></span><br><span class="line">    Vector3f <span class="title function_">q</span><span class="params">(x, y, <span class="number">0</span>)</span>;</span><br><span class="line">    Vector3f ab = _v[<span class="number">1</span>] - _v[<span class="number">0</span>], bc = _v[<span class="number">2</span>] - _v[<span class="number">1</span>], ca = _v[<span class="number">0</span>] - _v[<span class="number">2</span>];</span><br><span class="line">    Vector3f aq = q - _v[<span class="number">0</span>], bq = q - _v[<span class="number">1</span>], cq = q - _v[<span class="number">2</span>];</span><br><span class="line">    <span class="keyword">return</span> ab.cross(aq).dot(bc.cross(bq)) &gt; <span class="number">0</span> &amp;&amp; ab.cross(aq).dot(ca.cross(cq)) &gt; <span class="number">0</span> &amp;&amp; bc.cross(bq).dot(ca.cross(cq)) &gt; <span class="number">0</span>;<span class="comment">// 判断两两方向是否相同</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="光栅化-Rasterization"><a href="#光栅化-Rasterization" class="headerlink" title="光栅化(Rasterization)"></a>光栅化(Rasterization)</h1><h2 id="Bounding-Box"><a href="#Bounding-Box" class="headerlink" title="Bounding Box"></a>Bounding Box</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Bounding Box</span></span><br><span class="line">Vector2f MinBBox = Vector2f(</span><br><span class="line">    <span class="built_in">std</span>::min(v[<span class="number">0</span>].x(), <span class="built_in">std</span>::min(v[<span class="number">1</span>].x(), v[<span class="number">2</span>].x())),</span><br><span class="line">    <span class="built_in">std</span>::min(v[<span class="number">0</span>].y(), <span class="built_in">std</span>::min(v[<span class="number">1</span>].y(), v[<span class="number">2</span>].y()))</span><br><span class="line">);</span><br><span class="line">Vector2f MaxBBox = Vector2f(</span><br><span class="line">    <span class="built_in">std</span>::max(v[<span class="number">0</span>].x(), <span class="built_in">std</span>::max(v[<span class="number">1</span>].x(), v[<span class="number">2</span>].x())),</span><br><span class="line">    <span class="built_in">std</span>::max(v[<span class="number">0</span>].y(), <span class="built_in">std</span>::max(v[<span class="number">1</span>].y(), v[<span class="number">2</span>].y()))</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h2 id="采样"><a href="#采样" class="headerlink" title="采样"></a>采样</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 采样</span></span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> x = min_x; x &lt;= max_x; x++)</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> y = min_y; y &lt;= max_y; y++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (insideTriangle(x + <span class="number">0.5</span>, y + <span class="number">0.5</span>, t.v))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// Z-Buffer算法</span></span><br><span class="line">            <span class="comment">// 获取当前像素的深度</span></span><br><span class="line">            <span class="keyword">auto</span> tmp = computeBarycentric2D(x + <span class="number">0.5</span>, y + <span class="number">0.5</span>, t.v);</span><br><span class="line">            <span class="type">float</span> alpha, beta, gamma;</span><br><span class="line">            <span class="built_in">std</span>::tie(alpha, beta, gamma) = tmp;</span><br><span class="line">            <span class="type">float</span> w_reciprocal = <span class="number">1.0</span> / (alpha / v[<span class="number">0</span>].w() + beta / v[<span class="number">1</span>].w() + gamma / v[<span class="number">2</span>].w());</span><br><span class="line">            <span class="type">float</span> z_interpolated = alpha * v[<span class="number">0</span>].z() / v[<span class="number">0</span>].w() + beta * v[<span class="number">1</span>].z() / v[<span class="number">1</span>].w() + gamma * v[<span class="number">2</span>].z() / v[<span class="number">2</span>].w();</span><br><span class="line">            z_interpolated *= w_reciprocal;</span><br><span class="line">            <span class="comment">// 深度测试</span></span><br><span class="line">            <span class="keyword">if</span> (z_interpolated &lt; depth_buf[get_index(x, y)])<span class="comment">// 当前像素在前面</span></span><br><span class="line">            &#123;</span><br><span class="line">                depth_buf[get_index(x, y)] = z_interpolated;<span class="comment">// 更新深度缓存</span></span><br><span class="line">                Vector3f point = &#123; (<span class="type">float</span>)x,(<span class="type">float</span>) y, z_interpolated &#125;, color = t.getColor();</span><br><span class="line">                set_pixel(point, color);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Antialiasing"><a href="#Antialiasing" class="headerlink" title="Antialiasing"></a>Antialiasing</h1><ul>
+<li>采样的频率低于信号的频率就会造成走样（Antialiasing）<br><img src="/images/blog/Pasted%20image%2020250202163052.png"></li>
+</ul>
+<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>走样的定义（频率角度）：一样的采样下无法区别出不同的频率的曲线<br><img src="/images/blog/Pasted%20image%2020250202163348.png"></p>
+<h2 id="反走样的方法"><a href="#反走样的方法" class="headerlink" title="反走样的方法"></a>反走样的方法</h2><h3 id="先模糊再采样-PreFiltering"><a href="#先模糊再采样-PreFiltering" class="headerlink" title="先模糊再采样 - PreFiltering"></a>先模糊再采样 - PreFiltering</h3><p><img src="/images/blog/Pasted%20image%2020250202165627.png"></p>
+<h3 id="求平均"><a href="#求平均" class="headerlink" title="求平均"></a>求平均</h3><p><img src="/images/blog/Pasted%20image%2020250202165823.png"></p>
+<h2 id="MSAA-（MultiySample）"><a href="#MSAA-（MultiySample）" class="headerlink" title="MSAA （MultiySample）"></a>MSAA （MultiySample）</h2><p>多重采样 MSAA（ Multi Sampling Anti-Aliasing）：把任何一个点&#x2F;块都做一个平均，即对把像素分成更小的像素，每个小像素也有各自中心点，根据小像素在三角形内个数得到覆盖率，再通过覆盖率算出这个像素对应的颜色。<br>MSAA实际上解决的是对图形进行模糊操作的这个过程，他只是通过近似的一种方法进行模糊，只是<strong>增加采样点</strong>并没有提高屏幕分辨率。</p>
+<p><img src="/images/blog/Pasted%20image%2020250202170303.png"><br><img src="/images/blog/Pasted%20image%2020250202170313.png"></p>
+<h2 id="其他的抗锯齿方法"><a href="#其他的抗锯齿方法" class="headerlink" title="其他的抗锯齿方法"></a>其他的抗锯齿方法</h2><p>[[4.4 抗锯齿方案]]</p>
+<h1 id="Z-Buffer-可见度-遮挡"><a href="#Z-Buffer-可见度-遮挡" class="headerlink" title="Z-Buffer 可见度&#x2F;遮挡"></a>Z-Buffer 可见度&#x2F;遮挡</h1><p>在之前的绘制过程中我们没有考虑Z的信息，那么如何画出前后关系以及深度呢？更具体的说每个像素点所对应的可能不止一个三角形面上的点，我们该选择哪个三角形面上的点来显示呢？答案显然易见，离摄像头最近的像素点显示。这里定义z越大离摄像机越远。</p>
+<h2 id="对于深度的理解"><a href="#对于深度的理解" class="headerlink" title="对于深度的理解"></a>对于深度的理解</h2><ul>
+<li><p>离摄像机越近深度越小，越远深度越大</p>
+</li>
+<li><p>越近越黑，越远越白（参考美术的颜色值：0-1对应黑到白）</p>
+<p><img src="/images/blog/Pasted%20image%2020250202171254.png"></p>
+</li>
+</ul>
+<h2 id="Z-Buffer算法"><a href="#Z-Buffer算法" class="headerlink" title="Z-Buffer算法"></a>Z-Buffer算法</h2><p>Z-Buffer的核心思想是对每个像素的z进行比较。<br>Z-Buffer的算法步骤：</p>
+<ol>
+<li>Z-Buffer算法需要为每个像素点维持一个深度数组记为zbuffer，其每个位置初始值置为无穷大（即离摄像机无穷远）。</li>
+<li>随后我们遍历每个三角形面上的每一个像素点[x,y]，如果该像素点的深度值z，小于zbuffer[x,y]中的值，则更新zbuffer[x,y]值为该点深度值z，并同时更新该像素点[x,y]的颜色为该三角形面上的该点的颜色。</li>
+</ol>
+<p>于是得到Z-Buffer算法的伪代码：<br><img src="/images/blog/Pasted%20image%2020250202171354.png"></p>
+<p>例：<br><img src="/images/blog/Pasted%20image%2020250202171417.png"><br>近像素（小）盖住远像素（大）</p>
+<ul>
+<li>更小-&gt;更新</li>
+<li>更大-&gt;不变</li>
+<li>相同：深度冲突</li>
+</ul>
+<p>完整代码（带AA）</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> rst::rasterizer::MSAA(<span class="type">int</span>&amp; Multiple, Vector2f MinBBox, Vector2f MaxBBox, <span class="type">const</span> Triangle&amp; t)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> x = <span class="built_in">floor</span>(MinBBox.x()); x &lt;= <span class="built_in">floor</span>(MaxBBox.x()); x++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> y = <span class="built_in">floor</span>(MinBBox.y()); y &lt;= <span class="built_in">floor</span>(MaxBBox.y()); y++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="type">float</span> TempDepth = <span class="built_in">std</span>::numeric_limits&lt;<span class="type">float</span>&gt;::infinity();</span><br><span class="line">            Vector3f TempColor = &#123; <span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span> &#125;;</span><br><span class="line">            <span class="type">int</span> SampleSize = Multiple / <span class="number">2</span>;</span><br><span class="line">            <span class="type">float</span> delta = <span class="number">1.</span> / Multiple;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; Multiple; i++)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="type">float</span> dx = i % SampleSize * delta * <span class="number">2</span> + delta;</span><br><span class="line">                <span class="type">float</span> dy = <span class="built_in">floor</span>(i / SampleSize) * delta * <span class="number">2</span> + delta;</span><br><span class="line">                <span class="keyword">if</span> (insideTriangle(x + dx, y + dy, t.v))</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="comment">//Update AA SamplerBuffer</span></span><br><span class="line">                    <span class="type">float</span> CurDepth = GetPixelDepth(x + dx, y + dy, t);</span><br><span class="line">                    <span class="type">int</span> CurIndex = get_index(x, y) * Multiple + i;</span><br><span class="line">                    <span class="keyword">if</span> (CurDepth &lt; DepthSampleBuffer[CurIndex])</span><br><span class="line">                    &#123;</span><br><span class="line">                        DepthSampleBuffer[CurIndex] = CurDepth;</span><br><span class="line">                        FrameSampleBuffer[CurIndex] = t.getColor();</span><br><span class="line">                    &#125;</span><br><span class="line">                    TempDepth = <span class="built_in">std</span>::min(TempDepth, CurDepth);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//Update Raster Buffer</span></span><br><span class="line">            Vector3f Point = &#123; (<span class="type">float</span>)x, (<span class="type">float</span>)y, TempDepth &#125;;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; Multiple; i++)</span><br><span class="line">            &#123;</span><br><span class="line">                TempColor += FrameSampleBuffer[get_index(x, y) * Multiple + i] * (<span class="number">1.</span> / Multiple);</span><br><span class="line">            &#125;</span><br><span class="line">            set_pixel(Point, TempColor);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+    <footer class="article-footer">
+        <a class="article-category-link" href="/en/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" title="技术笔记" data-aos="zoom-in">技术笔记</a><a class="article-category-link" href="/en/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E6%8A%80%E6%9C%AF%E7%BE%8E%E6%9C%AF/" title="技术美术" data-aos="zoom-in">技术美术</a><a class="article-category-link" href="/en/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E6%8A%80%E6%9C%AF%E7%BE%8E%E6%9C%AF/GAMES101/" title="GAMES101" data-aos="zoom-in">GAMES101</a>
+
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/en/tags/GAMES101/" rel="tag" title="GAMES101">GAMES101</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/en/tags/PersonalArrange/" rel="tag" title="PersonalArrange">PersonalArrange</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/en/tags/TA%E6%96%B9%E9%9D%A2/" rel="tag" title="TA方面">TA方面</a></li></ul>
+
+    </footer>
+  </div>
+    <nav id="article-nav" aria-label="Article navigation" data-aos="fade-up">
+      <div class="article-nav-link-wrap left">
+            <img data-src="/images/banner.webp" data-sizes="auto" alt="技术美术 - 测试题" class="lazyload">
+        <a href="/en/2026/02/22/Note/PersonalArrange/TA%E6%96%B9%E9%9D%A2/%E6%B5%8B%E8%AF%95%E9%A2%98/" aria-label="Prev: 技术美术 - 测试题" title="Prev: 技术美术 - 测试题"></a>
+        <div class="article-nav-caption">Prev</div>
+        <h3 class="article-nav-title">
+            技术美术 - 测试题
+        </h3>
+      </div>
+    <div class="article-nav-link-wrap right">
+          <img data-src="/images/banner.webp" data-sizes="auto" alt="GAMES101 - Model" class="lazyload">
+      <a href="/en/2026/02/22/Note/PersonalArrange/TA%E6%96%B9%E9%9D%A2/GAMES101/01-Transform/" aria-label="Next: GAMES101 - Model"  title="Next: GAMES101 - Model"></a>
+      <div class="article-nav-caption">Next</div>
+      <h3 class="article-nav-title">
+          GAMES101 - Model
+      </h3>
+    </div>
+  </nav>
+
+</article>
+
+
+</section>
+        </div>
+        <footer id="footer" aria-label="Site footer">
+  <div style="width: 100%; overflow: hidden">
+    <div class="footer-line"></div>
+  </div>
+  <div id="footer-info">
+    <div>
+      <span class="icon-copyright"></span>
+        2020-2026
+        <span class="footer-info-sep rotate"></span>
+      OnricYF
+    </div>
+      <div>
+        Powered by&nbsp;<a href="https://hexo.io/" rel="noopener nofollow noreferrer" target="_blank">Hexo</a>&nbsp;
+        Theme.<a href="https://github.com/D-Sketon/hexo-theme-reimu" rel="noopener nofollow noreferrer" target="_blank">Reimu</a>
+      </div>
+      <div>
+        <span class="icon-brush"></span>
+        87.2k
+        &nbsp;|&nbsp;
+        <span class="icon-coffee"></span>
+        07:26
+      </div>
+      <div>
+        <span class="icon-eye"></span>
+        <span id="busuanzi_container_site_pv">Number of visits&nbsp;<span id="busuanzi_value_site_pv"></span></span>
+        &nbsp;|&nbsp;
+        <span class="icon-user"></span>
+        <span id="busuanzi_container_site_uv">Number of visitors&nbsp;<span id="busuanzi_value_site_uv"></span></span>
+      </div>
+  </div>
+</footer>
+
+          <div class="sidebar-top">
+            <div class="sidebar-top-taichi rotate"></div>
+            <div class="arrow-up"></div>
+          </div>
+        <div id="mask" class="hide"></div>
+      </div>
+      <nav id="mobile-nav" aria-label="Mobile navigation">
+  <div class="sidebar-wrap">
+        <div class="sidebar-toc-sidebar"><h3 class="toc-title">Contents</h3>
+<div class="sidebar-toc-wrapper toc-div-class" >
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%89%E6%A0%85%E5%8C%96%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">光栅化基本流程</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%A4%E6%96%AD%E5%83%8F%E7%B4%A0%E6%98%AF%E5%90%A6%E5%9C%A8%E4%B8%89%E8%A7%92%E5%BD%A2%E5%86%85"><span class="toc-number">2.</span> <span class="toc-text">判断像素是否在三角形内</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%89%E6%A0%85%E5%8C%96-Rasterization"><span class="toc-number">3.</span> <span class="toc-text">光栅化(Rasterization)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Bounding-Box"><span class="toc-number">3.1.</span> <span class="toc-text">Bounding Box</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%87%E6%A0%B7"><span class="toc-number">3.2.</span> <span class="toc-text">采样</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Antialiasing"><span class="toc-number">4.</span> <span class="toc-text">Antialiasing</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89"><span class="toc-number">4.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8D%E8%B5%B0%E6%A0%B7%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">4.2.</span> <span class="toc-text">反走样的方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%88%E6%A8%A1%E7%B3%8A%E5%86%8D%E9%87%87%E6%A0%B7-PreFiltering"><span class="toc-number">4.2.1.</span> <span class="toc-text">先模糊再采样 - PreFiltering</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B1%82%E5%B9%B3%E5%9D%87"><span class="toc-number">4.2.2.</span> <span class="toc-text">求平均</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MSAA-%EF%BC%88MultiySample%EF%BC%89"><span class="toc-number">4.3.</span> <span class="toc-text">MSAA （MultiySample）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E7%9A%84%E6%8A%97%E9%94%AF%E9%BD%BF%E6%96%B9%E6%B3%95"><span class="toc-number">4.4.</span> <span class="toc-text">其他的抗锯齿方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Z-Buffer-%E5%8F%AF%E8%A7%81%E5%BA%A6-%E9%81%AE%E6%8C%A1"><span class="toc-number">5.</span> <span class="toc-text">Z-Buffer 可见度&#x2F;遮挡</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9%E4%BA%8E%E6%B7%B1%E5%BA%A6%E7%9A%84%E7%90%86%E8%A7%A3"><span class="toc-number">5.1.</span> <span class="toc-text">对于深度的理解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Z-Buffer%E7%AE%97%E6%B3%95"><span class="toc-number">5.2.</span> <span class="toc-text">Z-Buffer算法</span></a></li></ol></li></ol>
+</div>
+</div>
+        <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/avatar.webp" data-sizes="auto" alt="OnricYF" class="lazyload">
+  <div class="sidebar-author-name">OnricYF</div>
+  <div class="sidebar-description">TRASH ARTIST</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>Post</div>
+    <div class="sidebar-state-number">144</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>Category</div>
+    <div class="sidebar-state-number">33</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>Tag</div>
+    <div class="sidebar-state-number">82</div>
+  </div>
+</div>
+<div class="sidebar-social" >
+    <div class="icon-email sidebar-social-icon">
+      <a href=mailto:a1521070145@gmail.com itemprop="url" target="_blank" aria-label="email" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-github sidebar-social-icon">
+      <a href=https://github.com/Madoka9 itemprop="url" target="_blank" aria-label="github" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-bilibili sidebar-social-icon">
+      <a href=https://space.bilibili.com/5862963 itemprop="url" target="_blank" aria-label="bilibili" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-zhihu sidebar-social-icon">
+      <a href=https://www.zhihu.com/people/lan-mei-sheng-dai-77 itemprop="url" target="_blank" aria-label="zhihu" rel="noopener nofollow noreferrer"></a>
+    </div>
+</div>
+<div class="sidebar-menu">
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/" aria-label="Home"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Home</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/archives" aria-label="Archives"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Archives</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/about" aria-label="About"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">About</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/friend" aria-label="Friend"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Friend</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/portfolio" aria-label="Portfolio"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Portfolio</div>
+      </div>
+</div>
+</div>
+  </div>
+      <div class="sidebar-btn-wrapper">
+        <div class="sidebar-toc-btn current"></div>
+        <div class="sidebar-common-btn"></div>
+      </div>
+</nav>
+
+    </div>
+    
+<script src="https://npm.webcache.cn/lazysizes@5.3.2/lazysizes.min.js" integrity="sha384-3gT&#x2F;vsepWkfz&#x2F;ff7PpWNUeMzeWoH3cDhm&#x2F;A8jM7ouoAK0&#x2F;fP&#x2F;9bcHHR5kHq2nf+e" crossorigin="anonymous"></script>
+
+
+<script src="https://npm.webcache.cn/clipboard@2.0.11/dist/clipboard.min.js" integrity="sha384-J08i8An&#x2F;QeARD9ExYpvphB8BsyOj3Gh2TSh1aLINKO3L0cMSH2dN3E22zFoXEi0Q" crossorigin="anonymous"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+  
+<script src="/js/aos.js"></script>
+
+  <script>
+    var aosInit = () => {
+      AOS.init({
+        duration: 1000,
+        easing: "ease",
+        once: true,
+        offset: 50,
+      });
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', aosInit);
+    } else {
+      aosInit();
+    }
+  </script>
+
+
+<script src="/js/pjax_script.js" data-pjax></script>
+
+
+
+
+  <script>
+    var setupFirework = () => {
+      if (!false || !window.matchMedia('(max-width: 768px)').matches) {
+        window.firework && window.firework(JSON.parse('{"excludeElements":["a","button"],"particles":[{"shape":"circle","move":["emit"],"easing":"easeOutExpo","colors":["var(--red-1)","var(--red-2)","var(--red-3)","var(--red-4)"],"number":20,"duration":[1200,1800],"shapeOptions":{"radius":[16,32],"alpha":[0.3,0.5]}},{"shape":"circle","move":["diffuse"],"easing":"easeOutExpo","colors":["var(--red-0)"],"number":1,"duration":[1200,1800],"shapeOptions":{"radius":20,"alpha":[0.2,0.5],"lineWidth":6}}]}'));
+      }
+    }
+  </script>
+  
+<script src="https://npm.webcache.cn/mouse-firework@0.2.0/dist/index.umd.js" integrity="sha384-qi9WggRt19tv8Vc7pCHW3ulMNLwrn515zaLEWZjl1px07vz8+pUoWX8n1rgq282T" crossorigin="anonymous" onload="setupFirework()" defer></script>
+
+
+  
+<script src="https://npm.webcache.cn/theme-shokax-pjax@0.0.3/dist/index.umd.js" integrity="sha384-xneY1WY8hOfUzswrE4CrYq35N4BdVcxqxwHPr9zawE&#x2F;jMSCxD+jAPU55x&#x2F;jj3wlf" crossorigin="anonymous"></script>
+
+  
+<script src="/js/pjax.js"></script>
+
+
+
+
+
+<div id="lazy-script">
+  <div>
+      
+      
+      <script data-pjax>
+        window.REIMU_POST = {
+          author: "OnricYF",
+          title: "GAMES101 - 判断像素是否在三角形内",
+          url: "http://example.com/2026/02/22/Note/PersonalArrange/TA%E6%96%B9%E9%9D%A2/GAMES101/02-Rasterization/",
+          excerpt: "",
+          description: "",
+          stripContent: "Refer：[[基本#光栅化阶段]] 光栅化基本流程以每个三角形为单位，遍历bounding box中的像素点，判断像素点是否在三角形内。如果在，进行深度测试。如果深度测试当前像素深度小于深度缓存，更新深度缓存并赋予颜色值。  创建三角形的2维bounding box。  遍历此 bounding box 内的所有像素（使用其整数索引）。然后，使用像素中 心的屏幕空间坐标来检查中心点是否在三角形内。  如果在内部，则将其位置处的插值深度值(interpolated depth value) 与深",
+          date: "Sun Feb 22 2026 21:10:02 GMT+0800",
+          updated: "Thu Jul 16 2026 11:38:13 GMT+0800",
+          cover: "/images/banner.webp",
+        };
+      </script>
+        
+<script src="/js/insert_highlight.js" data-pjax></script>
+
+      
+<script src="/js/tabs.js" data-pjax defer></script>
+
+      <script type="module" data-pjax>
+        (async () => {
+          const PhotoSwipeLightbox = (await safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe-lightbox.esm.min.js", "sha384-DiL6M/gG+wmTxmCRZyD1zee6lIhawn5TGvED0FOh7fXcN9B0aZ9dexSF/N6lrZi/")).default;
+          const initPswp = (gallery, children) => {
+            if (_$$(`${gallery} ${children}`).length > 0) {
+              new PhotoSwipeLightbox({
+                gallery,
+                children,
+                pswpModule: () => safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.esm.min.js", "sha384-WkkO3GCmgkC3VQWpaV8DqhKJqpzpF9JoByxDmnV8+oTJ7m3DfYEWX1fu1scuS4+s")
+              }).init();
+            }
+          }
+          const pswp = () => {
+            initPswp('.article-entry', 'a.article-gallery-item');
+            initPswp('.article-gallery', 'a.article-gallery-item');
+          }
+          pswp();
+        })();
+      </script>
+  </div>
+</div>
+
+
+  <script>
+    console.log(String.raw`%c 
+ ______     ______     __     __    __     __  __    
+/\  == \   /\  ___\   /\ \   /\ "-./  \   /\ \/\ \   
+\ \  __<   \ \  __\   \ \ \  \ \ \-./\ \  \ \ \_\ \  
+ \ \_\ \_\  \ \_____\  \ \_\  \ \_\ \ \_\  \ \_____\ 
+  \/_/ /_/   \/_____/   \/_/   \/_/  \/_/   \/_____/ 
+                                                  
+`,'color: #ff5252;')
+    console.log('%c Theme.Reimu v' + '1.12.0' + ' %c https://github.com/D-Sketon/hexo-theme-reimu ', 'color: white; background: #ff5252; padding:5px 0;', 'padding:4px;border:1px solid #ff5252;')
+  </script>
+  
+
+
+  
+<script src="https://npm.webcache.cn/busuanzi@2.3.0/bsz.pure.mini.js" integrity="sha384-0M75wtSkhjIInv4coYlaJU83+OypaRCIq2SukQVQX04eGTCBXJDuWAbJet56id+S" crossorigin="anonymous" async></script>
+
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      for (let registration of registrations) {
+        registration.unregister();
+      }
+    });
+  }
+</script>
+
+
+    <script>
+      var setupAPlayer = () => {
+        if (!true || !window.matchMedia('(max-width: 768px)').matches) {
+          if (window.matchMedia('(max-width: 959px)').matches) {
+            const meting = _$('meting-js');
+            if (meting) {
+              meting.setAttribute('fixed', 'true');
+              const aside = meting.parentNode?.parentNode;
+              if (aside?.tagName === 'ASIDE') {
+                meting.parentNode.removeChild(meting);
+                document.body.appendChild(meting);
+              }
+            }
+          }
+        }
+      };
+    </script>
+  
+<script src="https://npm.webcache.cn/aplayer@1.10.1/dist/APlayer.min.js" integrity="sha384-gdGYZwHnfJM54evoZhpO0s6ZF5BQiybkiyW7VXr+h5UfruuRL&#x2F;aORyw+5+HZoU6e" crossorigin="anonymous" defer onload="setupAPlayer()"></script>
+
+    
+<script src="https://npm.webcache.cn/meting@2.0.1/dist/Meting.min.js" integrity="sha384-ASVlpKF80A22OXTK3tfEjZm1EL6uFMKIC4p8+0maanw1S&#x2F;IyB+Y4JG+ZDU7GpKE8" crossorigin="anonymous" defer></script>
+
+
+
+  </body>
+  </html>

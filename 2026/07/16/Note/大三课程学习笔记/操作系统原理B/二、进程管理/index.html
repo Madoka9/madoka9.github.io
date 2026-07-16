@@ -1,0 +1,748 @@
+  <!DOCTYPE html>
+  <html lang="zh-CN"  
+      data-theme-mode="auto"
+  >
+  <head>
+  <meta charset="utf-8">
+  
+  
+  
+  <script>window.REIMU_CONFIG = {};window.REIMU_CONFIG.icon_font = '4552607_4k4bc36ef96';window.REIMU_CONFIG.clipboard_tips = {"success":{"zh-CN":"复制成功 (*^▽^*)","en":"Copy successfully (*^▽^*)"},"fail":{"zh-CN":"复制失败 (ﾟ⊿ﾟ)ﾂ","en":"Copy failed (ﾟ⊿ﾟ)ﾂ"},"copyright":{"enable":false,"count":50,"license_type":"by-nc-sa"}};window.REIMU_CONFIG.clipboard_tips.copyright.content = '本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！';window.REIMU_CONFIG.code_block = {"expand":true};window.REIMU_CONFIG.base = 'http://example.com';window.REIMU_CONFIG.i18n_languages = ["en"];</script>
+  <title>
+    操作系统原理 - 2.1 前趋图和程序执行 | YF&#39;s Blog
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic|Noto Serif SC:400,400italic,700,700italic&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic|Noto Serif SC:400,400italic,700,700italic&display=swap" media="print" onload="this.media='all'">
+    <link rel="preload" href="//at.alicdn.com/t/c/font_4552607_4k4bc36ef96.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+    
+<link rel="stylesheet" href="/css/loader.css">
+
+    <meta name="description" content="2.1 前趋图和程序执行前趋图的定义 程序的顺序执行 - 顺序执行的特点 程序的顺序性 程序在运行时独占主机资源 程序的执行结果与其执行速度无关 程序执行时的初始条件相同，其结果必相同  程序的并发执行 例1 例2S1与S2 并发执行 例3 例4 资源共享 -并发执行的特点 失去程序的封闭性和可再现性 程序与计算不再一一对应 程序并发执行的相互制约  -  执行–暂停–执行  程序并发执行过程及条">
+<meta property="og:type" content="article">
+<meta property="og:title" content="操作系统原理 - 2.1 前趋图和程序执行">
+<meta property="og:url" content="http://example.com/2026/07/16/Note/%E5%A4%A7%E4%B8%89%E8%AF%BE%E7%A8%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86B/%E4%BA%8C%E3%80%81%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/index.html">
+<meta property="og:site_name" content="YF&#39;s Blog">
+<meta property="og:description" content="2.1 前趋图和程序执行前趋图的定义 程序的顺序执行 - 顺序执行的特点 程序的顺序性 程序在运行时独占主机资源 程序的执行结果与其执行速度无关 程序执行时的初始条件相同，其结果必相同  程序的并发执行 例1 例2S1与S2 并发执行 例3 例4 资源共享 -并发执行的特点 失去程序的封闭性和可再现性 程序与计算不再一一对应 程序并发执行的相互制约  -  执行–暂停–执行  程序并发执行过程及条">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220926093653.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220926093717.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220926093740.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220926094016.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220926094033.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220926094054.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220926094156.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220926094404.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220926094429.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220926094743.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220926094839.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220926094900.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220926095144.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220926095508.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220926095625.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220926095710.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220926095936.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220926100433.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220926100508.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020221022134245.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020221022134632.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020221022134723.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020221022134738.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020221022134825.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020221022134850.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020221022134903.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020221022134914.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020221022134930.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020221022134941.png">
+<meta property="article:published_time" content="2026-07-16T02:45:53.000Z">
+<meta property="article:modified_time" content="2026-07-16T03:38:25.202Z">
+<meta property="article:author" content="OnricYF">
+<meta property="article:tag" content="大三课程学习笔记">
+<meta property="article:tag" content="操作系统">
+<meta property="article:tag" content="操作系统原理B">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/blog/Pasted%20image%2020220926093653.png">
+    <link rel="alternate" href="/atom.xml" title="YF's Blog" type="application/atom+xml">
+    <link rel="shortcut icon" href="/images/favicon.ico">
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.css" integrity="sha384-IfxC36XL/toUyJ939C73PcgMuRzAZuIzZxE38drsmO5p6jD7ei+Zx/1oA/0l8ysE" crossorigin="anonymous">
+    
+<script src="https://npm.webcache.cn/pace-js@1.2.4/pace.min.js" integrity="sha384-k6YtvFUEIuEFBdrLKJ3YAUbBki333tj1CSUisai5Cswsg9wcLNaPzsTHDswp4Az8" crossorigin="anonymous"></script>
+
+    
+<link rel="stylesheet" href="https://npm.webcache.cn/@reimujs/aos@0.1.2/dist/aos.css" integrity="sha384-GMRP93c6Hkz9JVKGAuRR3nTS7M07RwPgTFenXiosjq2VbVgvdDNcz1g6Mkj8AONa" crossorigin="anonymous">
+
+    <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://npm.webcache.cn/aplayer@1.10.1/dist/APlayer.min.css" integrity="sha384-tLMkTWh2pfXNWGFlUS0w1TFtRG5xZ9lPWFOooj+vDDLIL+xBGQU/voDBY5XE2lVh" crossorigin="anonymous">
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+  <body>
+      <div id='loader'>
+    <div class="loading-left-bg loading-bg"></div>
+    <div class="loading-right-bg loading-bg"></div>
+    <div class="spinner-box">
+      <div class="loading-taichi rotate">
+          <svg width="150" height="150" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="https://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
+            <path d="M303.5 432A80 80 0 0 1 291.5 592A80 80 0 0 1 303.5 432z" fill="var(--red-1, #ff5252)" />
+            <path d="M512 65A447 447 0 0 1 512 959L512 929A417 417 0 0 0 512 95A417 417 0 0 0 512 929L512 959A447 447 0 0 1 512 65z 
+           M512 95A417 417 0 0 1 929 512A208.5 208.5 0 0 1 720.5 720.5L720.5 592A80 80 0 0 0 720.5 432A80 80 0 0 0 720.5 592L720.5 720.5A208.5 208.5 0 0 1 512 512A208.5 208.5 0 0 0 303.5 303.5A208.5 208.5 0 0 0 95 512A417 417 0 0 1 512 95z" fill="var(--red-1, #ff5252)" />
+          </svg>
+      </div>
+      <div class="loading-word">少女祈祷中...</div>
+    </div>
+  </div>
+  </div>
+  <script>
+    var time = null;
+    var loaderEl = document.getElementById('loader');
+    var startLoading = () => {
+      time = Date.now();
+      loaderEl.classList.remove("loading");
+    }
+    var hideLoader = () => {
+      document.body.style.overflow = 'auto';
+      loader.classList.add('loading');
+    };
+
+    var endLoading = () => {
+      if (!time) {
+        hideLoader();
+      } else {
+        if (Date.now() - time > 500) {
+          time = null;
+          hideLoader();
+        } else {
+          setTimeout(endLoading, 500 - (Date.now() - time));
+          time = null;
+        }
+      }
+    }
+    window.addEventListener('DOMContentLoaded', endLoading);
+    loaderEl.addEventListener('click', endLoading);
+  </script>
+<div id="copy-tooltip"></div>
+<div id="heatmap-tooltip"></div>
+
+
+    <div id="container">
+      <div id="wrap">
+        <div id="header-nav">
+  <nav id="main-nav" aria-label="Primary navigation">
+        <a class="main-nav-link-wrap" href="/">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">首页</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/archives">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">归档</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/about">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">关于</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/friend">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">友链</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/portfolio">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">作品集</span>
+        </span>
+    <a id="main-nav-toggle" class="nav-icon" aria-label="Toggle navigation" role="button"></a>
+  </nav>
+  <nav id="sub-nav" aria-label="Secondary navigation">
+  </nav>
+    <nav id="i18n-nav" aria-label="Language selection">
+      <div class="custom-dropdown">
+        <div class="select-selected" id="select-selected" role="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Language menu">
+          <span id="nav-language-btn" class="nav-icon" style="padding: 0 20px 0 0"></span>
+          <span id="selected-lang">简体中文</span>
+        </div>
+        <ul class="select-items" id="select-items" role="listbox" aria-label="Languages">
+            <li data-value="zh-CN" role="option" class="selected" aria-selected="true">简体中文</li>
+            <li data-value="en" role="option" aria-selected="false">English</li>
+        </ul>
+      </div>
+      <script>
+        var selectSelected = document.getElementById("select-selected");
+        var selectedLang = document.getElementById("selected-lang");
+        var selectItems = document.getElementById("select-items");
+        var selectOptions = selectItems.querySelectorAll("li");
+
+        selectSelected.addEventListener("click", () => {
+          selectItems.classList.toggle("show");
+          var expanded = selectSelected.getAttribute("aria-expanded") === "true";
+          selectSelected.setAttribute("aria-expanded", (!expanded).toString());
+        });
+
+        selectOptions.forEach((item) => {
+          item.addEventListener("click", () => {
+            const langMap = {};
+              langMap['zh-CN'] = '/2026/07/16/Note/大三课程学习笔记/操作系统原理B/二、进程管理/';
+              langMap['en'] = '/en/2026/07/16/Note/大三课程学习笔记/操作系统原理B/二、进程管理/';
+            selectedLang.textContent = item.textContent;
+            selectItems.classList.remove("show");
+            selectOptions.forEach((option) => {
+              option.classList.remove("selected");
+            });
+            item.classList.add("selected");
+            window.location = langMap[item.dataset.value];
+          });
+        });
+
+        document.addEventListener("click", (event) => {
+          if (!event.target.closest(".custom-dropdown")) {
+            selectItems.classList.remove("show");
+            selectSelected.setAttribute("aria-expanded", "false");
+          }
+        });
+      </script>
+    </nav>
+</div>
+<header id="header" aria-label="Site header">
+        <picture>
+        </picture>
+          <img  fetchpriority="high" src="/images/banner.webp" alt="操作系统原理 - 2.1 前趋图和程序执行">
+  <div id="header-outer">
+    <div id="header-title">
+          <span id="logo">
+            <h1 data-aos="slide-up">操作系统原理 - 2.1 前趋图和程序执行</h1>
+          </span>
+        <h2 id="subtitle-wrap" data-aos="slide-down">
+        </h2>
+    </div>
+  </div>
+</header>
+
+        <div id="content" aria-label="Page content"  class="sidebar-right" >
+          <aside id="sidebar" aria-label="Sidebar">
+  <div class="sidebar-wrapper-container sticky">
+  <div class="sidebar-wrapper">
+    <div class="sidebar-wrap" data-aos="fade-up">
+          <div class="sidebar-toc-sidebar"><h3 class="toc-title">文章目录</h3>
+<div class="sidebar-toc-wrapper toc-div-class" >
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#2-1-%E5%89%8D%E8%B6%8B%E5%9B%BE%E5%92%8C%E7%A8%8B%E5%BA%8F%E6%89%A7%E8%A1%8C"><span class="toc-number">1.</span> <span class="toc-text">2.1 前趋图和程序执行</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%B6%8B%E5%9B%BE%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="toc-number">1.1.</span> <span class="toc-text">前趋图的定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A8%8B%E5%BA%8F%E7%9A%84%E9%A1%BA%E5%BA%8F%E6%89%A7%E8%A1%8C"><span class="toc-number">1.2.</span> <span class="toc-text">程序的顺序执行</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A1%BA%E5%BA%8F%E6%89%A7%E8%A1%8C%E7%9A%84%E7%89%B9%E7%82%B9"><span class="toc-number">1.2.1.</span> <span class="toc-text">- 顺序执行的特点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%B9%B6%E5%8F%91%E6%89%A7%E8%A1%8C"><span class="toc-number">1.3.</span> <span class="toc-text">程序的并发执行</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B1"><span class="toc-number">1.3.1.</span> <span class="toc-text">例1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B2"><span class="toc-number">1.3.2.</span> <span class="toc-text">例2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B3"><span class="toc-number">1.3.3.</span> <span class="toc-text">例3</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B4"><span class="toc-number">1.3.4.</span> <span class="toc-text">例4</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B5%84%E6%BA%90%E5%85%B1%E4%BA%AB"><span class="toc-number">1.3.5.</span> <span class="toc-text">资源共享</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B9%B6%E5%8F%91%E6%89%A7%E8%A1%8C%E7%9A%84%E7%89%B9%E7%82%B9"><span class="toc-number">1.3.6.</span> <span class="toc-text">-并发执行的特点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A8%8B%E5%BA%8F%E5%B9%B6%E5%8F%91%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B%E5%8F%8A%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.3.7.</span> <span class="toc-text">程序并发执行过程及条件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BE%8B1-1"><span class="toc-number">1.3.7.1.</span> <span class="toc-text">例1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BE%8B2-1"><span class="toc-number">1.3.7.2.</span> <span class="toc-text">例2</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-2-%E8%BF%9B%E7%A8%8B%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="toc-number">2.</span> <span class="toc-text">2.2 进程的概念</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="toc-number">2.1.</span> <span class="toc-text">进程的定义</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%AE%9A%E4%B9%89%EF%BC%9A%E8%BF%9B%E7%A8%8B%E6%98%AF%E7%A8%8B%E5%BA%8F%E5%9C%A8%E4%B8%80%E4%B8%AA%E6%95%B0%E6%8D%AE%E9%9B%86%E5%90%88%E4%B8%8A%E7%9A%84%E8%BF%90%E8%A1%8C%E8%BF%87%E7%A8%8B%EF%BC%8C%E6%98%AF%E7%B3%BB%E7%BB%9F%E8%BF%9B%E8%A1%8C%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D%E5%92%8C%E8%B0%83%E5%BA%A6%E7%9A%84%E4%B8%80%E4%B8%AA%E7%8B%AC%E7%AB%8B%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8D%95%E5%85%83"><span class="toc-number">2.1.1.</span> <span class="toc-text">- 进程的定义：进程是程序在一个数据集合上的运行过程，是系统进行资源分配和调度的一个独立的基本单元</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E7%89%B9%E5%BE%81"><span class="toc-number">2.1.2.</span> <span class="toc-text">- 进程的特征</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E4%B8%8E%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-number">2.2.</span> <span class="toc-text">进程与程序的关系</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E7%BB%84%E6%88%90"><span class="toc-number">2.3.</span> <span class="toc-text">进程的组成</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E6%8E%A7%E5%88%B6%E5%9D%97PCB"><span class="toc-number">2.4.</span> <span class="toc-text">进程控制块PCB</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PCB%E7%9A%84%E7%BB%84%E7%BB%87%E6%96%B9%E5%BC%8F"><span class="toc-number">2.5.</span> <span class="toc-text">PCB的组织方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%93%BE%E6%8E%A5%E6%96%B9%E5%BC%8F"><span class="toc-number">2.5.1.</span> <span class="toc-text">-链接方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E6%96%B9%E5%BC%8F"><span class="toc-number">2.5.2.</span> <span class="toc-text">-索引方式</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-3-%E8%BF%9B%E7%A8%8B%E7%8A%B6%E6%80%81"><span class="toc-number">3.</span> <span class="toc-text">2.3 进程状态</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E7%A7%8D%E5%9F%BA%E6%9C%AC%E7%8A%B6%E6%80%81"><span class="toc-number">3.1.</span> <span class="toc-text">三种基本状态</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%82%E8%B5%B7%E7%8A%B6%E6%80%81-Suspend"><span class="toc-number">3.2.</span> <span class="toc-text">挂起状态(Suspend)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%86%E5%8C%96%E7%9A%84%E8%BF%9B%E7%A8%8B%E7%8A%B6%E6%80%81%E5%9B%BE-%E5%A2%9E%E5%8A%A0%E6%8C%82%E8%B5%B7"><span class="toc-number">3.2.1.</span> <span class="toc-text">细化的进程状态图 (增加挂起)</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-4-%E8%BF%9B%E7%A8%8B%E6%8E%A7%E5%88%B6"><span class="toc-number">4.</span> <span class="toc-text">2.4 进程控制</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-number">4.1.</span> <span class="toc-text">进程间的关系</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%88%9B%E5%BB%BA"><span class="toc-number">4.2.</span> <span class="toc-text">进程的创建</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E5%88%9B%E5%BB%BA%E7%9A%84%E8%BF%87%E7%A8%8B"><span class="toc-number">4.2.1.</span> <span class="toc-text">进程创建的过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E5%8E%9F%E8%AF%AD"><span class="toc-number">4.2.2.</span> <span class="toc-text">创建原语</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E7%BB%88%E6%AD%A2"><span class="toc-number">4.3.</span> <span class="toc-text">进程的终止</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E9%98%BB%E5%A1%9E"><span class="toc-number">4.4.</span> <span class="toc-text">进程的阻塞</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%94%A4%E9%86%92"><span class="toc-number">4.5.</span> <span class="toc-text">进程的唤醒</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E6%8C%82%E8%B5%B7"><span class="toc-number">4.6.</span> <span class="toc-text">进程的挂起</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E6%BF%80%E6%B4%BB"><span class="toc-number">4.7.</span> <span class="toc-text">进程的激活</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-5%E8%BF%9B%E7%A8%8B%E5%90%8C%E6%AD%A5"><span class="toc-number">5.</span> <span class="toc-text">2.5进程同步</span></a></li></ol>
+</div>
+</div>
+          <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/avatar.webp" data-sizes="auto" alt="OnricYF" class="lazyload">
+  <div class="sidebar-author-name">OnricYF</div>
+  <div class="sidebar-description">TRASH ARTIST</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>文章</div>
+    <div class="sidebar-state-number">144</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>分类</div>
+    <div class="sidebar-state-number">33</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>标签</div>
+    <div class="sidebar-state-number">82</div>
+  </div>
+</div>
+<div class="sidebar-social" >
+    <div class="icon-email sidebar-social-icon">
+      <a href=mailto:a1521070145@gmail.com itemprop="url" target="_blank" aria-label="email" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-github sidebar-social-icon">
+      <a href=https://github.com/Madoka9 itemprop="url" target="_blank" aria-label="github" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-bilibili sidebar-social-icon">
+      <a href=https://space.bilibili.com/5862963 itemprop="url" target="_blank" aria-label="bilibili" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-zhihu sidebar-social-icon">
+      <a href=https://www.zhihu.com/people/lan-mei-sheng-dai-77 itemprop="url" target="_blank" aria-label="zhihu" rel="noopener nofollow noreferrer"></a>
+    </div>
+</div>
+<div class="sidebar-menu">
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/" aria-label="首页"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">首页</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/archives" aria-label="归档"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">归档</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/about" aria-label="关于"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">关于</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/friend" aria-label="友链"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">友链</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/portfolio" aria-label="作品集"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">作品集</div>
+      </div>
+</div>
+</div>
+          <div class="sidebar-btn-wrapper" style="position:static">
+            <div class="sidebar-toc-btn current"></div>
+            <div class="sidebar-common-btn"></div>
+          </div>
+    </div>
+  </div>
+      <meting-js
+        theme="var(--color-link)"
+        id="385907592"
+        server="netease"
+        type="playlist"
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        class="aplayer-after-sidebar"
+      ></meting-js>
+  <div class="sidebar-widget">
+  </div>
+  </div>
+</aside>
+
+          <section id="main" aria-label="Main content"><article id="post-Note/大三课程学习笔记/操作系统原理B/二、进程管理" class="h-entry article" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner" data-aos="fade-up">
+    <div class="article-meta">
+      <div class="article-date">
+  <span class="article-date-link icon-calendar" data-aos="zoom-in">
+    <time datetime="2026-07-16T02:45:53.000Z" itemprop="datePublished">2026-07-16</time>
+    <time style="display: none;" id="post-update-time">2026-07-16</time>
+  </span>
+</div>
+
+    </div>
+    
+    <div class="hr-line"></div>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+        <h1 id="2-1-前趋图和程序执行"><a href="#2-1-前趋图和程序执行" class="headerlink" title="2.1 前趋图和程序执行"></a>2.1 前趋图和程序执行</h1><h2 id="前趋图的定义"><a href="#前趋图的定义" class="headerlink" title="前趋图的定义"></a>前趋图的定义</h2><p><img src="/images/blog/Pasted%20image%2020220926093653.png"><br><img src="/images/blog/Pasted%20image%2020220926093717.png"></p>
+<h2 id="程序的顺序执行"><a href="#程序的顺序执行" class="headerlink" title="程序的顺序执行"></a>程序的顺序执行</h2><p><img src="/images/blog/Pasted%20image%2020220926093740.png"></p>
+<h3 id="顺序执行的特点"><a href="#顺序执行的特点" class="headerlink" title="- 顺序执行的特点"></a>- 顺序执行的特点</h3><ul>
+<li>程序的顺序性</li>
+<li>程序在运行时独占主机资源</li>
+<li>程序的执行结果与其执行速度无关</li>
+<li>程序执行时的初始条件相同，其结果必相同</li>
+</ul>
+<h2 id="程序的并发执行"><a href="#程序的并发执行" class="headerlink" title="程序的并发执行"></a>程序的并发执行</h2><p><img src="/images/blog/Pasted%20image%2020220926094016.png"></p>
+<h3 id="例1"><a href="#例1" class="headerlink" title="例1"></a>例1</h3><p><img src="/images/blog/Pasted%20image%2020220926094033.png"></p>
+<h3 id="例2"><a href="#例2" class="headerlink" title="例2"></a>例2</h3><p><img src="/images/blog/Pasted%20image%2020220926094054.png"><br>S1与S2 并发执行</p>
+<h3 id="例3"><a href="#例3" class="headerlink" title="例3"></a>例3</h3><p><img src="/images/blog/Pasted%20image%2020220926094156.png"></p>
+<h3 id="例4"><a href="#例4" class="headerlink" title="例4"></a>例4</h3><p><img src="/images/blog/Pasted%20image%2020220926094404.png"></p>
+<h3 id="资源共享"><a href="#资源共享" class="headerlink" title="资源共享"></a>资源共享</h3><p><img src="/images/blog/Pasted%20image%2020220926094429.png"></p>
+<h3 id="并发执行的特点"><a href="#并发执行的特点" class="headerlink" title="-并发执行的特点"></a>-并发执行的特点</h3><ul>
+<li>失去程序的封闭性和可再现性</li>
+<li>程序与计算不再一一对应</li>
+<li>程序并发执行的相互制约<br>  -  执行–暂停–执行</li>
+</ul>
+<h3 id="程序并发执行过程及条件"><a href="#程序并发执行过程及条件" class="headerlink" title="程序并发执行过程及条件"></a>程序并发执行过程及条件</h3><p><img src="/images/blog/Pasted%20image%2020220926094743.png"></p>
+<h4 id="例1-1"><a href="#例1-1" class="headerlink" title="例1"></a>例1</h4><p><img src="/images/blog/Pasted%20image%2020220926094839.png"></p>
+<h4 id="例2-1"><a href="#例2-1" class="headerlink" title="例2"></a>例2</h4><p><img src="/images/blog/Pasted%20image%2020220926094900.png"></p>
+<h1 id="2-2-进程的概念"><a href="#2-2-进程的概念" class="headerlink" title="2.2 进程的概念"></a>2.2 进程的概念</h1><h2 id="进程的定义"><a href="#进程的定义" class="headerlink" title="进程的定义"></a>进程的定义</h2><h3 id="进程的定义：进程是程序在一个数据集合上的运行过程，是系统进行资源分配和调度的一个独立的基本单元"><a href="#进程的定义：进程是程序在一个数据集合上的运行过程，是系统进行资源分配和调度的一个独立的基本单元" class="headerlink" title="- 进程的定义：进程是程序在一个数据集合上的运行过程，是系统进行资源分配和调度的一个独立的基本单元"></a>- 进程的定义：进程是程序在一个数据集合上的运行过程，是系统进行资源分配和调度的一个独立的基本单元</h3><h3 id="进程的特征"><a href="#进程的特征" class="headerlink" title="- 进程的特征"></a>- 进程的特征</h3><ul>
+<li>动态性</li>
+<li>并发特征</li>
+<li>独立特征</li>
+<li>异步特征</li>
+<li>机构特征</li>
+</ul>
+<h2 id="进程与程序的关系"><a href="#进程与程序的关系" class="headerlink" title="进程与程序的关系"></a>进程与程序的关系</h2><p><img src="/images/blog/Pasted%20image%2020220926095144.png"></p>
+<h2 id="进程的组成"><a href="#进程的组成" class="headerlink" title="进程的组成"></a>进程的组成</h2><ul>
+<li>PCB(<em>进程控制块</em>)</li>
+<li>程序</li>
+<li>数据</li>
+</ul>
+<h2 id="进程控制块PCB"><a href="#进程控制块PCB" class="headerlink" title="进程控制块PCB"></a>进程控制块PCB</h2><p>**PCB是操作系统创建进程初期创建的，并控制进程的执行过程</p>
+<ul>
+<li>进程标识符</li>
+<li>处理机状态：寄存器，PC，PSW，栈指针</li>
+<li>控制信息</li>
+</ul>
+<h2 id="PCB的组织方式"><a href="#PCB的组织方式" class="headerlink" title="PCB的组织方式"></a>PCB的组织方式</h2><h3 id="链接方式"><a href="#链接方式" class="headerlink" title="-链接方式"></a>-链接方式</h3><ul>
+<li>将具有相同状态的PCB，用其中的链接字，链接成一个队列<br><img src="/images/blog/Pasted%20image%2020220926095508.png"></li>
+</ul>
+<h3 id="索引方式"><a href="#索引方式" class="headerlink" title="-索引方式"></a>-索引方式</h3><ul>
+<li>根据进程的状态，建立索引表<br><img src="/images/blog/Pasted%20image%2020220926095625.png"></li>
+</ul>
+<h1 id="2-3-进程状态"><a href="#2-3-进程状态" class="headerlink" title="2.3 进程状态"></a>2.3 进程状态</h1><p><img src="/images/blog/Pasted%20image%2020220926095710.png"></p>
+<ul>
+<li>就绪状态(Ready)</li>
+<li>执行状态(Running)</li>
+<li>等待状态(阻塞状态Blocked)</li>
+<li>新(New)状态</li>
+<li>终止状态(Terminated or Exit)</li>
+</ul>
+<h2 id="三种基本状态"><a href="#三种基本状态" class="headerlink" title="三种基本状态"></a>三种基本状态</h2><ul>
+<li>执行状态(Executing)</li>
+<li>就绪状态(Ready) –(活动就绪和静止就绪)</li>
+<li>阻塞状态 或 等待 – (活动阻塞和静止阻塞)<br><img src="/images/blog/Pasted%20image%2020220926095936.png"></li>
+</ul>
+<h2 id="挂起状态-Suspend"><a href="#挂起状态-Suspend" class="headerlink" title="挂起状态(Suspend)"></a>挂起状态(Suspend)</h2><p><img src="/images/blog/Pasted%20image%2020220926100433.png"></p>
+<h3 id="细化的进程状态图-增加挂起"><a href="#细化的进程状态图-增加挂起" class="headerlink" title="细化的进程状态图 (增加挂起)"></a>细化的进程状态图 (增加挂起)</h3><p><img src="/images/blog/Pasted%20image%2020220926100508.png"></p>
+<h1 id="2-4-进程控制"><a href="#2-4-进程控制" class="headerlink" title="2.4 进程控制"></a>2.4 进程控制</h1><h2 id="进程间的关系"><a href="#进程间的关系" class="headerlink" title="进程间的关系"></a>进程间的关系</h2><ul>
+<li>非结构系统</li>
+<li>树形结构系统：一个进程能够创建另一个进程，形成进程家族</li>
+</ul>
+<h2 id="进程的创建"><a href="#进程的创建" class="headerlink" title="进程的创建"></a>进程的创建</h2><p>进程的目的是为了让程序之间能够并发运行</p>
+<ul>
+<li>引起进程创建的事件：为使程序之间能够并发运行，应先为他们分别创建进程。导致一个进程去创建另一个进程的典型事件有四类：<br>  - 用户登录<br>  - 作业调度<br>  - 提供服务<br>  - 应用请求</li>
+</ul>
+<h3 id="进程创建的过程"><a href="#进程创建的过程" class="headerlink" title="进程创建的过程"></a>进程创建的过程</h3><p>系统出现创建新进程的请求 –&gt; OS调用进程创建原语Creat –&gt; 申请空白PCB –&gt; 为新进程分配所需资源 –&gt; 初始化进程控制块(PCB) –&gt; 如果进程就绪队列能够接纳新进程，便将新进程插入就绪队列<br><img src="/images/blog/Pasted%20image%2020221022134245.png"></p>
+<h3 id="创建原语"><a href="#创建原语" class="headerlink" title="创建原语"></a>创建原语</h3><p><img src="/images/blog/Pasted%20image%2020221022134632.png"></p>
+<h2 id="进程的终止"><a href="#进程的终止" class="headerlink" title="进程的终止"></a>进程的终止</h2><ul>
+<li>进程终止事件：正常结束，异常结束，外界干预</li>
+<li>撤销原语<br><img src="/images/blog/Pasted%20image%2020221022134723.png"><br><img src="/images/blog/Pasted%20image%2020221022134738.png"></li>
+</ul>
+<h2 id="进程的阻塞"><a href="#进程的阻塞" class="headerlink" title="进程的阻塞"></a>进程的阻塞</h2><p><img src="/images/blog/Pasted%20image%2020221022134825.png"></p>
+<h2 id="进程的唤醒"><a href="#进程的唤醒" class="headerlink" title="进程的唤醒"></a>进程的唤醒</h2><p><img src="/images/blog/Pasted%20image%2020221022134850.png"></p>
+<h2 id="进程的挂起"><a href="#进程的挂起" class="headerlink" title="进程的挂起"></a>进程的挂起</h2><p><img src="/images/blog/Pasted%20image%2020221022134903.png"><br><img src="/images/blog/Pasted%20image%2020221022134914.png"></p>
+<h2 id="进程的激活"><a href="#进程的激活" class="headerlink" title="进程的激活"></a>进程的激活</h2><p><img src="/images/blog/Pasted%20image%2020221022134930.png"><br><img src="/images/blog/Pasted%20image%2020221022134941.png"></p>
+<h1 id="2-5进程同步"><a href="#2-5进程同步" class="headerlink" title="2.5进程同步"></a>2.5进程同步</h1><p><a target="_blank" rel="noopener" href="https://www.ngui.cc/article/show-870541.html?action=onClick">进程？线程？有什么区别？ (ngui.cc)</a></p>
+
+    </div>
+    <footer class="article-footer">
+        <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="学习笔记" data-aos="zoom-in">学习笔记</a><a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" title="操作系统" data-aos="zoom-in">操作系统</a>
+
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/tags/%E5%A4%A7%E4%B8%89%E8%AF%BE%E7%A8%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="tag" title="大三课程学习笔记">大三课程学习笔记</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag" title="操作系统">操作系统</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86B/" rel="tag" title="操作系统原理B">操作系统原理B</a></li></ul>
+
+    </footer>
+  </div>
+    <nav id="article-nav" aria-label="Article navigation" data-aos="fade-up">
+      <div class="article-nav-link-wrap left">
+            <img data-src="/images/banner.webp" data-sizes="auto" alt="操作系统原理 - （一）作业调度" class="lazyload">
+        <a href="/2026/07/16/Note/%E5%A4%A7%E4%B8%89%E8%AF%BE%E7%A8%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86B/%E5%90%84%E7%B1%BB%E8%B0%83%E5%BA%A6/" aria-label="前一篇: 操作系统原理 - （一）作业调度" title="前一篇: 操作系统原理 - （一）作业调度"></a>
+        <div class="article-nav-caption">前一篇</div>
+        <h3 class="article-nav-title">
+            操作系统原理 - （一）作业调度
+        </h3>
+      </div>
+    <div class="article-nav-link-wrap right">
+          <img data-src="/images/banner.webp" data-sizes="auto" alt="RenderGraphDefinitions&amp;&amp;Utils" class="lazyload">
+      <a href="/2026/07/16/Note/UnrealEngine/RDG(RenderDependecyGraph)/RenderGraphDefinitions&&Utils/" aria-label="后一篇: RenderGraphDefinitions&amp;&amp;Utils"  title="后一篇: RenderGraphDefinitions&amp;&amp;Utils"></a>
+      <div class="article-nav-caption">后一篇</div>
+      <h3 class="article-nav-title">
+          RenderGraphDefinitions&amp;&amp;Utils
+      </h3>
+    </div>
+  </nav>
+
+</article>
+
+
+</section>
+        </div>
+        <footer id="footer" aria-label="Site footer">
+  <div style="width: 100%; overflow: hidden">
+    <div class="footer-line"></div>
+  </div>
+  <div id="footer-info">
+    <div>
+      <span class="icon-copyright"></span>
+        2020-2026
+        <span class="footer-info-sep rotate"></span>
+      OnricYF
+    </div>
+      <div>
+        基于&nbsp;<a href="https://hexo.io/" rel="noopener nofollow noreferrer" target="_blank">Hexo</a>&nbsp;
+        Theme.<a href="https://github.com/D-Sketon/hexo-theme-reimu" rel="noopener nofollow noreferrer" target="_blank">Reimu</a>
+      </div>
+      <div>
+        <span class="icon-brush"></span>
+        87.2k
+        &nbsp;|&nbsp;
+        <span class="icon-coffee"></span>
+        07:26
+      </div>
+      <div>
+        <span class="icon-eye"></span>
+        <span id="busuanzi_container_site_pv">总访问量&nbsp;<span id="busuanzi_value_site_pv"></span></span>
+        &nbsp;|&nbsp;
+        <span class="icon-user"></span>
+        <span id="busuanzi_container_site_uv">总访客量&nbsp;<span id="busuanzi_value_site_uv"></span></span>
+      </div>
+  </div>
+</footer>
+
+          <div class="sidebar-top">
+            <div class="sidebar-top-taichi rotate"></div>
+            <div class="arrow-up"></div>
+          </div>
+        <div id="mask" class="hide"></div>
+      </div>
+      <nav id="mobile-nav" aria-label="Mobile navigation">
+  <div class="sidebar-wrap">
+        <div class="sidebar-toc-sidebar"><h3 class="toc-title">文章目录</h3>
+<div class="sidebar-toc-wrapper toc-div-class" >
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#2-1-%E5%89%8D%E8%B6%8B%E5%9B%BE%E5%92%8C%E7%A8%8B%E5%BA%8F%E6%89%A7%E8%A1%8C"><span class="toc-number">1.</span> <span class="toc-text">2.1 前趋图和程序执行</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%B6%8B%E5%9B%BE%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="toc-number">1.1.</span> <span class="toc-text">前趋图的定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A8%8B%E5%BA%8F%E7%9A%84%E9%A1%BA%E5%BA%8F%E6%89%A7%E8%A1%8C"><span class="toc-number">1.2.</span> <span class="toc-text">程序的顺序执行</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A1%BA%E5%BA%8F%E6%89%A7%E8%A1%8C%E7%9A%84%E7%89%B9%E7%82%B9"><span class="toc-number">1.2.1.</span> <span class="toc-text">- 顺序执行的特点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%B9%B6%E5%8F%91%E6%89%A7%E8%A1%8C"><span class="toc-number">1.3.</span> <span class="toc-text">程序的并发执行</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B1"><span class="toc-number">1.3.1.</span> <span class="toc-text">例1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B2"><span class="toc-number">1.3.2.</span> <span class="toc-text">例2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B3"><span class="toc-number">1.3.3.</span> <span class="toc-text">例3</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B4"><span class="toc-number">1.3.4.</span> <span class="toc-text">例4</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B5%84%E6%BA%90%E5%85%B1%E4%BA%AB"><span class="toc-number">1.3.5.</span> <span class="toc-text">资源共享</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B9%B6%E5%8F%91%E6%89%A7%E8%A1%8C%E7%9A%84%E7%89%B9%E7%82%B9"><span class="toc-number">1.3.6.</span> <span class="toc-text">-并发执行的特点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A8%8B%E5%BA%8F%E5%B9%B6%E5%8F%91%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B%E5%8F%8A%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.3.7.</span> <span class="toc-text">程序并发执行过程及条件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BE%8B1-1"><span class="toc-number">1.3.7.1.</span> <span class="toc-text">例1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BE%8B2-1"><span class="toc-number">1.3.7.2.</span> <span class="toc-text">例2</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-2-%E8%BF%9B%E7%A8%8B%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="toc-number">2.</span> <span class="toc-text">2.2 进程的概念</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="toc-number">2.1.</span> <span class="toc-text">进程的定义</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%AE%9A%E4%B9%89%EF%BC%9A%E8%BF%9B%E7%A8%8B%E6%98%AF%E7%A8%8B%E5%BA%8F%E5%9C%A8%E4%B8%80%E4%B8%AA%E6%95%B0%E6%8D%AE%E9%9B%86%E5%90%88%E4%B8%8A%E7%9A%84%E8%BF%90%E8%A1%8C%E8%BF%87%E7%A8%8B%EF%BC%8C%E6%98%AF%E7%B3%BB%E7%BB%9F%E8%BF%9B%E8%A1%8C%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D%E5%92%8C%E8%B0%83%E5%BA%A6%E7%9A%84%E4%B8%80%E4%B8%AA%E7%8B%AC%E7%AB%8B%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8D%95%E5%85%83"><span class="toc-number">2.1.1.</span> <span class="toc-text">- 进程的定义：进程是程序在一个数据集合上的运行过程，是系统进行资源分配和调度的一个独立的基本单元</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E7%89%B9%E5%BE%81"><span class="toc-number">2.1.2.</span> <span class="toc-text">- 进程的特征</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E4%B8%8E%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-number">2.2.</span> <span class="toc-text">进程与程序的关系</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E7%BB%84%E6%88%90"><span class="toc-number">2.3.</span> <span class="toc-text">进程的组成</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E6%8E%A7%E5%88%B6%E5%9D%97PCB"><span class="toc-number">2.4.</span> <span class="toc-text">进程控制块PCB</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PCB%E7%9A%84%E7%BB%84%E7%BB%87%E6%96%B9%E5%BC%8F"><span class="toc-number">2.5.</span> <span class="toc-text">PCB的组织方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%93%BE%E6%8E%A5%E6%96%B9%E5%BC%8F"><span class="toc-number">2.5.1.</span> <span class="toc-text">-链接方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E6%96%B9%E5%BC%8F"><span class="toc-number">2.5.2.</span> <span class="toc-text">-索引方式</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-3-%E8%BF%9B%E7%A8%8B%E7%8A%B6%E6%80%81"><span class="toc-number">3.</span> <span class="toc-text">2.3 进程状态</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E7%A7%8D%E5%9F%BA%E6%9C%AC%E7%8A%B6%E6%80%81"><span class="toc-number">3.1.</span> <span class="toc-text">三种基本状态</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%82%E8%B5%B7%E7%8A%B6%E6%80%81-Suspend"><span class="toc-number">3.2.</span> <span class="toc-text">挂起状态(Suspend)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%86%E5%8C%96%E7%9A%84%E8%BF%9B%E7%A8%8B%E7%8A%B6%E6%80%81%E5%9B%BE-%E5%A2%9E%E5%8A%A0%E6%8C%82%E8%B5%B7"><span class="toc-number">3.2.1.</span> <span class="toc-text">细化的进程状态图 (增加挂起)</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-4-%E8%BF%9B%E7%A8%8B%E6%8E%A7%E5%88%B6"><span class="toc-number">4.</span> <span class="toc-text">2.4 进程控制</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-number">4.1.</span> <span class="toc-text">进程间的关系</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%88%9B%E5%BB%BA"><span class="toc-number">4.2.</span> <span class="toc-text">进程的创建</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E5%88%9B%E5%BB%BA%E7%9A%84%E8%BF%87%E7%A8%8B"><span class="toc-number">4.2.1.</span> <span class="toc-text">进程创建的过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E5%8E%9F%E8%AF%AD"><span class="toc-number">4.2.2.</span> <span class="toc-text">创建原语</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E7%BB%88%E6%AD%A2"><span class="toc-number">4.3.</span> <span class="toc-text">进程的终止</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E9%98%BB%E5%A1%9E"><span class="toc-number">4.4.</span> <span class="toc-text">进程的阻塞</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%94%A4%E9%86%92"><span class="toc-number">4.5.</span> <span class="toc-text">进程的唤醒</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E6%8C%82%E8%B5%B7"><span class="toc-number">4.6.</span> <span class="toc-text">进程的挂起</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E6%BF%80%E6%B4%BB"><span class="toc-number">4.7.</span> <span class="toc-text">进程的激活</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-5%E8%BF%9B%E7%A8%8B%E5%90%8C%E6%AD%A5"><span class="toc-number">5.</span> <span class="toc-text">2.5进程同步</span></a></li></ol>
+</div>
+</div>
+        <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/avatar.webp" data-sizes="auto" alt="OnricYF" class="lazyload">
+  <div class="sidebar-author-name">OnricYF</div>
+  <div class="sidebar-description">TRASH ARTIST</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>文章</div>
+    <div class="sidebar-state-number">144</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>分类</div>
+    <div class="sidebar-state-number">33</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>标签</div>
+    <div class="sidebar-state-number">82</div>
+  </div>
+</div>
+<div class="sidebar-social" >
+    <div class="icon-email sidebar-social-icon">
+      <a href=mailto:a1521070145@gmail.com itemprop="url" target="_blank" aria-label="email" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-github sidebar-social-icon">
+      <a href=https://github.com/Madoka9 itemprop="url" target="_blank" aria-label="github" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-bilibili sidebar-social-icon">
+      <a href=https://space.bilibili.com/5862963 itemprop="url" target="_blank" aria-label="bilibili" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-zhihu sidebar-social-icon">
+      <a href=https://www.zhihu.com/people/lan-mei-sheng-dai-77 itemprop="url" target="_blank" aria-label="zhihu" rel="noopener nofollow noreferrer"></a>
+    </div>
+</div>
+<div class="sidebar-menu">
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/" aria-label="首页"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">首页</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/archives" aria-label="归档"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">归档</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/about" aria-label="关于"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">关于</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/friend" aria-label="友链"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">友链</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/portfolio" aria-label="作品集"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">作品集</div>
+      </div>
+</div>
+</div>
+  </div>
+      <div class="sidebar-btn-wrapper">
+        <div class="sidebar-toc-btn current"></div>
+        <div class="sidebar-common-btn"></div>
+      </div>
+</nav>
+
+    </div>
+    
+<script src="https://npm.webcache.cn/lazysizes@5.3.2/lazysizes.min.js" integrity="sha384-3gT&#x2F;vsepWkfz&#x2F;ff7PpWNUeMzeWoH3cDhm&#x2F;A8jM7ouoAK0&#x2F;fP&#x2F;9bcHHR5kHq2nf+e" crossorigin="anonymous"></script>
+
+
+<script src="https://npm.webcache.cn/clipboard@2.0.11/dist/clipboard.min.js" integrity="sha384-J08i8An&#x2F;QeARD9ExYpvphB8BsyOj3Gh2TSh1aLINKO3L0cMSH2dN3E22zFoXEi0Q" crossorigin="anonymous"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+  
+<script src="/js/aos.js"></script>
+
+  <script>
+    var aosInit = () => {
+      AOS.init({
+        duration: 1000,
+        easing: "ease",
+        once: true,
+        offset: 50,
+      });
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', aosInit);
+    } else {
+      aosInit();
+    }
+  </script>
+
+
+<script src="/js/pjax_script.js" data-pjax></script>
+
+
+
+
+  <script>
+    var setupFirework = () => {
+      if (!false || !window.matchMedia('(max-width: 768px)').matches) {
+        window.firework && window.firework(JSON.parse('{"excludeElements":["a","button"],"particles":[{"shape":"circle","move":["emit"],"easing":"easeOutExpo","colors":["var(--red-1)","var(--red-2)","var(--red-3)","var(--red-4)"],"number":20,"duration":[1200,1800],"shapeOptions":{"radius":[16,32],"alpha":[0.3,0.5]}},{"shape":"circle","move":["diffuse"],"easing":"easeOutExpo","colors":["var(--red-0)"],"number":1,"duration":[1200,1800],"shapeOptions":{"radius":20,"alpha":[0.2,0.5],"lineWidth":6}}]}'));
+      }
+    }
+  </script>
+  
+<script src="https://npm.webcache.cn/mouse-firework@0.2.0/dist/index.umd.js" integrity="sha384-qi9WggRt19tv8Vc7pCHW3ulMNLwrn515zaLEWZjl1px07vz8+pUoWX8n1rgq282T" crossorigin="anonymous" onload="setupFirework()" defer></script>
+
+
+  
+<script src="https://npm.webcache.cn/theme-shokax-pjax@0.0.3/dist/index.umd.js" integrity="sha384-xneY1WY8hOfUzswrE4CrYq35N4BdVcxqxwHPr9zawE&#x2F;jMSCxD+jAPU55x&#x2F;jj3wlf" crossorigin="anonymous"></script>
+
+  
+<script src="/js/pjax.js"></script>
+
+
+
+
+
+<div id="lazy-script">
+  <div>
+      
+      
+      <script data-pjax>
+        window.REIMU_POST = {
+          author: "OnricYF",
+          title: "操作系统原理 - 2.1 前趋图和程序执行",
+          url: "http://example.com/2026/07/16/Note/%E5%A4%A7%E4%B8%89%E8%AF%BE%E7%A8%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86B/%E4%BA%8C%E3%80%81%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/",
+          excerpt: "",
+          description: "",
+          stripContent: "2.1 前趋图和程序执行前趋图的定义 程序的顺序执行 - 顺序执行的特点 程序的顺序性 程序在运行时独占主机资源 程序的执行结果与其执行速度无关 程序执行时的初始条件相同，其结果必相同  程序的并发执行 例1 例2S1与S2 并发执行 例3 例4 资源共享 -并发执行的特点 失去程序的封闭性和可再现性 程序与计算不再一一对应 程序并发执行的相互制约  -  执行–暂停–执行  程序并发执行过程及条件 例1 例2 2.2 进程的概念进程的定义- 进程的定义：进程是程序在一个数据集合上的运行过程，是",
+          date: "Thu Jul 16 2026 10:45:53 GMT+0800",
+          updated: "Thu Jul 16 2026 11:38:25 GMT+0800",
+          cover: "/images/banner.webp",
+        };
+      </script>
+        
+<script src="/js/insert_highlight.js" data-pjax></script>
+
+      
+<script src="/js/tabs.js" data-pjax defer></script>
+
+      <script type="module" data-pjax>
+        (async () => {
+          const PhotoSwipeLightbox = (await safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe-lightbox.esm.min.js", "sha384-DiL6M/gG+wmTxmCRZyD1zee6lIhawn5TGvED0FOh7fXcN9B0aZ9dexSF/N6lrZi/")).default;
+          const initPswp = (gallery, children) => {
+            if (_$$(`${gallery} ${children}`).length > 0) {
+              new PhotoSwipeLightbox({
+                gallery,
+                children,
+                pswpModule: () => safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.esm.min.js", "sha384-WkkO3GCmgkC3VQWpaV8DqhKJqpzpF9JoByxDmnV8+oTJ7m3DfYEWX1fu1scuS4+s")
+              }).init();
+            }
+          }
+          const pswp = () => {
+            initPswp('.article-entry', 'a.article-gallery-item');
+            initPswp('.article-gallery', 'a.article-gallery-item');
+          }
+          pswp();
+        })();
+      </script>
+  </div>
+</div>
+
+
+  <script>
+    console.log(String.raw`%c 
+ ______     ______     __     __    __     __  __    
+/\  == \   /\  ___\   /\ \   /\ "-./  \   /\ \/\ \   
+\ \  __<   \ \  __\   \ \ \  \ \ \-./\ \  \ \ \_\ \  
+ \ \_\ \_\  \ \_____\  \ \_\  \ \_\ \ \_\  \ \_____\ 
+  \/_/ /_/   \/_____/   \/_/   \/_/  \/_/   \/_____/ 
+                                                  
+`,'color: #ff5252;')
+    console.log('%c Theme.Reimu v' + '1.12.0' + ' %c https://github.com/D-Sketon/hexo-theme-reimu ', 'color: white; background: #ff5252; padding:5px 0;', 'padding:4px;border:1px solid #ff5252;')
+  </script>
+  
+
+
+  
+<script src="https://npm.webcache.cn/busuanzi@2.3.0/bsz.pure.mini.js" integrity="sha384-0M75wtSkhjIInv4coYlaJU83+OypaRCIq2SukQVQX04eGTCBXJDuWAbJet56id+S" crossorigin="anonymous" async></script>
+
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      for (let registration of registrations) {
+        registration.unregister();
+      }
+    });
+  }
+</script>
+
+
+    <script>
+      var setupAPlayer = () => {
+        if (!true || !window.matchMedia('(max-width: 768px)').matches) {
+          if (window.matchMedia('(max-width: 959px)').matches) {
+            const meting = _$('meting-js');
+            if (meting) {
+              meting.setAttribute('fixed', 'true');
+              const aside = meting.parentNode?.parentNode;
+              if (aside?.tagName === 'ASIDE') {
+                meting.parentNode.removeChild(meting);
+                document.body.appendChild(meting);
+              }
+            }
+          }
+        }
+      };
+    </script>
+  
+<script src="https://npm.webcache.cn/aplayer@1.10.1/dist/APlayer.min.js" integrity="sha384-gdGYZwHnfJM54evoZhpO0s6ZF5BQiybkiyW7VXr+h5UfruuRL&#x2F;aORyw+5+HZoU6e" crossorigin="anonymous" defer onload="setupAPlayer()"></script>
+
+    
+<script src="https://npm.webcache.cn/meting@2.0.1/dist/Meting.min.js" integrity="sha384-ASVlpKF80A22OXTK3tfEjZm1EL6uFMKIC4p8+0maanw1S&#x2F;IyB+Y4JG+ZDU7GpKE8" crossorigin="anonymous" defer></script>
+
+
+
+  </body>
+  </html>

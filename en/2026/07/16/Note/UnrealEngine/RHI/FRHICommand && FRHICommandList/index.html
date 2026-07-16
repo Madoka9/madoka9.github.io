@@ -1,0 +1,697 @@
+  <!DOCTYPE html>
+  <html lang="en"  
+      data-theme-mode="auto"
+  >
+  <head>
+  <meta charset="utf-8">
+  
+  
+  
+  <script>window.REIMU_CONFIG = {};window.REIMU_CONFIG.icon_font = '4552607_4k4bc36ef96';window.REIMU_CONFIG.clipboard_tips = {"success":{"zh-CN":"复制成功 (*^▽^*)","en":"Copy successfully (*^▽^*)"},"fail":{"zh-CN":"复制失败 (ﾟ⊿ﾟ)ﾂ","en":"Copy failed (ﾟ⊿ﾟ)ﾂ"},"copyright":{"enable":false,"count":50,"license_type":"by-nc-sa"}};window.REIMU_CONFIG.clipboard_tips.copyright.content = '本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！';window.REIMU_CONFIG.code_block = {"expand":true};window.REIMU_CONFIG.base = 'http://example.com';window.REIMU_CONFIG.i18n_languages = ["en"];</script>
+  <title>
+    FRHICommand | YF&#39;s Blog
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic|Noto Serif SC:400,400italic,700,700italic&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic|Noto Serif SC:400,400italic,700,700italic&display=swap" media="print" onload="this.media='all'">
+    <link rel="preload" href="//at.alicdn.com/t/c/font_4552607_4k4bc36ef96.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+    
+<link rel="stylesheet" href="/css/loader.css">
+
+    <meta name="description" content="FRHICommand多线程架构下（GameThread –  RenderThread – RHIThread）渲染时，不会直接调用图形API的上下文的接口 而是创建一个个FRHICommand对象（构成一个链表），并赋值给FExecuteRHIThreadTask对象的FRHICommandListBase* RHICmdList 接着FExecuteRHIThreadTask对象会被压入到T">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FRHICommand">
+<meta property="og:url" content="http://example.com/en/2026/07/16/Note/UnrealEngine/RHI/FRHICommand%20&&%20FRHICommandList/index.html">
+<meta property="og:site_name" content="YF&#39;s Blog">
+<meta property="og:description" content="FRHICommand多线程架构下（GameThread –  RenderThread – RHIThread）渲染时，不会直接调用图形API的上下文的接口 而是创建一个个FRHICommand对象（构成一个链表），并赋值给FExecuteRHIThreadTask对象的FRHICommandListBase* RHICmdList 接着FExecuteRHIThreadTask对象会被压入到T">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-07-16T02:45:26.000Z">
+<meta property="article:modified_time" content="2026-07-16T03:10:11.185Z">
+<meta property="article:author" content="OnricYF">
+<meta property="article:tag" content="RHI">
+<meta property="article:tag" content="UnrealEngine">
+<meta property="article:tag" content="渲染">
+<meta property="article:tag" content="线程">
+<meta name="twitter:card" content="summary">
+    <link rel="alternate" href="/atom.xml" title="YF's Blog" type="application/atom+xml">
+    <link rel="shortcut icon" href="/images/favicon.ico">
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.css" integrity="sha384-IfxC36XL/toUyJ939C73PcgMuRzAZuIzZxE38drsmO5p6jD7ei+Zx/1oA/0l8ysE" crossorigin="anonymous">
+    
+<script src="https://npm.webcache.cn/pace-js@1.2.4/pace.min.js" integrity="sha384-k6YtvFUEIuEFBdrLKJ3YAUbBki333tj1CSUisai5Cswsg9wcLNaPzsTHDswp4Az8" crossorigin="anonymous"></script>
+
+    
+<link rel="stylesheet" href="https://npm.webcache.cn/@reimujs/aos@0.1.2/dist/aos.css" integrity="sha384-GMRP93c6Hkz9JVKGAuRR3nTS7M07RwPgTFenXiosjq2VbVgvdDNcz1g6Mkj8AONa" crossorigin="anonymous">
+
+    <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://npm.webcache.cn/aplayer@1.10.1/dist/APlayer.min.css" integrity="sha384-tLMkTWh2pfXNWGFlUS0w1TFtRG5xZ9lPWFOooj+vDDLIL+xBGQU/voDBY5XE2lVh" crossorigin="anonymous">
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+  <body>
+      <div id='loader'>
+    <div class="loading-left-bg loading-bg"></div>
+    <div class="loading-right-bg loading-bg"></div>
+    <div class="spinner-box">
+      <div class="loading-taichi rotate">
+          <svg width="150" height="150" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="https://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
+            <path d="M303.5 432A80 80 0 0 1 291.5 592A80 80 0 0 1 303.5 432z" fill="var(--red-1, #ff5252)" />
+            <path d="M512 65A447 447 0 0 1 512 959L512 929A417 417 0 0 0 512 95A417 417 0 0 0 512 929L512 959A447 447 0 0 1 512 65z 
+           M512 95A417 417 0 0 1 929 512A208.5 208.5 0 0 1 720.5 720.5L720.5 592A80 80 0 0 0 720.5 432A80 80 0 0 0 720.5 592L720.5 720.5A208.5 208.5 0 0 1 512 512A208.5 208.5 0 0 0 303.5 303.5A208.5 208.5 0 0 0 95 512A417 417 0 0 1 512 95z" fill="var(--red-1, #ff5252)" />
+          </svg>
+      </div>
+      <div class="loading-word">Loading...</div>
+    </div>
+  </div>
+  </div>
+  <script>
+    var time = null;
+    var loaderEl = document.getElementById('loader');
+    var startLoading = () => {
+      time = Date.now();
+      loaderEl.classList.remove("loading");
+    }
+    var hideLoader = () => {
+      document.body.style.overflow = 'auto';
+      loader.classList.add('loading');
+    };
+
+    var endLoading = () => {
+      if (!time) {
+        hideLoader();
+      } else {
+        if (Date.now() - time > 500) {
+          time = null;
+          hideLoader();
+        } else {
+          setTimeout(endLoading, 500 - (Date.now() - time));
+          time = null;
+        }
+      }
+    }
+    window.addEventListener('DOMContentLoaded', endLoading);
+    loaderEl.addEventListener('click', endLoading);
+  </script>
+<div id="copy-tooltip"></div>
+<div id="heatmap-tooltip"></div>
+
+
+    <div id="container">
+      <div id="wrap">
+        <div id="header-nav">
+  <nav id="main-nav" aria-label="Primary navigation">
+        <a class="main-nav-link-wrap" href="/en/">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Home</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/archives">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Archives</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/about">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">About</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/friend">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Friend</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/portfolio">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Portfolio</span>
+        </span>
+    <a id="main-nav-toggle" class="nav-icon" aria-label="Toggle navigation" role="button"></a>
+  </nav>
+  <nav id="sub-nav" aria-label="Secondary navigation">
+  </nav>
+    <nav id="i18n-nav" aria-label="Language selection">
+      <div class="custom-dropdown">
+        <div class="select-selected" id="select-selected" role="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Language menu">
+          <span id="nav-language-btn" class="nav-icon" style="padding: 0 20px 0 0"></span>
+          <span id="selected-lang">English</span>
+        </div>
+        <ul class="select-items" id="select-items" role="listbox" aria-label="Languages">
+            <li data-value="zh-CN" role="option" aria-selected="false">简体中文</li>
+            <li data-value="en" role="option" class="selected" aria-selected="true">English</li>
+        </ul>
+      </div>
+      <script>
+        var selectSelected = document.getElementById("select-selected");
+        var selectedLang = document.getElementById("selected-lang");
+        var selectItems = document.getElementById("select-items");
+        var selectOptions = selectItems.querySelectorAll("li");
+
+        selectSelected.addEventListener("click", () => {
+          selectItems.classList.toggle("show");
+          var expanded = selectSelected.getAttribute("aria-expanded") === "true";
+          selectSelected.setAttribute("aria-expanded", (!expanded).toString());
+        });
+
+        selectOptions.forEach((item) => {
+          item.addEventListener("click", () => {
+            const langMap = {};
+              langMap['zh-CN'] = '/2026/07/16/Note/UnrealEngine/RHI/FRHICommand &amp;&amp; FRHICommandList/';
+              langMap['en'] = '/en/2026/07/16/Note/UnrealEngine/RHI/FRHICommand &amp;&amp; FRHICommandList/';
+            selectedLang.textContent = item.textContent;
+            selectItems.classList.remove("show");
+            selectOptions.forEach((option) => {
+              option.classList.remove("selected");
+            });
+            item.classList.add("selected");
+            window.location = langMap[item.dataset.value];
+          });
+        });
+
+        document.addEventListener("click", (event) => {
+          if (!event.target.closest(".custom-dropdown")) {
+            selectItems.classList.remove("show");
+            selectSelected.setAttribute("aria-expanded", "false");
+          }
+        });
+      </script>
+    </nav>
+</div>
+<header id="header" aria-label="Site header">
+        <picture>
+        </picture>
+          <img  fetchpriority="high" src="/images/banner.webp" alt="FRHICommand">
+  <div id="header-outer">
+    <div id="header-title">
+          <span id="logo">
+            <h1 data-aos="slide-up">FRHICommand</h1>
+          </span>
+        <h2 id="subtitle-wrap" data-aos="slide-down">
+        </h2>
+    </div>
+  </div>
+</header>
+
+        <div id="content" aria-label="Page content"  class="sidebar-right" >
+          <aside id="sidebar" aria-label="Sidebar">
+  <div class="sidebar-wrapper-container sticky">
+  <div class="sidebar-wrapper">
+    <div class="sidebar-wrap" data-aos="fade-up">
+          <div class="sidebar-toc-sidebar"><h3 class="toc-title">Contents</h3>
+<div class="sidebar-toc-wrapper toc-div-class" >
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#FRHICommand"><span class="toc-number">1.</span> <span class="toc-text">FRHICommand</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%9A%E8%BF%87%E5%AE%8F%E5%A3%B0%E6%98%8E-FRHICOMMAND-MACRO"><span class="toc-number">1.1.</span> <span class="toc-text">通过宏声明 FRHICOMMAND_MACRO</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%9A%E8%BF%87%E5%AE%8F%E6%B4%BE%E7%94%9F"><span class="toc-number">1.2.</span> <span class="toc-text">通过宏派生</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RHICommand-%E7%9A%84%E6%8F%90%E4%BA%A4%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.3.</span> <span class="toc-text">RHICommand 的提交接口</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#ENQUEUE-RENDER-COMMAND-%E5%AE%8F"><span class="toc-number">1.3.1.</span> <span class="toc-text">** ENQUEUE_RENDER_COMMAND 宏**</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AF%8F%E4%B8%AACommand%EF%BC%8C%E5%9C%A8CommandList%E9%83%BD%E6%9C%89%E5%85%B6%E5%AF%B9%E5%BA%94%E7%9A%84%E5%87%BD%E6%95%B0%E5%B0%86Command%E5%8A%A0%E5%85%A5%E9%98%9F%E5%88%97%E3%80%82"><span class="toc-number">1.3.2.</span> <span class="toc-text">** 每个Command，在CommandList都有其对应的函数将Command加入队列。**</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#FRHICommandListBase"><span class="toc-number">2.</span> <span class="toc-text">FRHICommandListBase</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E5%91%BD%E4%BB%A4-FRHICommandListBase-Execute"><span class="toc-number">2.1.</span> <span class="toc-text">执行命令 FRHICommandListBase::Execute()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FRHICommandList"><span class="toc-number">2.2.</span> <span class="toc-text">FRHICommandList</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FRHICommandListImmediate"><span class="toc-number">2.3.</span> <span class="toc-text">FRHICommandListImmediate</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FRHICommandListExecutor"><span class="toc-number">2.4.</span> <span class="toc-text">FRHICommandListExecutor</span></a></li></ol></li></ol>
+</div>
+</div>
+          <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/avatar.webp" data-sizes="auto" alt="OnricYF" class="lazyload">
+  <div class="sidebar-author-name">OnricYF</div>
+  <div class="sidebar-description">TRASH ARTIST</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>Post</div>
+    <div class="sidebar-state-number">144</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>Category</div>
+    <div class="sidebar-state-number">33</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>Tag</div>
+    <div class="sidebar-state-number">82</div>
+  </div>
+</div>
+<div class="sidebar-social" >
+    <div class="icon-email sidebar-social-icon">
+      <a href=mailto:a1521070145@gmail.com itemprop="url" target="_blank" aria-label="email" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-github sidebar-social-icon">
+      <a href=https://github.com/Madoka9 itemprop="url" target="_blank" aria-label="github" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-bilibili sidebar-social-icon">
+      <a href=https://space.bilibili.com/5862963 itemprop="url" target="_blank" aria-label="bilibili" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-zhihu sidebar-social-icon">
+      <a href=https://www.zhihu.com/people/lan-mei-sheng-dai-77 itemprop="url" target="_blank" aria-label="zhihu" rel="noopener nofollow noreferrer"></a>
+    </div>
+</div>
+<div class="sidebar-menu">
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/" aria-label="Home"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Home</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/archives" aria-label="Archives"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Archives</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/about" aria-label="About"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">About</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/friend" aria-label="Friend"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Friend</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/portfolio" aria-label="Portfolio"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Portfolio</div>
+      </div>
+</div>
+</div>
+          <div class="sidebar-btn-wrapper" style="position:static">
+            <div class="sidebar-toc-btn current"></div>
+            <div class="sidebar-common-btn"></div>
+          </div>
+    </div>
+  </div>
+      <meting-js
+        theme="var(--color-link)"
+        id="385907592"
+        server="netease"
+        type="playlist"
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        class="aplayer-after-sidebar"
+      ></meting-js>
+  <div class="sidebar-widget">
+  </div>
+  </div>
+</aside>
+
+          <section id="main" aria-label="Main content"><article id="post-Note/UnrealEngine/RHI/FRHICommand &amp;&amp; FRHICommandList" class="h-entry article" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner" data-aos="fade-up">
+    <div class="article-meta">
+      <div class="article-date">
+  <span class="article-date-link icon-calendar" data-aos="zoom-in">
+    <time datetime="2026-07-16T02:45:26.000Z" itemprop="datePublished">2026-07-16</time>
+    <time style="display: none;" id="post-update-time">2026-07-16</time>
+  </span>
+</div>
+
+    </div>
+    
+    <div class="hr-line"></div>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+        <h1 id="FRHICommand"><a href="#FRHICommand" class="headerlink" title="FRHICommand"></a>FRHICommand</h1><p>多线程架构下（GameThread –  RenderThread – RHIThread）渲染时，不会直接调用图形API的上下文的接口</p>
+<p>而是创建一个个FRHICommand对象（构成一个链表），并赋值给FExecuteRHIThreadTask对象的FRHICommandListBase* RHICmdList</p>
+<p>接着FExecuteRHIThreadTask对象会被压入到TaskGraph[ENamedThreads::RHIThread]的Queue队列中</p>
+<p>RHIThread依次处理TaskGraph[ENamedThreads::RHIThread]的Queue队列中任务，执行FExecuteRHIThreadTask时</p>
+<p>将该对象中FRHICommandListBase* RHICmdList链表中的FRHICommand转换成图形API的上下文的接口并调用执行</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">FRHICommandBase</span>  </span></span><br><span class="line"><span class="class">&#123;</span>  </span><br><span class="line">	<span class="comment">//指向下一个命令的指针</span></span><br><span class="line">    FRHICommandBase* Next = nullptr;  </span><br><span class="line">    <span class="comment">//执行后销毁</span></span><br><span class="line">    virtual <span class="type">void</span> <span class="title function_">ExecuteAndDestruct</span><span class="params">(FRHICommandListBase&amp; CmdList)</span> = <span class="number">0</span>;  </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">template&lt;typename TCmd, typename NameType = FUnnamedRhiCommand&gt;  </span><br><span class="line"><span class="keyword">struct</span> FRHICommand : public FRHICommandBase  </span><br><span class="line">&#123;  </span><br><span class="line"><span class="meta">#<span class="keyword">if</span> RHICOMMAND_CALLSTACK  </span></span><br><span class="line">    uint64 StackFrames[<span class="number">16</span>];  </span><br><span class="line">  </span><br><span class="line">    FRHICommand()    &#123;       FPlatformStackWalk::CaptureStackBackTrace(StackFrames, <span class="number">16</span>);    &#125;<span class="meta">#<span class="keyword">endif</span>  </span></span><br><span class="line">  </span><br><span class="line">    <span class="type">void</span> <span class="title function_">ExecuteAndDestruct</span><span class="params">(FRHICommandListBase&amp; CmdList)</span> override final  </span><br><span class="line">    &#123;  </span><br><span class="line">       LLM_SCOPE_BYNAME(TEXT(<span class="string">&quot;RHIMisc/CommandList/ExecuteAndDestruct&quot;</span>));  </span><br><span class="line">       TRACE_CPUPROFILER_EVENT_SCOPE_ON_CHANNEL_STR(NameType::TStr(), RHICommandsChannel);  </span><br><span class="line">  </span><br><span class="line">       TCmd* ThisCmd = static_cast&lt;TCmd*&gt;(this);  </span><br><span class="line">       ThisCmd-&gt;Execute(CmdList);       ThisCmd-&gt;~TCmd();    &#125;&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="通过宏声明-FRHICOMMAND-MACRO"><a href="#通过宏声明-FRHICOMMAND-MACRO" class="headerlink" title="通过宏声明 FRHICOMMAND_MACRO"></a>通过宏声明 FRHICOMMAND_MACRO</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">FRHICOMMAND_MACRO(FRHICommandSetGPUMask)  </span><br><span class="line">&#123;  </span><br><span class="line">    FRHIGPUMask GPUMask;  </span><br><span class="line">    FORCEINLINE_DEBUGGABLE <span class="title function_">FRHICommandSetGPUMask</span><span class="params">(FRHIGPUMask InGPUMask)</span>  </span><br><span class="line">       : <span class="title function_">GPUMask</span><span class="params">(InGPUMask)</span>  </span><br><span class="line">    &#123;  </span><br><span class="line">    &#125;    RHI_EXECUTE_API <span class="type">void</span> <span class="title function_">Execute</span><span class="params">(FRHICommandListBase&amp; CmdList)</span>;  </span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//=========================================================================</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> FRHICOMMAND_MACRO(CommandName)                       \  </span></span><br><span class="line">    <span class="keyword">struct</span> <span class="title function_">PREPROCESSOR_JOIN</span><span class="params">(CommandName##String, __LINE__)</span>          \  </span><br><span class="line">    &#123;                                               \  </span><br><span class="line">       <span class="type">static</span> <span class="type">const</span> TCHAR* <span class="title function_">TStr</span><span class="params">()</span> &#123; <span class="keyword">return</span> TEXT(#CommandName); &#125;  \  </span><br><span class="line">    &#125;;                                              \  </span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">CommandName</span> <span class="keyword">final</span> :</span> public FRHICommand&lt;CommandName, PREPROCESSOR_JOIN(CommandName##String, __LINE__)&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Execute的实现大部分在RHICommandListCommandExecutes.ini</li>
+</ul>
+<h2 id="通过宏派生"><a href="#通过宏派生" class="headerlink" title="通过宏派生"></a>通过宏派生</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">FRHICOMMAND_MACRO_TPL(TRHIShader, FRHICommandSetShaderParameters)  </span><br><span class="line">&#123;  </span><br><span class="line">    TRHIShader* Shader;  </span><br><span class="line">    TConstArrayView&lt;uint8&gt; ParametersData;  </span><br><span class="line">    TConstArrayView&lt;FRHIShaderParameter&gt; Parameters;  </span><br><span class="line">    TConstArrayView&lt;FRHIShaderParameterResource&gt; ResourceParameters;  </span><br><span class="line">    TConstArrayView&lt;FRHIShaderParameterResource&gt; BindlessParameters;  </span><br><span class="line">  </span><br><span class="line">    FORCEINLINE_DEBUGGABLE <span class="title function_">FRHICommandSetShaderParameters</span><span class="params">(  </span></span><br><span class="line"><span class="params">       TRHIShader* InShader  </span></span><br><span class="line"><span class="params">       , TConstArrayView&lt;uint8&gt; InParametersData  </span></span><br><span class="line"><span class="params">       , TConstArrayView&lt;FRHIShaderParameter&gt; InParameters  </span></span><br><span class="line"><span class="params">       , TConstArrayView&lt;FRHIShaderParameterResource&gt; InResourceParameters  </span></span><br><span class="line"><span class="params">       , TConstArrayView&lt;FRHIShaderParameterResource&gt; InBindlessParameters  </span></span><br><span class="line"><span class="params">    )</span>       : <span class="title function_">Shader</span><span class="params">(InShader)</span>  </span><br><span class="line">       , <span class="title function_">ParametersData</span><span class="params">(InParametersData)</span>  </span><br><span class="line">       , <span class="title function_">Parameters</span><span class="params">(InParameters)</span>  </span><br><span class="line">       , <span class="title function_">ResourceParameters</span><span class="params">(InResourceParameters)</span>  </span><br><span class="line">       , <span class="title function_">BindlessParameters</span><span class="params">(InBindlessParameters)</span>  </span><br><span class="line">    &#123;  </span><br><span class="line">    &#125;    RHI_EXECUTE_API <span class="type">void</span> <span class="title function_">Execute</span><span class="params">(FRHICommandListBase&amp; CmdList)</span>;  </span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//=========================================================================</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> FRHICOMMAND_MACRO_TPL(TemplateType, CommandName)          \  </span></span><br><span class="line">    <span class="keyword">struct</span> <span class="title function_">PREPROCESSOR_JOIN</span><span class="params">(CommandName##String, __LINE__)</span>          \  </span><br><span class="line">    &#123;                                               \  </span><br><span class="line">       <span class="type">static</span> <span class="type">const</span> TCHAR* <span class="title function_">TStr</span><span class="params">()</span> &#123; <span class="keyword">return</span> TEXT(#CommandName); &#125;  \  </span><br><span class="line">    &#125;;                                              \  </span><br><span class="line">    template&lt;typename TemplateType&gt;                            \  </span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">CommandName</span> <span class="keyword">final</span> :</span> public FRHICommand&lt;CommandName&lt;TemplateType&gt;, PREPROCESSOR_JOIN(CommandName##String, __LINE__)&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Execute的实现大部分在RHICommandListCommandExecutes.ini</li>
+</ul>
+<h2 id="RHICommand-的提交接口"><a href="#RHICommand-的提交接口" class="headerlink" title="RHICommand 的提交接口"></a><strong>RHICommand 的提交接口</strong></h2><h4 id="ENQUEUE-RENDER-COMMAND-宏"><a href="#ENQUEUE-RENDER-COMMAND-宏" class="headerlink" title="** ENQUEUE_RENDER_COMMAND 宏**"></a>** <code>ENQUEUE_RENDER_COMMAND</code> 宏**</h4><p>[[ENQUEUE_RENDER_COMMAND]]<br>这是最常用的提交 RHICommand 的接口。它会将命令封装成一个闭包（Lambda），并提交到渲染线程的命令队列中。</p>
+<p><strong>示例代码</strong>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ENQUEUE_RENDER_COMMAND(MyCustomCommand)(</span><br><span class="line">    [InParams](FRHICommandListImmediate&amp; RHICmdList) &#123;</span><br><span class="line">        <span class="comment">// 具体的渲染操作（如设置状态、绘制等）</span></span><br><span class="line">        RHICmdList.SetRenderTarget(...);</span><br><span class="line">        RHICmdList.DrawPrimitive(...);</span><br><span class="line">    &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p><strong>接口作用</strong>：</p>
+<ul>
+<li><p>将 Lambda 表达式包装为一个 <code>FRHICommand</code> 对象。</p>
+</li>
+<li><p>通过渲染线程的任务队列（<code>FRHICommandList</code>）提交命令。</p>
+</li>
+</ul>
+<h3 id="每个Command，在CommandList都有其对应的函数将Command加入队列。"><a href="#每个Command，在CommandList都有其对应的函数将Command加入队列。" class="headerlink" title="** 每个Command，在CommandList都有其对应的函数将Command加入队列。**"></a>** 每个Command，在CommandList都有其对应的函数将Command加入队列。**</h3><p>如：FRHICommandDrawPrimitive 其对应函数 DrawIndexedPrimitive()</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">FRHICOMMAND_MACRO(FRHICommandDrawPrimitive)  </span><br><span class="line">&#123;  </span><br><span class="line">    uint32 BaseVertexIndex;  </span><br><span class="line">    uint32 NumPrimitives;  </span><br><span class="line">    uint32 NumInstances;  </span><br><span class="line">    FORCEINLINE_DEBUGGABLE <span class="title function_">FRHICommandDrawPrimitive</span><span class="params">(uint32 InBaseVertexIndex, uint32 InNumPrimitives, uint32 InNumInstances)</span>  </span><br><span class="line">       : <span class="title function_">BaseVertexIndex</span><span class="params">(InBaseVertexIndex)</span>  </span><br><span class="line">       , <span class="title function_">NumPrimitives</span><span class="params">(InNumPrimitives)</span>  </span><br><span class="line">       , <span class="title function_">NumInstances</span><span class="params">(InNumInstances)</span>  </span><br><span class="line">    &#123;    &#125;    RHI_EXECUTE_API <span class="type">void</span> <span class="title function_">Execute</span><span class="params">(FRHICommandListBase&amp; CmdList)</span>;  </span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">RHICmdList.DrawIndexedPrimitive(  </span><br><span class="line">    GParticleIndexBuffer.IndexBufferRHI,  </span><br><span class="line">    <span class="comment">/*BaseVertexIndex=*/</span> <span class="number">0</span>,  </span><br><span class="line">    <span class="comment">/*MinIndex=*/</span> <span class="number">0</span>,  </span><br><span class="line">    <span class="comment">/*NumVertices=*/</span> <span class="number">4</span>,  </span><br><span class="line">    <span class="comment">/*StartIndex=*/</span> <span class="number">0</span>,  </span><br><span class="line">    <span class="comment">/*NumPrimitives=*/</span> <span class="number">2</span>,  </span><br><span class="line">    <span class="comment">/*NumInstances=*/</span> SampleCount  </span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>RHICommand 的 Execute()的实现是通过<code>INTERNAL_DECORATOR</code>该宏<ul>
+<li>也就是说实际调用了<code>FD3D11DynamicRHI::RHIDrawIndexedPrimitive</code>，继而调用D3D11的原生API <code>DrawIndexed</code>。</li>
+</ul>
+</li>
+<li>最后在DrawIndexedPrimitive()中通过调用 ALLOC_COMMAND 将Command插入List</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">	ALLOC_COMMAND(FRHICommandDrawPrimitive)(BaseVertexIndex, NumPrimitives, NumInstances);</span><br><span class="line"></span><br><span class="line">FORCEINLINE_DEBUGGABLE <span class="type">void</span>* <span class="title function_">AllocCommand</span><span class="params">(int32 AllocSize, int32 Alignment)</span>  </span><br><span class="line">&#123;  </span><br><span class="line">    checkSlow(!IsExecuting());  </span><br><span class="line">    checkfSlow(!Bypass(), TEXT(<span class="string">&quot;Invalid attempt to record commands in bypass mode.&quot;</span>));  </span><br><span class="line">    FRHICommandBase* Result = (FRHICommandBase*) MemManager.Alloc(AllocSize, Alignment);  </span><br><span class="line">    ++NumCommands;  </span><br><span class="line">    *CommandLink = Result;  </span><br><span class="line">    CommandLink = &amp;Result-&gt;Next;  </span><br><span class="line">    <span class="keyword">return</span> Result;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="FRHICommandListBase"><a href="#FRHICommandListBase" class="headerlink" title="FRHICommandListBase"></a>FRHICommandListBase</h1><ul>
+<li>存储RHICommand的链表结构</li>
+</ul>
+<h3 id="执行命令-FRHICommandListBase-Execute"><a href="#执行命令-FRHICommandListBase-Execute" class="headerlink" title="执行命令 FRHICommandListBase::Execute()"></a>执行命令 FRHICommandListBase::Execute()</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">FRHICommandListBase::Execute</span><span class="params">()</span>  </span><br><span class="line">&#123;  </span><br><span class="line">    check(!IsExecuting());  </span><br><span class="line">    bExecuting = <span class="literal">true</span>;  </span><br><span class="line">    </span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	 ...  ...</span></span><br><span class="line"><span class="comment">	*/</span></span><br><span class="line"></span><br><span class="line">    FRHICommandListIterator <span class="title function_">Iter</span><span class="params">(*this)</span>;  </span><br><span class="line">    <span class="keyword">while</span> (Iter.HasCommandsLeft())  </span><br><span class="line">    &#123;       </span><br><span class="line">	    FRHICommandBase* Cmd = Iter.NextCommand();  </span><br><span class="line">	    Cmd-&gt;ExecuteAndDestruct(*this);  </span><br><span class="line">    &#125;&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">ExecuteAndDestruct</span><span class="params">(FRHICommandListBase&amp; CmdList)</span> override final  </span><br><span class="line">&#123;  </span><br><span class="line">    LLM_SCOPE_BYNAME(TEXT(<span class="string">&quot;RHIMisc/CommandList/ExecuteAndDestruct&quot;</span>));  </span><br><span class="line">    TRACE_CPUPROFILER_EVENT_SCOPE_ON_CHANNEL_STR(NameType::TStr(), RHICommandsChannel);  </span><br><span class="line">  </span><br><span class="line">    TCmd* ThisCmd = static_cast&lt;TCmd*&gt;(this);  </span><br><span class="line">    ThisCmd-&gt;Execute(CmdList);    </span><br><span class="line">    ThisCmd-&gt;~TCmd();&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>通过Iterator不断地执行CommandList中的命令并销毁，直至所有的命令执行完毕。</li>
+</ul>
+<h2 id="FRHICommandList"><a href="#FRHICommandList" class="headerlink" title="FRHICommandList"></a>FRHICommandList</h2><ul>
+<li>FRHICommandList -&gt; FRHIComputeCommandList -&gt; FRHICommandListBase</li>
+<li><code>FRHICommandList</code> 是记录和执行 RHICommand 的核心类</li>
+<li><strong><code>FRHICommandListImmediate</code></strong>：立即执行的命令列表（直接提交到 GPU）。</li>
+</ul>
+<h2 id="FRHICommandListImmediate"><a href="#FRHICommandListImmediate" class="headerlink" title="FRHICommandListImmediate"></a>FRHICommandListImmediate</h2><ul>
+<li>FRHICommandListImmediate -&gt; FRHICommandList -&gt; FRHIComputeCommandList -&gt; FRHICommandListBase</li>
+</ul>
+<h2 id="FRHICommandListExecutor"><a href="#FRHICommandListExecutor" class="headerlink" title="FRHICommandListExecutor"></a>FRHICommandListExecutor</h2><ul>
+<li>单独的一个类</li>
+<li>在UE4中通过该类来进行Command的执行, 但是在UE5.5已经合并到了FRHICommandListBase  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">	<span class="comment">//From UE4 Sourcecode</span></span><br><span class="line">	<span class="type">void</span> <span class="title function_">FRHICommandListExecutor::ExecuteInner_DoExecute</span><span class="params">(FRHICommandListBase&amp; CmdList)</span></span><br><span class="line">&#123;</span><br><span class="line">	FRHICommandListIterator <span class="title function_">Iter</span><span class="params">(CmdList)</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> (Iter.HasCommandsLeft())</span><br><span class="line">	&#123;</span><br><span class="line">		FRHICommandBase* Cmd = Iter.NextCommand();</span><br><span class="line">		GCurrentCommand = Cmd;</span><br><span class="line">		<span class="comment">//FPlatformMisc::Prefetch(Cmd-&gt;Next);</span></span><br><span class="line">		Cmd-&gt;ExecuteAndDestruct(CmdList, DebugContext);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	CmdList.Reset();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>暂时没去了解其他用处，有很多函数都被标记了’UE_DEPRECATED’, （待更新）</li>
+</ul>
+
+    </div>
+    <footer class="article-footer">
+        <a class="article-category-link" href="/en/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" title="技术笔记" data-aos="zoom-in">技术笔记</a><a class="article-category-link" href="/en/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/Unreal-Engine/" title="Unreal Engine" data-aos="zoom-in">Unreal Engine</a><a class="article-category-link" href="/en/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/Unreal-Engine/RHI/" title="RHI" data-aos="zoom-in">RHI</a>
+
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/en/tags/RHI/" rel="tag" title="RHI">RHI</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/en/tags/UnrealEngine/" rel="tag" title="UnrealEngine">UnrealEngine</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/en/tags/%E6%B8%B2%E6%9F%93/" rel="tag" title="渲染">渲染</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/en/tags/%E7%BA%BF%E7%A8%8B/" rel="tag" title="线程">线程</a></li></ul>
+
+    </footer>
+  </div>
+    <nav id="article-nav" aria-label="Article navigation" data-aos="fade-up">
+      <div class="article-nav-link-wrap left">
+            <img data-src="/images/banner.webp" data-sizes="auto" alt="ENQUEUE RENDER COMMAND" class="lazyload">
+        <a href="/en/2026/07/16/Note/UnrealEngine/RHI/ENQUEUE_RENDER_COMMAND/" aria-label="Prev: ENQUEUE RENDER COMMAND" title="Prev: ENQUEUE RENDER COMMAND"></a>
+        <div class="article-nav-caption">Prev</div>
+        <h3 class="article-nav-title">
+            ENQUEUE RENDER COMMAND
+        </h3>
+      </div>
+    <div class="article-nav-link-wrap right">
+          <img data-src="/images/banner.webp" data-sizes="auto" alt="Three.js - 使用自定义的Shader" class="lazyload">
+      <a href="/en/2026/02/25/ThreeJs/Three.js%20-%20%E4%BD%BF%E7%94%A8%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84Shader/" aria-label="Next: Three.js - 使用自定义的Shader"  title="Next: Three.js - 使用自定义的Shader"></a>
+      <div class="article-nav-caption">Next</div>
+      <h3 class="article-nav-title">
+          Three.js - 使用自定义的Shader
+      </h3>
+    </div>
+  </nav>
+
+</article>
+
+
+</section>
+        </div>
+        <footer id="footer" aria-label="Site footer">
+  <div style="width: 100%; overflow: hidden">
+    <div class="footer-line"></div>
+  </div>
+  <div id="footer-info">
+    <div>
+      <span class="icon-copyright"></span>
+        2020-2026
+        <span class="footer-info-sep rotate"></span>
+      OnricYF
+    </div>
+      <div>
+        Powered by&nbsp;<a href="https://hexo.io/" rel="noopener nofollow noreferrer" target="_blank">Hexo</a>&nbsp;
+        Theme.<a href="https://github.com/D-Sketon/hexo-theme-reimu" rel="noopener nofollow noreferrer" target="_blank">Reimu</a>
+      </div>
+      <div>
+        <span class="icon-brush"></span>
+        87.2k
+        &nbsp;|&nbsp;
+        <span class="icon-coffee"></span>
+        07:26
+      </div>
+      <div>
+        <span class="icon-eye"></span>
+        <span id="busuanzi_container_site_pv">Number of visits&nbsp;<span id="busuanzi_value_site_pv"></span></span>
+        &nbsp;|&nbsp;
+        <span class="icon-user"></span>
+        <span id="busuanzi_container_site_uv">Number of visitors&nbsp;<span id="busuanzi_value_site_uv"></span></span>
+      </div>
+  </div>
+</footer>
+
+          <div class="sidebar-top">
+            <div class="sidebar-top-taichi rotate"></div>
+            <div class="arrow-up"></div>
+          </div>
+        <div id="mask" class="hide"></div>
+      </div>
+      <nav id="mobile-nav" aria-label="Mobile navigation">
+  <div class="sidebar-wrap">
+        <div class="sidebar-toc-sidebar"><h3 class="toc-title">Contents</h3>
+<div class="sidebar-toc-wrapper toc-div-class" >
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#FRHICommand"><span class="toc-number">1.</span> <span class="toc-text">FRHICommand</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%9A%E8%BF%87%E5%AE%8F%E5%A3%B0%E6%98%8E-FRHICOMMAND-MACRO"><span class="toc-number">1.1.</span> <span class="toc-text">通过宏声明 FRHICOMMAND_MACRO</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%9A%E8%BF%87%E5%AE%8F%E6%B4%BE%E7%94%9F"><span class="toc-number">1.2.</span> <span class="toc-text">通过宏派生</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RHICommand-%E7%9A%84%E6%8F%90%E4%BA%A4%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.3.</span> <span class="toc-text">RHICommand 的提交接口</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#ENQUEUE-RENDER-COMMAND-%E5%AE%8F"><span class="toc-number">1.3.1.</span> <span class="toc-text">** ENQUEUE_RENDER_COMMAND 宏**</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AF%8F%E4%B8%AACommand%EF%BC%8C%E5%9C%A8CommandList%E9%83%BD%E6%9C%89%E5%85%B6%E5%AF%B9%E5%BA%94%E7%9A%84%E5%87%BD%E6%95%B0%E5%B0%86Command%E5%8A%A0%E5%85%A5%E9%98%9F%E5%88%97%E3%80%82"><span class="toc-number">1.3.2.</span> <span class="toc-text">** 每个Command，在CommandList都有其对应的函数将Command加入队列。**</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#FRHICommandListBase"><span class="toc-number">2.</span> <span class="toc-text">FRHICommandListBase</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E5%91%BD%E4%BB%A4-FRHICommandListBase-Execute"><span class="toc-number">2.1.</span> <span class="toc-text">执行命令 FRHICommandListBase::Execute()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FRHICommandList"><span class="toc-number">2.2.</span> <span class="toc-text">FRHICommandList</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FRHICommandListImmediate"><span class="toc-number">2.3.</span> <span class="toc-text">FRHICommandListImmediate</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FRHICommandListExecutor"><span class="toc-number">2.4.</span> <span class="toc-text">FRHICommandListExecutor</span></a></li></ol></li></ol>
+</div>
+</div>
+        <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/avatar.webp" data-sizes="auto" alt="OnricYF" class="lazyload">
+  <div class="sidebar-author-name">OnricYF</div>
+  <div class="sidebar-description">TRASH ARTIST</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>Post</div>
+    <div class="sidebar-state-number">144</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>Category</div>
+    <div class="sidebar-state-number">33</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>Tag</div>
+    <div class="sidebar-state-number">82</div>
+  </div>
+</div>
+<div class="sidebar-social" >
+    <div class="icon-email sidebar-social-icon">
+      <a href=mailto:a1521070145@gmail.com itemprop="url" target="_blank" aria-label="email" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-github sidebar-social-icon">
+      <a href=https://github.com/Madoka9 itemprop="url" target="_blank" aria-label="github" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-bilibili sidebar-social-icon">
+      <a href=https://space.bilibili.com/5862963 itemprop="url" target="_blank" aria-label="bilibili" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-zhihu sidebar-social-icon">
+      <a href=https://www.zhihu.com/people/lan-mei-sheng-dai-77 itemprop="url" target="_blank" aria-label="zhihu" rel="noopener nofollow noreferrer"></a>
+    </div>
+</div>
+<div class="sidebar-menu">
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/" aria-label="Home"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Home</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/archives" aria-label="Archives"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Archives</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/about" aria-label="About"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">About</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/friend" aria-label="Friend"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Friend</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/portfolio" aria-label="Portfolio"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Portfolio</div>
+      </div>
+</div>
+</div>
+  </div>
+      <div class="sidebar-btn-wrapper">
+        <div class="sidebar-toc-btn current"></div>
+        <div class="sidebar-common-btn"></div>
+      </div>
+</nav>
+
+    </div>
+    
+<script src="https://npm.webcache.cn/lazysizes@5.3.2/lazysizes.min.js" integrity="sha384-3gT&#x2F;vsepWkfz&#x2F;ff7PpWNUeMzeWoH3cDhm&#x2F;A8jM7ouoAK0&#x2F;fP&#x2F;9bcHHR5kHq2nf+e" crossorigin="anonymous"></script>
+
+
+<script src="https://npm.webcache.cn/clipboard@2.0.11/dist/clipboard.min.js" integrity="sha384-J08i8An&#x2F;QeARD9ExYpvphB8BsyOj3Gh2TSh1aLINKO3L0cMSH2dN3E22zFoXEi0Q" crossorigin="anonymous"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+  
+<script src="/js/aos.js"></script>
+
+  <script>
+    var aosInit = () => {
+      AOS.init({
+        duration: 1000,
+        easing: "ease",
+        once: true,
+        offset: 50,
+      });
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', aosInit);
+    } else {
+      aosInit();
+    }
+  </script>
+
+
+<script src="/js/pjax_script.js" data-pjax></script>
+
+
+
+
+  <script>
+    var setupFirework = () => {
+      if (!false || !window.matchMedia('(max-width: 768px)').matches) {
+        window.firework && window.firework(JSON.parse('{"excludeElements":["a","button"],"particles":[{"shape":"circle","move":["emit"],"easing":"easeOutExpo","colors":["var(--red-1)","var(--red-2)","var(--red-3)","var(--red-4)"],"number":20,"duration":[1200,1800],"shapeOptions":{"radius":[16,32],"alpha":[0.3,0.5]}},{"shape":"circle","move":["diffuse"],"easing":"easeOutExpo","colors":["var(--red-0)"],"number":1,"duration":[1200,1800],"shapeOptions":{"radius":20,"alpha":[0.2,0.5],"lineWidth":6}}]}'));
+      }
+    }
+  </script>
+  
+<script src="https://npm.webcache.cn/mouse-firework@0.2.0/dist/index.umd.js" integrity="sha384-qi9WggRt19tv8Vc7pCHW3ulMNLwrn515zaLEWZjl1px07vz8+pUoWX8n1rgq282T" crossorigin="anonymous" onload="setupFirework()" defer></script>
+
+
+  
+<script src="https://npm.webcache.cn/theme-shokax-pjax@0.0.3/dist/index.umd.js" integrity="sha384-xneY1WY8hOfUzswrE4CrYq35N4BdVcxqxwHPr9zawE&#x2F;jMSCxD+jAPU55x&#x2F;jj3wlf" crossorigin="anonymous"></script>
+
+  
+<script src="/js/pjax.js"></script>
+
+
+
+
+
+<div id="lazy-script">
+  <div>
+      
+      
+      <script data-pjax>
+        window.REIMU_POST = {
+          author: "OnricYF",
+          title: "FRHICommand",
+          url: "http://example.com/2026/07/16/Note/UnrealEngine/RHI/FRHICommand%20&amp;&amp;%20FRHICommandList/",
+          excerpt: "",
+          description: "",
+          stripContent: "FRHICommand多线程架构下（GameThread –  RenderThread – RHIThread）渲染时，不会直接调用图形API的上下文的接口 而是创建一个个FRHICommand对象（构成一个链表），并赋值给FExecuteRHIThreadTask对象的FRHICommandListBase* RHICmdList 接着FExecuteRHIThreadTask对象会被压入到TaskGraph[ENamedThreads::RHIThread]的Queue队列中 RHIThr",
+          date: "Thu Jul 16 2026 10:45:26 GMT+0800",
+          updated: "Thu Jul 16 2026 11:10:11 GMT+0800",
+          cover: "/images/banner.webp",
+        };
+      </script>
+        
+<script src="/js/insert_highlight.js" data-pjax></script>
+
+      
+<script src="/js/tabs.js" data-pjax defer></script>
+
+      <script type="module" data-pjax>
+        (async () => {
+          const PhotoSwipeLightbox = (await safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe-lightbox.esm.min.js", "sha384-DiL6M/gG+wmTxmCRZyD1zee6lIhawn5TGvED0FOh7fXcN9B0aZ9dexSF/N6lrZi/")).default;
+          const initPswp = (gallery, children) => {
+            if (_$$(`${gallery} ${children}`).length > 0) {
+              new PhotoSwipeLightbox({
+                gallery,
+                children,
+                pswpModule: () => safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.esm.min.js", "sha384-WkkO3GCmgkC3VQWpaV8DqhKJqpzpF9JoByxDmnV8+oTJ7m3DfYEWX1fu1scuS4+s")
+              }).init();
+            }
+          }
+          const pswp = () => {
+            initPswp('.article-entry', 'a.article-gallery-item');
+            initPswp('.article-gallery', 'a.article-gallery-item');
+          }
+          pswp();
+        })();
+      </script>
+  </div>
+</div>
+
+
+  <script>
+    console.log(String.raw`%c 
+ ______     ______     __     __    __     __  __    
+/\  == \   /\  ___\   /\ \   /\ "-./  \   /\ \/\ \   
+\ \  __<   \ \  __\   \ \ \  \ \ \-./\ \  \ \ \_\ \  
+ \ \_\ \_\  \ \_____\  \ \_\  \ \_\ \ \_\  \ \_____\ 
+  \/_/ /_/   \/_____/   \/_/   \/_/  \/_/   \/_____/ 
+                                                  
+`,'color: #ff5252;')
+    console.log('%c Theme.Reimu v' + '1.12.0' + ' %c https://github.com/D-Sketon/hexo-theme-reimu ', 'color: white; background: #ff5252; padding:5px 0;', 'padding:4px;border:1px solid #ff5252;')
+  </script>
+  
+
+
+  
+<script src="https://npm.webcache.cn/busuanzi@2.3.0/bsz.pure.mini.js" integrity="sha384-0M75wtSkhjIInv4coYlaJU83+OypaRCIq2SukQVQX04eGTCBXJDuWAbJet56id+S" crossorigin="anonymous" async></script>
+
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      for (let registration of registrations) {
+        registration.unregister();
+      }
+    });
+  }
+</script>
+
+
+    <script>
+      var setupAPlayer = () => {
+        if (!true || !window.matchMedia('(max-width: 768px)').matches) {
+          if (window.matchMedia('(max-width: 959px)').matches) {
+            const meting = _$('meting-js');
+            if (meting) {
+              meting.setAttribute('fixed', 'true');
+              const aside = meting.parentNode?.parentNode;
+              if (aside?.tagName === 'ASIDE') {
+                meting.parentNode.removeChild(meting);
+                document.body.appendChild(meting);
+              }
+            }
+          }
+        }
+      };
+    </script>
+  
+<script src="https://npm.webcache.cn/aplayer@1.10.1/dist/APlayer.min.js" integrity="sha384-gdGYZwHnfJM54evoZhpO0s6ZF5BQiybkiyW7VXr+h5UfruuRL&#x2F;aORyw+5+HZoU6e" crossorigin="anonymous" defer onload="setupAPlayer()"></script>
+
+    
+<script src="https://npm.webcache.cn/meting@2.0.1/dist/Meting.min.js" integrity="sha384-ASVlpKF80A22OXTK3tfEjZm1EL6uFMKIC4p8+0maanw1S&#x2F;IyB+Y4JG+ZDU7GpKE8" crossorigin="anonymous" defer></script>
+
+
+
+  </body>
+  </html>

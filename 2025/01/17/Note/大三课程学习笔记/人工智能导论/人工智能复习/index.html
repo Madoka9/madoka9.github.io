@@ -1,0 +1,804 @@
+  <!DOCTYPE html>
+  <html lang="zh-CN"  
+      data-theme-mode="auto"
+  >
+  <head>
+  <meta charset="utf-8">
+  
+  
+  
+  <script>window.REIMU_CONFIG = {};window.REIMU_CONFIG.icon_font = '4552607_4k4bc36ef96';window.REIMU_CONFIG.clipboard_tips = {"success":{"zh-CN":"复制成功 (*^▽^*)","en":"Copy successfully (*^▽^*)"},"fail":{"zh-CN":"复制失败 (ﾟ⊿ﾟ)ﾂ","en":"Copy failed (ﾟ⊿ﾟ)ﾂ"},"copyright":{"enable":false,"count":50,"license_type":"by-nc-sa"}};window.REIMU_CONFIG.clipboard_tips.copyright.content = '本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！';window.REIMU_CONFIG.code_block = {"expand":true};window.REIMU_CONFIG.base = 'http://example.com';window.REIMU_CONFIG.i18n_languages = ["en"];</script>
+  <title>
+    人工智能导论 - 1 描述Web信息检索的步骤。 | YF&#39;s Blog
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic|Noto Serif SC:400,400italic,700,700italic&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic|Noto Serif SC:400,400italic,700,700italic&display=swap" media="print" onload="this.media='all'">
+    <link rel="preload" href="//at.alicdn.com/t/c/font_4552607_4k4bc36ef96.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+    
+<link rel="stylesheet" href="/css/loader.css">
+
+    <meta name="description" content="1 描述Web信息检索的步骤。信息检索 定义：从非结构化文档集中查找与用户需求相关的信息 获取(GIVEN)： 自然语言文档集 用户查询   结果(Result) 与用户查询相关的排序文档子集    子任务 信息检索或浏览 牵引（Pulling） 静态文档集 来自多个用户的短期活动   信息过滤 推（Pushing） 静态用户查询 少数用户的长期活动    步骤(1)Web查询界面。(2)查询提交">
+<meta property="og:type" content="article">
+<meta property="og:title" content="人工智能导论 - 1 描述Web信息检索的步骤。">
+<meta property="og:url" content="http://example.com/2025/01/17/Note/%E5%A4%A7%E4%B8%89%E8%AF%BE%E7%A8%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%AF%BC%E8%AE%BA/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%A4%8D%E4%B9%A0/index.html">
+<meta property="og:site_name" content="YF&#39;s Blog">
+<meta property="og:description" content="1 描述Web信息检索的步骤。信息检索 定义：从非结构化文档集中查找与用户需求相关的信息 获取(GIVEN)： 自然语言文档集 用户查询   结果(Result) 与用户查询相关的排序文档子集    子任务 信息检索或浏览 牵引（Pulling） 静态文档集 来自多个用户的短期活动   信息过滤 推（Pushing） 静态用户查询 少数用户的长期活动    步骤(1)Web查询界面。(2)查询提交">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020221116104007.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020221116105437.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020221214201004.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020221214201017.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020221214201032.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020221214201041.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020221214194823.png">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-6dec04fffb8054332815f8001513f0db_720w.webp">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020221214195226.png">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-e99ce4f717a64be8b264365bf39b3fc5_720w.webp">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020221214195847.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020221214200639.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020221214202801.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020221214203047.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020221221153126.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020221221153138.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020221221153148.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020221221162029.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020221221162100.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020221221162217.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020221221162232.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020221221162247.png">
+<meta property="article:published_time" content="2025-01-17T14:04:10.000Z">
+<meta property="article:modified_time" content="2026-07-16T03:38:13.920Z">
+<meta property="article:author" content="OnricYF">
+<meta property="article:tag" content="人工智能">
+<meta property="article:tag" content="人工智能导论">
+<meta property="article:tag" content="全局光照">
+<meta property="article:tag" content="大三课程学习笔记">
+<meta property="article:tag" content="排序">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/blog/Pasted%20image%2020221116104007.png">
+    <link rel="alternate" href="/atom.xml" title="YF's Blog" type="application/atom+xml">
+    <link rel="shortcut icon" href="/images/favicon.ico">
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.css" integrity="sha384-IfxC36XL/toUyJ939C73PcgMuRzAZuIzZxE38drsmO5p6jD7ei+Zx/1oA/0l8ysE" crossorigin="anonymous">
+    
+<script src="https://npm.webcache.cn/pace-js@1.2.4/pace.min.js" integrity="sha384-k6YtvFUEIuEFBdrLKJ3YAUbBki333tj1CSUisai5Cswsg9wcLNaPzsTHDswp4Az8" crossorigin="anonymous"></script>
+
+    
+<link rel="stylesheet" href="https://npm.webcache.cn/@reimujs/aos@0.1.2/dist/aos.css" integrity="sha384-GMRP93c6Hkz9JVKGAuRR3nTS7M07RwPgTFenXiosjq2VbVgvdDNcz1g6Mkj8AONa" crossorigin="anonymous">
+
+    <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://npm.webcache.cn/aplayer@1.10.1/dist/APlayer.min.css" integrity="sha384-tLMkTWh2pfXNWGFlUS0w1TFtRG5xZ9lPWFOooj+vDDLIL+xBGQU/voDBY5XE2lVh" crossorigin="anonymous">
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+  <body>
+      <div id='loader'>
+    <div class="loading-left-bg loading-bg"></div>
+    <div class="loading-right-bg loading-bg"></div>
+    <div class="spinner-box">
+      <div class="loading-taichi rotate">
+          <svg width="150" height="150" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="https://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
+            <path d="M303.5 432A80 80 0 0 1 291.5 592A80 80 0 0 1 303.5 432z" fill="var(--red-1, #ff5252)" />
+            <path d="M512 65A447 447 0 0 1 512 959L512 929A417 417 0 0 0 512 95A417 417 0 0 0 512 929L512 959A447 447 0 0 1 512 65z 
+           M512 95A417 417 0 0 1 929 512A208.5 208.5 0 0 1 720.5 720.5L720.5 592A80 80 0 0 0 720.5 432A80 80 0 0 0 720.5 592L720.5 720.5A208.5 208.5 0 0 1 512 512A208.5 208.5 0 0 0 303.5 303.5A208.5 208.5 0 0 0 95 512A417 417 0 0 1 512 95z" fill="var(--red-1, #ff5252)" />
+          </svg>
+      </div>
+      <div class="loading-word">少女祈祷中...</div>
+    </div>
+  </div>
+  </div>
+  <script>
+    var time = null;
+    var loaderEl = document.getElementById('loader');
+    var startLoading = () => {
+      time = Date.now();
+      loaderEl.classList.remove("loading");
+    }
+    var hideLoader = () => {
+      document.body.style.overflow = 'auto';
+      loader.classList.add('loading');
+    };
+
+    var endLoading = () => {
+      if (!time) {
+        hideLoader();
+      } else {
+        if (Date.now() - time > 500) {
+          time = null;
+          hideLoader();
+        } else {
+          setTimeout(endLoading, 500 - (Date.now() - time));
+          time = null;
+        }
+      }
+    }
+    window.addEventListener('DOMContentLoaded', endLoading);
+    loaderEl.addEventListener('click', endLoading);
+  </script>
+<div id="copy-tooltip"></div>
+<div id="heatmap-tooltip"></div>
+
+
+    <div id="container">
+      <div id="wrap">
+        <div id="header-nav">
+  <nav id="main-nav" aria-label="Primary navigation">
+        <a class="main-nav-link-wrap" href="/">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">首页</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/archives">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">归档</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/about">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">关于</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/friend">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">友链</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/portfolio">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">作品集</span>
+        </span>
+    <a id="main-nav-toggle" class="nav-icon" aria-label="Toggle navigation" role="button"></a>
+  </nav>
+  <nav id="sub-nav" aria-label="Secondary navigation">
+  </nav>
+    <nav id="i18n-nav" aria-label="Language selection">
+      <div class="custom-dropdown">
+        <div class="select-selected" id="select-selected" role="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Language menu">
+          <span id="nav-language-btn" class="nav-icon" style="padding: 0 20px 0 0"></span>
+          <span id="selected-lang">简体中文</span>
+        </div>
+        <ul class="select-items" id="select-items" role="listbox" aria-label="Languages">
+            <li data-value="zh-CN" role="option" class="selected" aria-selected="true">简体中文</li>
+            <li data-value="en" role="option" aria-selected="false">English</li>
+        </ul>
+      </div>
+      <script>
+        var selectSelected = document.getElementById("select-selected");
+        var selectedLang = document.getElementById("selected-lang");
+        var selectItems = document.getElementById("select-items");
+        var selectOptions = selectItems.querySelectorAll("li");
+
+        selectSelected.addEventListener("click", () => {
+          selectItems.classList.toggle("show");
+          var expanded = selectSelected.getAttribute("aria-expanded") === "true";
+          selectSelected.setAttribute("aria-expanded", (!expanded).toString());
+        });
+
+        selectOptions.forEach((item) => {
+          item.addEventListener("click", () => {
+            const langMap = {};
+              langMap['zh-CN'] = '/2025/01/17/Note/大三课程学习笔记/人工智能导论/人工智能复习/';
+              langMap['en'] = '/en/2025/01/17/Note/大三课程学习笔记/人工智能导论/人工智能复习/';
+            selectedLang.textContent = item.textContent;
+            selectItems.classList.remove("show");
+            selectOptions.forEach((option) => {
+              option.classList.remove("selected");
+            });
+            item.classList.add("selected");
+            window.location = langMap[item.dataset.value];
+          });
+        });
+
+        document.addEventListener("click", (event) => {
+          if (!event.target.closest(".custom-dropdown")) {
+            selectItems.classList.remove("show");
+            selectSelected.setAttribute("aria-expanded", "false");
+          }
+        });
+      </script>
+    </nav>
+</div>
+<header id="header" aria-label="Site header">
+        <picture>
+        </picture>
+          <img  fetchpriority="high" src="/images/banner.webp" alt="人工智能导论 - 1 描述Web信息检索的步骤。">
+  <div id="header-outer">
+    <div id="header-title">
+          <span id="logo">
+            <h1 data-aos="slide-up">人工智能导论 - 1 描述Web信息检索的步骤。</h1>
+          </span>
+        <h2 id="subtitle-wrap" data-aos="slide-down">
+        </h2>
+    </div>
+  </div>
+</header>
+
+        <div id="content" aria-label="Page content"  class="sidebar-right" >
+          <aside id="sidebar" aria-label="Sidebar">
+  <div class="sidebar-wrapper-container sticky">
+  <div class="sidebar-wrapper">
+    <div class="sidebar-wrap" data-aos="fade-up">
+          <div class="sidebar-toc-sidebar"><h3 class="toc-title">文章目录</h3>
+<div class="sidebar-toc-wrapper toc-div-class" >
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E6%8F%8F%E8%BF%B0Web%E4%BF%A1%E6%81%AF%E6%A3%80%E7%B4%A2%E7%9A%84%E6%AD%A5%E9%AA%A4%E3%80%82"><span class="toc-number">1.</span> <span class="toc-text">1 描述Web信息检索的步骤。</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%A3%80%E7%B4%A2"><span class="toc-number">1.1.</span> <span class="toc-text">信息检索</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%90%E4%BB%BB%E5%8A%A1"><span class="toc-number">1.2.</span> <span class="toc-text">子任务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.3.</span> <span class="toc-text">步骤</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E6%8F%8F%E8%BF%B0%E5%86%85%E6%A0%B8%E5%8C%96%E7%9A%84%E6%A6%82%E5%BF%B5%E3%80%82"><span class="toc-number">2.</span> <span class="toc-text">2 描述内核化的概念。</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E6%A0%B8%E6%84%9F%E7%9F%A5%E5%99%A8-Kernelized-Perceptron"><span class="toc-number">2.1.</span> <span class="toc-text">内核感知器(Kernelized Perceptron)</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-%E6%8F%8F%E8%BF%B0%E5%A6%82%E4%BD%95%E5%AF%B9%E6%8A%97%E8%BF%87%E5%BA%A6%E6%8B%9F%E5%90%88-Overfitting-%E3%80%82"><span class="toc-number">3.</span> <span class="toc-text">3 描述如何对抗过度拟合(Overfitting)。</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E9%81%BF%E5%85%8D%E8%BF%87%E5%BA%A6%E6%8B%9F%E5%90%88"><span class="toc-number">3.1.</span> <span class="toc-text">如何避免过度拟合</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9%E2%80%9C%E6%9C%80%E4%BD%B3%E2%80%9D%E6%A0%91%EF%BC%9A"><span class="toc-number">3.2.</span> <span class="toc-text">如何选择“最佳”树：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%A4%E7%A7%8D%E6%8E%A7%E5%88%B6%E8%BF%87%E5%BA%A6%E6%8B%9F%E5%90%88%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">3.3.</span> <span class="toc-text">两种控制过度拟合的方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-%E6%8F%8F%E8%BF%B0K-means%E7%AE%97%E6%B3%95%E3%80%82"><span class="toc-number">4.</span> <span class="toc-text">4 描述K-means算法。</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BE%8B"><span class="toc-number">4.1.</span> <span class="toc-text">例</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5-%E6%8F%8F%E8%BF%B0%E5%B8%83%E5%B0%94%E6%A8%A1%E5%9E%8B%E5%92%8C%E5%90%91%E9%87%8F%E7%A9%BA%E9%97%B4%E6%A8%A1%E5%9E%8B%E3%80%82"><span class="toc-number">5.</span> <span class="toc-text">5 描述布尔模型和向量空间模型。</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%83%E5%B0%94%E6%A8%A1%E5%9E%8B"><span class="toc-number">5.1.</span> <span class="toc-text">布尔模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%91%E9%87%8F%E7%A9%BA%E9%97%B4%E6%A8%A1%E5%9E%8B"><span class="toc-number">5.2.</span> <span class="toc-text">向量空间模型</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#6-%E5%88%97%E5%87%BAVPI%E7%9A%84%E5%B1%9E%E6%80%A7%E3%80%82"><span class="toc-number">6.</span> <span class="toc-text">6 列出VPI的属性。</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#7-%E6%8F%8F%E8%BF%B0%E4%BB%80%E4%B9%88%E6%98%AF%E5%8F%AF%E6%8E%A5%E5%8F%97%E7%9A%84%E5%90%AF%E5%8F%91%E5%BC%8F%E5%87%BD%E6%95%B0%E3%80%82"><span class="toc-number">7.</span> <span class="toc-text">7 描述什么是可接受的启发式函数。</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#8-%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E7%86%B5%EF%BC%9F"><span class="toc-number">8.</span> <span class="toc-text">8 如何计算熵？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#9-%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E8%AF%84%E4%BC%B0%E5%87%BD%E6%95%B0%EF%BC%9F%E8%AF%84%E4%BC%B0%E5%87%BD%E6%95%B0%E5%A6%82%E4%BD%95%E4%B8%8Ealpha-beta%E5%89%AA%E6%9E%9D%E8%BF%90%E8%A1%8C%E4%B8%80%E8%B5%B7%E5%B7%A5%E4%BD%9C%EF%BC%9F"><span class="toc-number">9.</span> <span class="toc-text">9 如何计算评估函数？评估函数如何与alpha beta剪枝运行一起工作？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#10-%E6%8F%8F%E8%BF%B0C4-5%EF%BC%88%E4%BF%A1%E6%81%AF%E5%A2%9E%E7%9B%8A%E7%8E%87%EF%BC%89%E5%92%8CID3%EF%BC%88%E4%BF%A1%E6%81%AF%E5%A2%9E%E7%9B%8A%EF%BC%89%E7%AE%97%E6%B3%95%E3%80%82"><span class="toc-number">10.</span> <span class="toc-text">10 描述C4.5（信息增益率）和ID3（信息增益）算法。</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ID3-Information-Gain"><span class="toc-number">10.1.</span> <span class="toc-text">ID3(Information Gain)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C4-5"><span class="toc-number">10.2.</span> <span class="toc-text">C4.5</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#11-%E6%8F%8F%E8%BF%B0%E5%B1%82%E6%AC%A1%E8%81%9A%E7%B1%BBagglomerative-clustering%E3%80%82"><span class="toc-number">11.</span> <span class="toc-text">11 描述层次聚类agglomerative clustering。</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#12-%E6%8F%8F%E8%BF%B0%E4%B8%89%E7%A7%8D%E6%8E%A8%E7%90%86%E7%B3%BB%E7%BB%9F%E4%B9%8B%E9%97%B4%E7%9A%84%E5%B7%AE%E5%BC%82%E3%80%82"><span class="toc-number">12.</span> <span class="toc-text">12 描述三种推理系统之间的差异。</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%94%E7%BB%8E%E6%8E%A8%E7%90%86%EF%BC%88Deduction%EF%BC%89"><span class="toc-number">12.1.</span> <span class="toc-text">演绎推理（Deduction）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BD%92%E7%BA%B3%E6%8E%A8%E7%90%86%EF%BC%88Induction%EF%BC%89"><span class="toc-number">12.2.</span> <span class="toc-text">归纳推理（Induction）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BA%AF%E5%9B%A0%E6%8E%A8%E7%90%86%EF%BC%88Abduction%EF%BC%89"><span class="toc-number">12.3.</span> <span class="toc-text">溯因推理（Abduction）</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#13-%E6%8F%8F%E8%BF%B0CNN%E5%92%8C%E5%AE%8C%E6%95%B4%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C-FCN-%E4%B9%8B%E9%97%B4%E7%9A%84%E5%B7%AE%E5%BC%82"><span class="toc-number">13.</span> <span class="toc-text">13 描述CNN和完整卷积神经网络(FCN)之间的差异</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BE%8B%E9%A2%98"><span class="toc-number">13.1.</span> <span class="toc-text">例题</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#14-%E6%8F%8F%E8%BF%B0%E5%9C%A8%E5%AE%9A%E6%80%A7%E5%88%86%E6%9E%90%EF%BC%88sentimental-analysis-%EF%BC%89%E4%B8%AD%E4%BD%BF%E7%94%A8%E7%9A%84%E6%AD%A5%E9%AA%A4%E3%80%82"><span class="toc-number">14.</span> <span class="toc-text">14 描述在定性分析（sentimental analysis.）中使用的步骤。</span></a></li></ol>
+</div>
+</div>
+          <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/avatar.webp" data-sizes="auto" alt="OnricYF" class="lazyload">
+  <div class="sidebar-author-name">OnricYF</div>
+  <div class="sidebar-description">TRASH ARTIST</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>文章</div>
+    <div class="sidebar-state-number">144</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>分类</div>
+    <div class="sidebar-state-number">33</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>标签</div>
+    <div class="sidebar-state-number">82</div>
+  </div>
+</div>
+<div class="sidebar-social" >
+    <div class="icon-email sidebar-social-icon">
+      <a href=mailto:a1521070145@gmail.com itemprop="url" target="_blank" aria-label="email" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-github sidebar-social-icon">
+      <a href=https://github.com/Madoka9 itemprop="url" target="_blank" aria-label="github" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-bilibili sidebar-social-icon">
+      <a href=https://space.bilibili.com/5862963 itemprop="url" target="_blank" aria-label="bilibili" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-zhihu sidebar-social-icon">
+      <a href=https://www.zhihu.com/people/lan-mei-sheng-dai-77 itemprop="url" target="_blank" aria-label="zhihu" rel="noopener nofollow noreferrer"></a>
+    </div>
+</div>
+<div class="sidebar-menu">
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/" aria-label="首页"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">首页</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/archives" aria-label="归档"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">归档</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/about" aria-label="关于"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">关于</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/friend" aria-label="友链"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">友链</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/portfolio" aria-label="作品集"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">作品集</div>
+      </div>
+</div>
+</div>
+          <div class="sidebar-btn-wrapper" style="position:static">
+            <div class="sidebar-toc-btn current"></div>
+            <div class="sidebar-common-btn"></div>
+          </div>
+    </div>
+  </div>
+      <meting-js
+        theme="var(--color-link)"
+        id="385907592"
+        server="netease"
+        type="playlist"
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        class="aplayer-after-sidebar"
+      ></meting-js>
+  <div class="sidebar-widget">
+  </div>
+  </div>
+</aside>
+
+          <section id="main" aria-label="Main content"><article id="post-Note/大三课程学习笔记/人工智能导论/人工智能复习" class="h-entry article" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner" data-aos="fade-up">
+    <div class="article-meta">
+      <div class="article-date">
+  <span class="article-date-link icon-calendar" data-aos="zoom-in">
+    <time datetime="2025-01-17T14:04:10.000Z" itemprop="datePublished">2025-01-17</time>
+    <time style="display: none;" id="post-update-time">2026-07-16</time>
+  </span>
+</div>
+
+    </div>
+    
+    <div class="hr-line"></div>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+        <h1 id="1-描述Web信息检索的步骤。"><a href="#1-描述Web信息检索的步骤。" class="headerlink" title="1 描述Web信息检索的步骤。"></a>1 描述Web信息检索的步骤。</h1><h2 id="信息检索"><a href="#信息检索" class="headerlink" title="信息检索"></a>信息检索</h2><ul>
+<li>定义：从非结构化文档集中查找与用户需求相关的信息</li>
+<li>获取(GIVEN)：<ul>
+<li>自然语言文档集</li>
+<li>用户查询</li>
+</ul>
+</li>
+<li>结果(Result)<ul>
+<li>与用户查询相关的排序文档子集</li>
+</ul>
+</li>
+</ul>
+<h2 id="子任务"><a href="#子任务" class="headerlink" title="子任务"></a>子任务</h2><ul>
+<li>信息检索或浏览<ul>
+<li>牵引（Pulling）</li>
+<li>静态文档集</li>
+<li>来自多个用户的短期活动</li>
+</ul>
+</li>
+<li>信息过滤<ul>
+<li>推（Pushing）</li>
+<li>静态用户查询</li>
+<li>少数用户的长期活动</li>
+</ul>
+</li>
+</ul>
+<h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><p>(1)Web查询界面。<br>(2)查询提交与处理。<br>(3)搜索(Searching)<br>(4)排序与结果输出</p>
+<h1 id="2-描述内核化的概念。"><a href="#2-描述内核化的概念。" class="headerlink" title="2 描述内核化的概念。"></a>2 描述内核化的概念。</h1><ul>
+<li>一个黑盒(black box - 内核感知器)告诉我们两个example点积的结果</li>
+</ul>
+<h2 id="内核感知器-Kernelized-Perceptron"><a href="#内核感知器-Kernelized-Perceptron" class="headerlink" title="内核感知器(Kernelized Perceptron)"></a>内核感知器(Kernelized Perceptron)</h2><p>如果我们有一个黑匣子（内核）K，它告诉我们两个例子x和x’的点积：</p>
+<ul>
+<li>可以完全使用双重表示</li>
+<li>不需要使用点积（“内核技巧”）</li>
+<li>像最近的邻居一样——与黑匣子相似</li>
+<li>缺点：如果许多示例得到非零alpha，则速度较慢</li>
+<li><img src="/images/blog/Pasted%20image%2020221116104007.png"></li>
+</ul>
+<h1 id="3-描述如何对抗过度拟合-Overfitting-。"><a href="#3-描述如何对抗过度拟合-Overfitting-。" class="headerlink" title="3 描述如何对抗过度拟合(Overfitting)。"></a>3 描述如何对抗过度拟合(Overfitting)。</h1><h2 id="如何避免过度拟合"><a href="#如何避免过度拟合" class="headerlink" title="如何避免过度拟合"></a>如何避免过度拟合</h2><p>•当数据拆分在统计上不显著时停止增长<br>•长满一棵树，然后修剪</p>
+<h2 id="如何选择“最佳”树："><a href="#如何选择“最佳”树：" class="headerlink" title="如何选择“最佳”树："></a>如何选择“最佳”树：</h2><p>•通过培训数据衡量绩效<br>•测量单独验证数据集的性能<br>•MDL：最小化<br><img src="/images/blog/Pasted%20image%2020221116105437.png"></p>
+<h2 id="两种控制过度拟合的方法"><a href="#两种控制过度拟合的方法" class="headerlink" title="两种控制过度拟合的方法"></a>两种控制过度拟合的方法</h2><ul>
+<li>(1)限制假设空间<ul>
+<li>E. g.限制树的最大深度</li>
+<li>更易于分析</li>
+</ul>
+</li>
+<li>(2)规范假设选择<ul>
+<li>E. g.机会截止</li>
+<li>除非数据清楚，否则应推翻大多数假设</li>
+<li>通常在实践中完成</li>
+</ul>
+</li>
+</ul>
+<h1 id="4-描述K-means算法。"><a href="#4-描述K-means算法。" class="headerlink" title="4 描述K-means算法。"></a>4 描述K-means算法。</h1><ul>
+<li>K-means算法是一种无监督学习的聚类算法。不需要训练</li>
+<li>算法步骤<ul>
+<li><ol>
+<li>选择K个初始点。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>分别计算各点到K个初始点的欧氏距离或曼哈顿距离。</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>根据距离大小，归到该点距离最小的那一类中。</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>分别计算出每类的距离中心(所有点的横纵坐标的均值作为中心坐标)。</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>重复归类，直到与上次结果的中心坐标相同。</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="例"><a href="#例" class="headerlink" title="例"></a>例</h2><p><img src="/images/blog/Pasted%20image%2020221214201004.png"><br><img src="/images/blog/Pasted%20image%2020221214201017.png"><br><img src="/images/blog/Pasted%20image%2020221214201032.png"><br><img src="/images/blog/Pasted%20image%2020221214201041.png"></p>
+<h1 id="5-描述布尔模型和向量空间模型。"><a href="#5-描述布尔模型和向量空间模型。" class="headerlink" title="5 描述布尔模型和向量空间模型。"></a>5 描述布尔模型和向量空间模型。</h1><h2 id="布尔模型"><a href="#布尔模型" class="headerlink" title="布尔模型"></a>布尔模型</h2><ul>
+<li>文件(Document - D)</li>
+<li>查询(Query - Q)</li>
+<li>匹配函数(Matching Function - F)</li>
+<li>算法(Algorithm - R)<br>例：<br>  <img src="/images/blog/Pasted%20image%2020221214194823.png"></li>
+</ul>
+<h2 id="向量空间模型"><a href="#向量空间模型" class="headerlink" title="向量空间模型"></a>向量空间模型</h2><ul>
+<li>由R.Salton于1960年代提出</li>
+<li>用于SMART（文本操纵和检索系统）</li>
+<li>红外研究的基础<br>把对文本内容的处理简化为向量空间的向量计算。并且以空间上的相似度表达文档的相似度。<br><img src="https://pic4.zhimg.com/80/v2-6dec04fffb8054332815f8001513f0db_720w.webp"><br><img src="/images/blog/Pasted%20image%2020221214195226.png"></li>
+</ul>
+<p>每篇文档由T1、T2、…、Tn一共N个特征项来表示，并且对应着Wi1、Wi2、… 、Win个权重。通过以上方式，每篇文章都表示成了一个N维的向量。<br>**相似度计算：**两个文档的相似程度可以用两向量的余弦夹角来进行度量，夹角越小证明相似度越高。</p>
+<p><img src="https://pic2.zhimg.com/80/v2-e99ce4f717a64be8b264365bf39b3fc5_720w.webp"></p>
+<p><strong>优缺点：</strong><br>优点：<br>	- 1. 术语加权提高了检索精度<br>	- 2. 部分匹配返回更接近用户需求的结果<br>	- 3. 按相似度排序</p>
+<p>缺点：<br>	- 1. 任期独立性<br>	- 2. 容易被垃圾页欺骗<br>	- 3. 需要内在 语义</p>
+<h1 id="6-列出VPI的属性。"><a href="#6-列出VPI的属性。" class="headerlink" title="6 列出VPI的属性。"></a>6 列出VPI的属性。</h1><ul>
+<li>VPI 三大属性<ul>
+<li><ol>
+<li>非负性</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>不可交换</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>顺序独立<br><img src="/images/blog/Pasted%20image%2020221214195847.png"></li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="7-描述什么是可接受的启发式函数。"><a href="#7-描述什么是可接受的启发式函数。" class="headerlink" title="7 描述什么是可接受的启发式函数。"></a>7 描述什么是可接受的启发式函数。</h1><ul>
+<li><p>不可接受的（悲观的）启发式方法通过将好的计划困在边缘来打破最优性</p>
+</li>
+<li><p>可接受的（乐观的）启发法可以减缓糟糕的计划，但永远不会超过真正的成本</p>
+<ul>
+<li><img src="/images/blog/Pasted%20image%2020221214200639.png"></li>
+<li>h* 是到最近目标的真实花费。</li>
+</ul>
+</li>
+</ul>
+<h1 id="8-如何计算熵？"><a href="#8-如何计算熵？" class="headerlink" title="8 如何计算熵？"></a>8 如何计算熵？</h1><p><img src="/images/blog/Pasted%20image%2020221214202801.png"></p>
+<ul>
+<li>S是一组训练示例</li>
+<li>P+ 是S中正面例子的比例</li>
+<li>P - 是S中反面例子的比例<br><img src="/images/blog/Pasted%20image%2020221214203047.png"></li>
+</ul>
+<h1 id="9-如何计算评估函数？评估函数如何与alpha-beta剪枝运行一起工作？"><a href="#9-如何计算评估函数？评估函数如何与alpha-beta剪枝运行一起工作？" class="headerlink" title="9 如何计算评估函数？评估函数如何与alpha beta剪枝运行一起工作？"></a>9 如何计算评估函数？评估函数如何与alpha beta剪枝运行一起工作？</h1><p>（1）<code>G(s) = a1 * f1(s) + a2 * f2(s) + ... + an * fn(s)</code><br>　　注: <strong>fi(s)为某个评估因素的得分</strong>, ai为某个评估因素的<strong>权重比</strong></p>
+<p>（2）<br>Alpha Beta：修剪量取决于扩展顺序<br>评估功能可以提供指导，以首先扩展最有前途的节点（这使其更可能在通往根的路径上已经有了一个好的替代方案）<br>（有点类似于A*启发式、CSP过滤的作用）</p>
+<p>Alpha Beta：（类似于最小-最大交换的角色）<br>最小节点处的值只会继续下降<br>一旦最小节点的值低于根路径上最大值的更好选项，就可以进行修剪<br>因此：IF求值函数在最小节点处提供值的上限，并且上限已经低于根路径上的最大值的更好选项，则可以进行修剪</p>
+<h1 id="10-描述C4-5（信息增益率）和ID3（信息增益）算法。"><a href="#10-描述C4-5（信息增益率）和ID3（信息增益）算法。" class="headerlink" title="10 描述C4.5（信息增益率）和ID3（信息增益）算法。"></a>10 描述C4.5（信息增益率）和ID3（信息增益）算法。</h1><h2 id="ID3-Information-Gain"><a href="#ID3-Information-Gain" class="headerlink" title="ID3(Information Gain)"></a>ID3(Information Gain)</h2><pre><code>1.首先求大条件的熵 I(S)
+2.求出大条件的情况下小条件的熵 Ii(s|S)
+3.求出小条件的熵E(s) = p1*I1 + P2*I2 + ... + Pn*In
+4.信息增益(G(s)) = I(S) - E(s)；
+</code></pre>
+<h2 id="C4-5"><a href="#C4-5" class="headerlink" title="C4.5"></a>C4.5</h2><pre><code>信息增益率 Ratio = G(s)/E(s)。
+</code></pre>
+<h1 id="11-描述层次聚类agglomerative-clustering。"><a href="#11-描述层次聚类agglomerative-clustering。" class="headerlink" title="11 描述层次聚类agglomerative clustering。"></a>11 描述层次聚类agglomerative clustering。</h1><p>Agglomerative clustering从N NN个簇开始，每个簇最初只包含一个对象，然后在每个步骤中合并两个最相似的簇，直到形成一个包含所有数据的簇。</p>
+<p>合并过程可以用二叉树（binary tree） 表示，称为树状图（dendrogram）。初始簇位于叶节点(图的底部)，每当两个簇合并时，我们就将它们联接到树中。分支的高度表示正在加入的簇之间的差异。树的根(在顶部)表示包含所有数据的簇。如果我们在任何给定的高度砍树，我们会得到一个给定大小的集群。</p>
+<p>实际上，根据我们如何定义不同簇之间的差异，Agglomerative clustering有三种变体。<br><img src="/images/blog/Pasted%20image%2020221221153126.png"><br><img src="/images/blog/Pasted%20image%2020221221153138.png"><br><img src="/images/blog/Pasted%20image%2020221221153148.png"></p>
+<h1 id="12-描述三种推理系统之间的差异。"><a href="#12-描述三种推理系统之间的差异。" class="headerlink" title="12 描述三种推理系统之间的差异。"></a>12 描述三种推理系统之间的差异。</h1><h2 id="演绎推理（Deduction）"><a href="#演绎推理（Deduction）" class="headerlink" title="演绎推理（Deduction）"></a>演绎推理（Deduction）</h2><p>演绎是从规则和情况，推理出结果；</p>
+<h2 id="归纳推理（Induction）"><a href="#归纳推理（Induction）" class="headerlink" title="归纳推理（Induction）"></a>归纳推理（Induction）</h2><p>归纳是从情况和结果，推理出规则；</p>
+<h2 id="溯因推理（Abduction）"><a href="#溯因推理（Abduction）" class="headerlink" title="溯因推理（Abduction）"></a>溯因推理（Abduction）</h2><p>溯因是从规则和结果，推理出情况。</p>
+<h1 id="13-描述CNN和完整卷积神经网络-FCN-之间的差异"><a href="#13-描述CNN和完整卷积神经网络-FCN-之间的差异" class="headerlink" title="13 描述CNN和完整卷积神经网络(FCN)之间的差异"></a>13 描述CNN和完整卷积神经网络(FCN)之间的差异</h1><p>pad 填充数；stride 步长(每次移动的距离)<br>卷积步骤：卷积-&gt;最大池化(找最大值像素) -&gt; 扁平化-SoftMax -&gt;全连接</p>
+<ul>
+<li>全卷积神经网络（FCN）和卷积神经网络（CNN）的主要区别在于FCN将CNN末尾的全连接层转化成了卷积层。</li>
+</ul>
+<h2 id="例题"><a href="#例题" class="headerlink" title="例题"></a>例题</h2><p><img src="/images/blog/Pasted%20image%2020221221162029.png"><br><img src="/images/blog/Pasted%20image%2020221221162100.png"></p>
+<p><img src="/images/blog/Pasted%20image%2020221221162217.png"><br><img src="/images/blog/Pasted%20image%2020221221162232.png"><br><img src="/images/blog/Pasted%20image%2020221221162247.png"></p>
+<h1 id="14-描述在定性分析（sentimental-analysis-）中使用的步骤。"><a href="#14-描述在定性分析（sentimental-analysis-）中使用的步骤。" class="headerlink" title="14 描述在定性分析（sentimental analysis.）中使用的步骤。"></a>14 描述在定性分析（sentimental analysis.）中使用的步骤。</h1>
+    </div>
+    <footer class="article-footer">
+        <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="学习笔记" data-aos="zoom-in">学习笔记</a><a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/" title="人工智能" data-aos="zoom-in">人工智能</a>
+
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/" rel="tag" title="人工智能">人工智能</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%AF%BC%E8%AE%BA/" rel="tag" title="人工智能导论">人工智能导论</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/tags/%E5%85%A8%E5%B1%80%E5%85%89%E7%85%A7/" rel="tag" title="全局光照">全局光照</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/tags/%E5%A4%A7%E4%B8%89%E8%AF%BE%E7%A8%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="tag" title="大三课程学习笔记">大三课程学习笔记</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/tags/%E6%8E%92%E5%BA%8F/" rel="tag" title="排序">排序</a></li></ul>
+
+    </footer>
+  </div>
+    <nav id="article-nav" aria-label="Article navigation" data-aos="fade-up">
+      <div class="article-nav-link-wrap left">
+            <img data-src="/images/banner.webp" data-sizes="auto" alt="人工智能导论 - 机器学习" class="lazyload">
+        <a href="/2025/01/17/Note/%E5%A4%A7%E4%B8%89%E8%AF%BE%E7%A8%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%AF%BC%E8%AE%BA/%E4%B8%80%E3%80%81%E7%BB%AA%E8%AE%BA/" aria-label="前一篇: 人工智能导论 - 机器学习" title="前一篇: 人工智能导论 - 机器学习"></a>
+        <div class="article-nav-caption">前一篇</div>
+        <h3 class="article-nav-title">
+            人工智能导论 - 机器学习
+        </h3>
+      </div>
+  </nav>
+
+</article>
+
+
+</section>
+        </div>
+        <footer id="footer" aria-label="Site footer">
+  <div style="width: 100%; overflow: hidden">
+    <div class="footer-line"></div>
+  </div>
+  <div id="footer-info">
+    <div>
+      <span class="icon-copyright"></span>
+        2020-2026
+        <span class="footer-info-sep rotate"></span>
+      OnricYF
+    </div>
+      <div>
+        基于&nbsp;<a href="https://hexo.io/" rel="noopener nofollow noreferrer" target="_blank">Hexo</a>&nbsp;
+        Theme.<a href="https://github.com/D-Sketon/hexo-theme-reimu" rel="noopener nofollow noreferrer" target="_blank">Reimu</a>
+      </div>
+      <div>
+        <span class="icon-brush"></span>
+        87.2k
+        &nbsp;|&nbsp;
+        <span class="icon-coffee"></span>
+        07:26
+      </div>
+      <div>
+        <span class="icon-eye"></span>
+        <span id="busuanzi_container_site_pv">总访问量&nbsp;<span id="busuanzi_value_site_pv"></span></span>
+        &nbsp;|&nbsp;
+        <span class="icon-user"></span>
+        <span id="busuanzi_container_site_uv">总访客量&nbsp;<span id="busuanzi_value_site_uv"></span></span>
+      </div>
+  </div>
+</footer>
+
+          <div class="sidebar-top">
+            <div class="sidebar-top-taichi rotate"></div>
+            <div class="arrow-up"></div>
+          </div>
+        <div id="mask" class="hide"></div>
+      </div>
+      <nav id="mobile-nav" aria-label="Mobile navigation">
+  <div class="sidebar-wrap">
+        <div class="sidebar-toc-sidebar"><h3 class="toc-title">文章目录</h3>
+<div class="sidebar-toc-wrapper toc-div-class" >
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E6%8F%8F%E8%BF%B0Web%E4%BF%A1%E6%81%AF%E6%A3%80%E7%B4%A2%E7%9A%84%E6%AD%A5%E9%AA%A4%E3%80%82"><span class="toc-number">1.</span> <span class="toc-text">1 描述Web信息检索的步骤。</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%A3%80%E7%B4%A2"><span class="toc-number">1.1.</span> <span class="toc-text">信息检索</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%90%E4%BB%BB%E5%8A%A1"><span class="toc-number">1.2.</span> <span class="toc-text">子任务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.3.</span> <span class="toc-text">步骤</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E6%8F%8F%E8%BF%B0%E5%86%85%E6%A0%B8%E5%8C%96%E7%9A%84%E6%A6%82%E5%BF%B5%E3%80%82"><span class="toc-number">2.</span> <span class="toc-text">2 描述内核化的概念。</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E6%A0%B8%E6%84%9F%E7%9F%A5%E5%99%A8-Kernelized-Perceptron"><span class="toc-number">2.1.</span> <span class="toc-text">内核感知器(Kernelized Perceptron)</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-%E6%8F%8F%E8%BF%B0%E5%A6%82%E4%BD%95%E5%AF%B9%E6%8A%97%E8%BF%87%E5%BA%A6%E6%8B%9F%E5%90%88-Overfitting-%E3%80%82"><span class="toc-number">3.</span> <span class="toc-text">3 描述如何对抗过度拟合(Overfitting)。</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E9%81%BF%E5%85%8D%E8%BF%87%E5%BA%A6%E6%8B%9F%E5%90%88"><span class="toc-number">3.1.</span> <span class="toc-text">如何避免过度拟合</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9%E2%80%9C%E6%9C%80%E4%BD%B3%E2%80%9D%E6%A0%91%EF%BC%9A"><span class="toc-number">3.2.</span> <span class="toc-text">如何选择“最佳”树：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%A4%E7%A7%8D%E6%8E%A7%E5%88%B6%E8%BF%87%E5%BA%A6%E6%8B%9F%E5%90%88%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">3.3.</span> <span class="toc-text">两种控制过度拟合的方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-%E6%8F%8F%E8%BF%B0K-means%E7%AE%97%E6%B3%95%E3%80%82"><span class="toc-number">4.</span> <span class="toc-text">4 描述K-means算法。</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BE%8B"><span class="toc-number">4.1.</span> <span class="toc-text">例</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5-%E6%8F%8F%E8%BF%B0%E5%B8%83%E5%B0%94%E6%A8%A1%E5%9E%8B%E5%92%8C%E5%90%91%E9%87%8F%E7%A9%BA%E9%97%B4%E6%A8%A1%E5%9E%8B%E3%80%82"><span class="toc-number">5.</span> <span class="toc-text">5 描述布尔模型和向量空间模型。</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%83%E5%B0%94%E6%A8%A1%E5%9E%8B"><span class="toc-number">5.1.</span> <span class="toc-text">布尔模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%91%E9%87%8F%E7%A9%BA%E9%97%B4%E6%A8%A1%E5%9E%8B"><span class="toc-number">5.2.</span> <span class="toc-text">向量空间模型</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#6-%E5%88%97%E5%87%BAVPI%E7%9A%84%E5%B1%9E%E6%80%A7%E3%80%82"><span class="toc-number">6.</span> <span class="toc-text">6 列出VPI的属性。</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#7-%E6%8F%8F%E8%BF%B0%E4%BB%80%E4%B9%88%E6%98%AF%E5%8F%AF%E6%8E%A5%E5%8F%97%E7%9A%84%E5%90%AF%E5%8F%91%E5%BC%8F%E5%87%BD%E6%95%B0%E3%80%82"><span class="toc-number">7.</span> <span class="toc-text">7 描述什么是可接受的启发式函数。</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#8-%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E7%86%B5%EF%BC%9F"><span class="toc-number">8.</span> <span class="toc-text">8 如何计算熵？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#9-%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E8%AF%84%E4%BC%B0%E5%87%BD%E6%95%B0%EF%BC%9F%E8%AF%84%E4%BC%B0%E5%87%BD%E6%95%B0%E5%A6%82%E4%BD%95%E4%B8%8Ealpha-beta%E5%89%AA%E6%9E%9D%E8%BF%90%E8%A1%8C%E4%B8%80%E8%B5%B7%E5%B7%A5%E4%BD%9C%EF%BC%9F"><span class="toc-number">9.</span> <span class="toc-text">9 如何计算评估函数？评估函数如何与alpha beta剪枝运行一起工作？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#10-%E6%8F%8F%E8%BF%B0C4-5%EF%BC%88%E4%BF%A1%E6%81%AF%E5%A2%9E%E7%9B%8A%E7%8E%87%EF%BC%89%E5%92%8CID3%EF%BC%88%E4%BF%A1%E6%81%AF%E5%A2%9E%E7%9B%8A%EF%BC%89%E7%AE%97%E6%B3%95%E3%80%82"><span class="toc-number">10.</span> <span class="toc-text">10 描述C4.5（信息增益率）和ID3（信息增益）算法。</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ID3-Information-Gain"><span class="toc-number">10.1.</span> <span class="toc-text">ID3(Information Gain)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C4-5"><span class="toc-number">10.2.</span> <span class="toc-text">C4.5</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#11-%E6%8F%8F%E8%BF%B0%E5%B1%82%E6%AC%A1%E8%81%9A%E7%B1%BBagglomerative-clustering%E3%80%82"><span class="toc-number">11.</span> <span class="toc-text">11 描述层次聚类agglomerative clustering。</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#12-%E6%8F%8F%E8%BF%B0%E4%B8%89%E7%A7%8D%E6%8E%A8%E7%90%86%E7%B3%BB%E7%BB%9F%E4%B9%8B%E9%97%B4%E7%9A%84%E5%B7%AE%E5%BC%82%E3%80%82"><span class="toc-number">12.</span> <span class="toc-text">12 描述三种推理系统之间的差异。</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%94%E7%BB%8E%E6%8E%A8%E7%90%86%EF%BC%88Deduction%EF%BC%89"><span class="toc-number">12.1.</span> <span class="toc-text">演绎推理（Deduction）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BD%92%E7%BA%B3%E6%8E%A8%E7%90%86%EF%BC%88Induction%EF%BC%89"><span class="toc-number">12.2.</span> <span class="toc-text">归纳推理（Induction）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BA%AF%E5%9B%A0%E6%8E%A8%E7%90%86%EF%BC%88Abduction%EF%BC%89"><span class="toc-number">12.3.</span> <span class="toc-text">溯因推理（Abduction）</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#13-%E6%8F%8F%E8%BF%B0CNN%E5%92%8C%E5%AE%8C%E6%95%B4%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C-FCN-%E4%B9%8B%E9%97%B4%E7%9A%84%E5%B7%AE%E5%BC%82"><span class="toc-number">13.</span> <span class="toc-text">13 描述CNN和完整卷积神经网络(FCN)之间的差异</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BE%8B%E9%A2%98"><span class="toc-number">13.1.</span> <span class="toc-text">例题</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#14-%E6%8F%8F%E8%BF%B0%E5%9C%A8%E5%AE%9A%E6%80%A7%E5%88%86%E6%9E%90%EF%BC%88sentimental-analysis-%EF%BC%89%E4%B8%AD%E4%BD%BF%E7%94%A8%E7%9A%84%E6%AD%A5%E9%AA%A4%E3%80%82"><span class="toc-number">14.</span> <span class="toc-text">14 描述在定性分析（sentimental analysis.）中使用的步骤。</span></a></li></ol>
+</div>
+</div>
+        <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/avatar.webp" data-sizes="auto" alt="OnricYF" class="lazyload">
+  <div class="sidebar-author-name">OnricYF</div>
+  <div class="sidebar-description">TRASH ARTIST</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>文章</div>
+    <div class="sidebar-state-number">144</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>分类</div>
+    <div class="sidebar-state-number">33</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>标签</div>
+    <div class="sidebar-state-number">82</div>
+  </div>
+</div>
+<div class="sidebar-social" >
+    <div class="icon-email sidebar-social-icon">
+      <a href=mailto:a1521070145@gmail.com itemprop="url" target="_blank" aria-label="email" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-github sidebar-social-icon">
+      <a href=https://github.com/Madoka9 itemprop="url" target="_blank" aria-label="github" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-bilibili sidebar-social-icon">
+      <a href=https://space.bilibili.com/5862963 itemprop="url" target="_blank" aria-label="bilibili" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-zhihu sidebar-social-icon">
+      <a href=https://www.zhihu.com/people/lan-mei-sheng-dai-77 itemprop="url" target="_blank" aria-label="zhihu" rel="noopener nofollow noreferrer"></a>
+    </div>
+</div>
+<div class="sidebar-menu">
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/" aria-label="首页"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">首页</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/archives" aria-label="归档"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">归档</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/about" aria-label="关于"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">关于</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/friend" aria-label="友链"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">友链</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/portfolio" aria-label="作品集"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">作品集</div>
+      </div>
+</div>
+</div>
+  </div>
+      <div class="sidebar-btn-wrapper">
+        <div class="sidebar-toc-btn current"></div>
+        <div class="sidebar-common-btn"></div>
+      </div>
+</nav>
+
+    </div>
+    
+<script src="https://npm.webcache.cn/lazysizes@5.3.2/lazysizes.min.js" integrity="sha384-3gT&#x2F;vsepWkfz&#x2F;ff7PpWNUeMzeWoH3cDhm&#x2F;A8jM7ouoAK0&#x2F;fP&#x2F;9bcHHR5kHq2nf+e" crossorigin="anonymous"></script>
+
+
+<script src="https://npm.webcache.cn/clipboard@2.0.11/dist/clipboard.min.js" integrity="sha384-J08i8An&#x2F;QeARD9ExYpvphB8BsyOj3Gh2TSh1aLINKO3L0cMSH2dN3E22zFoXEi0Q" crossorigin="anonymous"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+  
+<script src="/js/aos.js"></script>
+
+  <script>
+    var aosInit = () => {
+      AOS.init({
+        duration: 1000,
+        easing: "ease",
+        once: true,
+        offset: 50,
+      });
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', aosInit);
+    } else {
+      aosInit();
+    }
+  </script>
+
+
+<script src="/js/pjax_script.js" data-pjax></script>
+
+
+
+
+  <script>
+    var setupFirework = () => {
+      if (!false || !window.matchMedia('(max-width: 768px)').matches) {
+        window.firework && window.firework(JSON.parse('{"excludeElements":["a","button"],"particles":[{"shape":"circle","move":["emit"],"easing":"easeOutExpo","colors":["var(--red-1)","var(--red-2)","var(--red-3)","var(--red-4)"],"number":20,"duration":[1200,1800],"shapeOptions":{"radius":[16,32],"alpha":[0.3,0.5]}},{"shape":"circle","move":["diffuse"],"easing":"easeOutExpo","colors":["var(--red-0)"],"number":1,"duration":[1200,1800],"shapeOptions":{"radius":20,"alpha":[0.2,0.5],"lineWidth":6}}]}'));
+      }
+    }
+  </script>
+  
+<script src="https://npm.webcache.cn/mouse-firework@0.2.0/dist/index.umd.js" integrity="sha384-qi9WggRt19tv8Vc7pCHW3ulMNLwrn515zaLEWZjl1px07vz8+pUoWX8n1rgq282T" crossorigin="anonymous" onload="setupFirework()" defer></script>
+
+
+  
+<script src="https://npm.webcache.cn/theme-shokax-pjax@0.0.3/dist/index.umd.js" integrity="sha384-xneY1WY8hOfUzswrE4CrYq35N4BdVcxqxwHPr9zawE&#x2F;jMSCxD+jAPU55x&#x2F;jj3wlf" crossorigin="anonymous"></script>
+
+  
+<script src="/js/pjax.js"></script>
+
+
+
+
+
+<div id="lazy-script">
+  <div>
+      
+      
+      <script data-pjax>
+        window.REIMU_POST = {
+          author: "OnricYF",
+          title: "人工智能导论 - 1 描述Web信息检索的步骤。",
+          url: "http://example.com/2025/01/17/Note/%E5%A4%A7%E4%B8%89%E8%AF%BE%E7%A8%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%AF%BC%E8%AE%BA/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%A4%8D%E4%B9%A0/",
+          excerpt: "",
+          description: "",
+          stripContent: "1 描述Web信息检索的步骤。信息检索 定义：从非结构化文档集中查找与用户需求相关的信息 获取(GIVEN)： 自然语言文档集 用户查询   结果(Result) 与用户查询相关的排序文档子集    子任务 信息检索或浏览 牵引（Pulling） 静态文档集 来自多个用户的短期活动   信息过滤 推（Pushing） 静态用户查询 少数用户的长期活动    步骤(1)Web查询界面。(2)查询提交与处理。(3)搜索(Searching)(4)排序与结果输出 2 描述内核化的概念。 一个黑盒(bl",
+          date: "Fri Jan 17 2025 22:04:10 GMT+0800",
+          updated: "Thu Jul 16 2026 11:38:13 GMT+0800",
+          cover: "/images/banner.webp",
+        };
+      </script>
+        
+<script src="/js/insert_highlight.js" data-pjax></script>
+
+      
+<script src="/js/tabs.js" data-pjax defer></script>
+
+      <script type="module" data-pjax>
+        (async () => {
+          const PhotoSwipeLightbox = (await safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe-lightbox.esm.min.js", "sha384-DiL6M/gG+wmTxmCRZyD1zee6lIhawn5TGvED0FOh7fXcN9B0aZ9dexSF/N6lrZi/")).default;
+          const initPswp = (gallery, children) => {
+            if (_$$(`${gallery} ${children}`).length > 0) {
+              new PhotoSwipeLightbox({
+                gallery,
+                children,
+                pswpModule: () => safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.esm.min.js", "sha384-WkkO3GCmgkC3VQWpaV8DqhKJqpzpF9JoByxDmnV8+oTJ7m3DfYEWX1fu1scuS4+s")
+              }).init();
+            }
+          }
+          const pswp = () => {
+            initPswp('.article-entry', 'a.article-gallery-item');
+            initPswp('.article-gallery', 'a.article-gallery-item');
+          }
+          pswp();
+        })();
+      </script>
+  </div>
+</div>
+
+
+  <script>
+    console.log(String.raw`%c 
+ ______     ______     __     __    __     __  __    
+/\  == \   /\  ___\   /\ \   /\ "-./  \   /\ \/\ \   
+\ \  __<   \ \  __\   \ \ \  \ \ \-./\ \  \ \ \_\ \  
+ \ \_\ \_\  \ \_____\  \ \_\  \ \_\ \ \_\  \ \_____\ 
+  \/_/ /_/   \/_____/   \/_/   \/_/  \/_/   \/_____/ 
+                                                  
+`,'color: #ff5252;')
+    console.log('%c Theme.Reimu v' + '1.12.0' + ' %c https://github.com/D-Sketon/hexo-theme-reimu ', 'color: white; background: #ff5252; padding:5px 0;', 'padding:4px;border:1px solid #ff5252;')
+  </script>
+  
+
+
+  
+<script src="https://npm.webcache.cn/busuanzi@2.3.0/bsz.pure.mini.js" integrity="sha384-0M75wtSkhjIInv4coYlaJU83+OypaRCIq2SukQVQX04eGTCBXJDuWAbJet56id+S" crossorigin="anonymous" async></script>
+
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      for (let registration of registrations) {
+        registration.unregister();
+      }
+    });
+  }
+</script>
+
+
+    <script>
+      var setupAPlayer = () => {
+        if (!true || !window.matchMedia('(max-width: 768px)').matches) {
+          if (window.matchMedia('(max-width: 959px)').matches) {
+            const meting = _$('meting-js');
+            if (meting) {
+              meting.setAttribute('fixed', 'true');
+              const aside = meting.parentNode?.parentNode;
+              if (aside?.tagName === 'ASIDE') {
+                meting.parentNode.removeChild(meting);
+                document.body.appendChild(meting);
+              }
+            }
+          }
+        }
+      };
+    </script>
+  
+<script src="https://npm.webcache.cn/aplayer@1.10.1/dist/APlayer.min.js" integrity="sha384-gdGYZwHnfJM54evoZhpO0s6ZF5BQiybkiyW7VXr+h5UfruuRL&#x2F;aORyw+5+HZoU6e" crossorigin="anonymous" defer onload="setupAPlayer()"></script>
+
+    
+<script src="https://npm.webcache.cn/meting@2.0.1/dist/Meting.min.js" integrity="sha384-ASVlpKF80A22OXTK3tfEjZm1EL6uFMKIC4p8+0maanw1S&#x2F;IyB+Y4JG+ZDU7GpKE8" crossorigin="anonymous" defer></script>
+
+
+
+  </body>
+  </html>

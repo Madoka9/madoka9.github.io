@@ -1,0 +1,683 @@
+  <!DOCTYPE html>
+  <html lang="zh-CN"  
+      data-theme-mode="auto"
+  >
+  <head>
+  <meta charset="utf-8">
+  
+  
+  
+  <script>window.REIMU_CONFIG = {};window.REIMU_CONFIG.icon_font = '4552607_4k4bc36ef96';window.REIMU_CONFIG.clipboard_tips = {"success":{"zh-CN":"复制成功 (*^▽^*)","en":"Copy successfully (*^▽^*)"},"fail":{"zh-CN":"复制失败 (ﾟ⊿ﾟ)ﾂ","en":"Copy failed (ﾟ⊿ﾟ)ﾂ"},"copyright":{"enable":false,"count":50,"license_type":"by-nc-sa"}};window.REIMU_CONFIG.clipboard_tips.copyright.content = '本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！';window.REIMU_CONFIG.code_block = {"expand":true};window.REIMU_CONFIG.base = 'http://example.com';window.REIMU_CONFIG.i18n_languages = ["en"];</script>
+  <title>
+    UnityShader - Tags | YF&#39;s Blog
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic|Noto Serif SC:400,400italic,700,700italic&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic|Noto Serif SC:400,400italic,700,700italic&display=swap" media="print" onload="this.media='all'">
+    <link rel="preload" href="//at.alicdn.com/t/c/font_4552607_4k4bc36ef96.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+    
+<link rel="stylesheet" href="/css/loader.css">
+
+    <meta name="description" content="Rendering Order - Queue tag在3D引擎中，我们经常要对 透明和不透明物体进行排序。先渲染不透明再渲染透明物体，Unity使用 Queue标签，分别放入不同的渲染队列中。  Background - 背景，一般天空盒之类的使用这个标签，最早被渲染 Geometry (default) 适用于大部分不透明的物体 AlphaTest - 如果Shader要使用AlphaTest">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UnityShader - Tags">
+<meta property="og:url" content="http://example.com/2025/01/17/Note/PersonalArrange/UnityShader%20-%20Tags/index.html">
+<meta property="og:site_name" content="YF&#39;s Blog">
+<meta property="og:description" content="Rendering Order - Queue tag在3D引擎中，我们经常要对 透明和不透明物体进行排序。先渲染不透明再渲染透明物体，Unity使用 Queue标签，分别放入不同的渲染队列中。  Background - 背景，一般天空盒之类的使用这个标签，最早被渲染 Geometry (default) 适用于大部分不透明的物体 AlphaTest - 如果Shader要使用AlphaTest">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-01-17T14:04:10.000Z">
+<meta property="article:modified_time" content="2026-07-16T03:10:11.170Z">
+<meta property="article:author" content="OnricYF">
+<meta property="article:tag" content="PersonalArrange">
+<meta property="article:tag" content="Unity">
+<meta property="article:tag" content="排序">
+<meta property="article:tag" content="渲染">
+<meta property="article:tag" content="着色器">
+<meta name="twitter:card" content="summary">
+    <link rel="alternate" href="/atom.xml" title="YF's Blog" type="application/atom+xml">
+    <link rel="shortcut icon" href="/images/favicon.ico">
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.css" integrity="sha384-IfxC36XL/toUyJ939C73PcgMuRzAZuIzZxE38drsmO5p6jD7ei+Zx/1oA/0l8ysE" crossorigin="anonymous">
+    
+<script src="https://npm.webcache.cn/pace-js@1.2.4/pace.min.js" integrity="sha384-k6YtvFUEIuEFBdrLKJ3YAUbBki333tj1CSUisai5Cswsg9wcLNaPzsTHDswp4Az8" crossorigin="anonymous"></script>
+
+    
+<link rel="stylesheet" href="https://npm.webcache.cn/@reimujs/aos@0.1.2/dist/aos.css" integrity="sha384-GMRP93c6Hkz9JVKGAuRR3nTS7M07RwPgTFenXiosjq2VbVgvdDNcz1g6Mkj8AONa" crossorigin="anonymous">
+
+    <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://npm.webcache.cn/aplayer@1.10.1/dist/APlayer.min.css" integrity="sha384-tLMkTWh2pfXNWGFlUS0w1TFtRG5xZ9lPWFOooj+vDDLIL+xBGQU/voDBY5XE2lVh" crossorigin="anonymous">
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+  <body>
+      <div id='loader'>
+    <div class="loading-left-bg loading-bg"></div>
+    <div class="loading-right-bg loading-bg"></div>
+    <div class="spinner-box">
+      <div class="loading-taichi rotate">
+          <svg width="150" height="150" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="https://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
+            <path d="M303.5 432A80 80 0 0 1 291.5 592A80 80 0 0 1 303.5 432z" fill="var(--red-1, #ff5252)" />
+            <path d="M512 65A447 447 0 0 1 512 959L512 929A417 417 0 0 0 512 95A417 417 0 0 0 512 929L512 959A447 447 0 0 1 512 65z 
+           M512 95A417 417 0 0 1 929 512A208.5 208.5 0 0 1 720.5 720.5L720.5 592A80 80 0 0 0 720.5 432A80 80 0 0 0 720.5 592L720.5 720.5A208.5 208.5 0 0 1 512 512A208.5 208.5 0 0 0 303.5 303.5A208.5 208.5 0 0 0 95 512A417 417 0 0 1 512 95z" fill="var(--red-1, #ff5252)" />
+          </svg>
+      </div>
+      <div class="loading-word">少女祈祷中...</div>
+    </div>
+  </div>
+  </div>
+  <script>
+    var time = null;
+    var loaderEl = document.getElementById('loader');
+    var startLoading = () => {
+      time = Date.now();
+      loaderEl.classList.remove("loading");
+    }
+    var hideLoader = () => {
+      document.body.style.overflow = 'auto';
+      loader.classList.add('loading');
+    };
+
+    var endLoading = () => {
+      if (!time) {
+        hideLoader();
+      } else {
+        if (Date.now() - time > 500) {
+          time = null;
+          hideLoader();
+        } else {
+          setTimeout(endLoading, 500 - (Date.now() - time));
+          time = null;
+        }
+      }
+    }
+    window.addEventListener('DOMContentLoaded', endLoading);
+    loaderEl.addEventListener('click', endLoading);
+  </script>
+<div id="copy-tooltip"></div>
+<div id="heatmap-tooltip"></div>
+
+
+    <div id="container">
+      <div id="wrap">
+        <div id="header-nav">
+  <nav id="main-nav" aria-label="Primary navigation">
+        <a class="main-nav-link-wrap" href="/">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">首页</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/archives">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">归档</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/about">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">关于</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/friend">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">友链</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/portfolio">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">作品集</span>
+        </span>
+    <a id="main-nav-toggle" class="nav-icon" aria-label="Toggle navigation" role="button"></a>
+  </nav>
+  <nav id="sub-nav" aria-label="Secondary navigation">
+  </nav>
+    <nav id="i18n-nav" aria-label="Language selection">
+      <div class="custom-dropdown">
+        <div class="select-selected" id="select-selected" role="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Language menu">
+          <span id="nav-language-btn" class="nav-icon" style="padding: 0 20px 0 0"></span>
+          <span id="selected-lang">简体中文</span>
+        </div>
+        <ul class="select-items" id="select-items" role="listbox" aria-label="Languages">
+            <li data-value="zh-CN" role="option" class="selected" aria-selected="true">简体中文</li>
+            <li data-value="en" role="option" aria-selected="false">English</li>
+        </ul>
+      </div>
+      <script>
+        var selectSelected = document.getElementById("select-selected");
+        var selectedLang = document.getElementById("selected-lang");
+        var selectItems = document.getElementById("select-items");
+        var selectOptions = selectItems.querySelectorAll("li");
+
+        selectSelected.addEventListener("click", () => {
+          selectItems.classList.toggle("show");
+          var expanded = selectSelected.getAttribute("aria-expanded") === "true";
+          selectSelected.setAttribute("aria-expanded", (!expanded).toString());
+        });
+
+        selectOptions.forEach((item) => {
+          item.addEventListener("click", () => {
+            const langMap = {};
+              langMap['zh-CN'] = '/2025/01/17/Note/PersonalArrange/UnityShader - Tags/';
+              langMap['en'] = '/en/2025/01/17/Note/PersonalArrange/UnityShader - Tags/';
+            selectedLang.textContent = item.textContent;
+            selectItems.classList.remove("show");
+            selectOptions.forEach((option) => {
+              option.classList.remove("selected");
+            });
+            item.classList.add("selected");
+            window.location = langMap[item.dataset.value];
+          });
+        });
+
+        document.addEventListener("click", (event) => {
+          if (!event.target.closest(".custom-dropdown")) {
+            selectItems.classList.remove("show");
+            selectSelected.setAttribute("aria-expanded", "false");
+          }
+        });
+      </script>
+    </nav>
+</div>
+<header id="header" aria-label="Site header">
+        <picture>
+        </picture>
+          <img  fetchpriority="high" src="/images/banner.webp" alt="UnityShader - Tags">
+  <div id="header-outer">
+    <div id="header-title">
+          <span id="logo">
+            <h1 data-aos="slide-up">UnityShader - Tags</h1>
+          </span>
+        <h2 id="subtitle-wrap" data-aos="slide-down">
+        </h2>
+    </div>
+  </div>
+</header>
+
+        <div id="content" aria-label="Page content"  class="sidebar-right" >
+          <aside id="sidebar" aria-label="Sidebar">
+  <div class="sidebar-wrapper-container sticky">
+  <div class="sidebar-wrapper">
+    <div class="sidebar-wrap" data-aos="fade-up">
+          <div class="sidebar-toc-sidebar"><h3 class="toc-title">文章目录</h3>
+<div class="sidebar-toc-wrapper toc-div-class" >
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Rendering-Order-Queue-tag"><span class="toc-number">1.</span> <span class="toc-text">Rendering Order - Queue tag</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Background-%E8%83%8C%E6%99%AF%EF%BC%8C%E4%B8%80%E8%88%AC%E5%A4%A9%E7%A9%BA%E7%9B%92%E4%B9%8B%E7%B1%BB%E7%9A%84%E4%BD%BF%E7%94%A8%E8%BF%99%E4%B8%AA%E6%A0%87%E7%AD%BE%EF%BC%8C%E6%9C%80%E6%97%A9%E8%A2%AB%E6%B8%B2%E6%9F%93"><span class="toc-number">1.1.</span> <span class="toc-text">Background - 背景，一般天空盒之类的使用这个标签，最早被渲染</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Geometry-default-%E9%80%82%E7%94%A8%E4%BA%8E%E5%A4%A7%E9%83%A8%E5%88%86%E4%B8%8D%E9%80%8F%E6%98%8E%E7%9A%84%E7%89%A9%E4%BD%93"><span class="toc-number">2.</span> <span class="toc-text">Geometry (default) 适用于大部分不透明的物体</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#AlphaTest-%E5%A6%82%E6%9E%9CShader%E8%A6%81%E4%BD%BF%E7%94%A8AlphaTest%E5%8A%9F%E8%83%BD-%E4%BD%BF%E7%94%A8%E8%BF%99%E4%B8%AA%E9%98%9F%E5%88%97%E6%80%A7%E8%83%BD%E6%9B%B4%E9%AB%98"><span class="toc-number">2.1.</span> <span class="toc-text">AlphaTest - 如果Shader要使用AlphaTest功能 使用这个队列性能更高</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Transparent-%E8%BF%99%E4%B8%AA%E6%B8%B2%E6%9F%93%E9%98%9F%E5%88%97%E5%9C%A8AlphaTest%E4%B9%8B%E5%90%8E%EF%BC%8CShader%E4%B8%AD%E6%9C%89%E7%94%A8%E5%88%B0Alpha-Blend%E7%9A%84%EF%BC%8C%E6%88%96%E8%80%85%E6%B7%B1%E5%85%A5%E4%B8%8D%E5%86%99%E5%85%A5%E7%9A%84%E9%83%BD%E5%BA%94%E8%AF%A5%E6%94%BE%E5%9C%A8%E8%BF%99%E4%B8%AA%E9%98%9F%E5%88%97%E3%80%82"><span class="toc-number">2.2.</span> <span class="toc-text">Transparent - 这个渲染队列在AlphaTest之后，Shader中有用到Alpha Blend的，或者深入不写入的都应该放在这个队列。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Overlay-%E6%9C%80%E5%90%8E%E6%B8%B2%E6%9F%93%E7%9A%84%E9%98%9F%E5%88%97%EF%BC%8C%E5%85%A8%E5%B1%8F%E5%B9%95%E5%90%8E%E6%9C%9F%E7%9A%84-%E9%83%BD%E5%BA%94%E8%AF%A5%E4%BD%BF%E7%94%A8%E8%BF%99%E4%B8%AA"><span class="toc-number">2.3.</span> <span class="toc-text">Overlay 最后渲染的队列，全屏幕后期的 都应该使用这个</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RenderType-tag"><span class="toc-number">3.</span> <span class="toc-text">RenderType tag</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DisableBatching-tag"><span class="toc-number">4.</span> <span class="toc-text">DisableBatching tag</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ForceNoShadowCasting-tag"><span class="toc-number">5.</span> <span class="toc-text">ForceNoShadowCasting tag</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IgnoreProjector-tag"><span class="toc-number">6.</span> <span class="toc-text">IgnoreProjector tag</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CanUseSpriteAtlas-tag"><span class="toc-number">7.</span> <span class="toc-text">CanUseSpriteAtlas tag</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PreviewType-tag"><span class="toc-number">8.</span> <span class="toc-text">PreviewType tag</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Pass-Tag"><span class="toc-number">9.</span> <span class="toc-text">Pass Tag</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#LightMode-tag"><span class="toc-number">9.1.</span> <span class="toc-text">LightMode tag</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Always-Always-rendered-no-lighting-is-applied"><span class="toc-number">9.1.1.</span> <span class="toc-text">Always: Always rendered; no lighting is applied.</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ForwardBase-Used-in-Forward-rendering-ambient-main-directional-light-vertex-SH-lights-and-lightmaps-are-applied-%E5%8F%AA%E5%8F%97%E5%88%B0%E7%8E%AF%E5%A2%83%E5%85%89%EF%BC%8C%E4%B8%BB%E8%A6%81%EF%BC%88%E5%BC%BA%E5%BA%A6%E6%9C%80%E5%A4%A7%E9%82%A3%E4%B8%AA%EF%BC%89%E7%9A%84%E6%96%B9%E5%90%91%E5%85%89%EF%BC%8C%E7%90%83%E5%8D%8F%E5%85%89%E7%85%A7%E5%92%8ClightMap%E5%BD%B1%E5%93%8D"><span class="toc-number">9.1.2.</span> <span class="toc-text">ForwardBase: Used in Forward rendering, 　　ambient, main directional light, vertex&#x2F;SH lights and lightmaps are applied. 只受到环境光，主要（强度最大那个）的方向光，球协光照和lightMap影响</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ForwardAdd-Used-in-Forward-rendering-additive-per-pixel-lights-are-applied-one-pass-per-light-%E5%A6%82%E6%9E%9C%E7%81%AF%E5%85%89%E7%B1%BB%E5%9E%8B%E6%98%AF-NO-IMPORT-%E6%88%96%E8%80%85%E5%85%B6%E4%BB%96%E7%B1%BB%E5%9E%8B%E5%85%89%E6%BA%90-%E5%B0%B1%E4%BC%9A%E7%94%A8%E5%88%B0%E8%BF%99%E4%B8%AA"><span class="toc-number">9.1.3.</span> <span class="toc-text">ForwardAdd: Used in Forward rendering; additive per-pixel lights are applied, one pass per light. 如果灯光类型是 NO-IMPORT 或者其他类型光源 就会用到这个</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Deferred-Used-in-Deferred-Shading-renders-g-buffer-%E5%BB%B6%E8%BF%9F%E6%B8%B2%E6%9F%93%E7%9A%84%EF%BC%8C%E6%B8%B2%E6%9F%93%E5%88%B0Gbuffer"><span class="toc-number">9.1.4.</span> <span class="toc-text">Deferred: Used in Deferred Shading; renders g-buffer. 延迟渲染的，渲染到Gbuffer</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ShadowCaster-Renders-object-depth-into-the-shadowmap-or-a-depth-texture-%E7%94%9F%E6%88%90%E9%98%B4%E5%BD%B1%E8%A6%81%E7%94%A8%E6%B7%B1%E5%BA%A6%E5%9B%BEshader"><span class="toc-number">9.1.5.</span> <span class="toc-text">ShadowCaster: Renders object depth into the shadowmap or a depth texture. 生成阴影要用深度图shader</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#MotionVectors-Used-to-calculate-per-object-motion-vectors-%E8%AE%A1%E7%AE%97%E7%89%A9%E4%BB%B6%E7%A7%BB%E5%8A%A8%E5%90%91%E9%87%8F"><span class="toc-number">9.1.6.</span> <span class="toc-text">MotionVectors: Used to calculate per-object motion vectors. 计算物件移动向量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#PrepassBase-Used-in-legacy-Deferred-Lighting-renders-normals-and-specular-exponent"><span class="toc-number">9.1.7.</span> <span class="toc-text">PrepassBase: Used in legacy Deferred Lighting, renders normals and specular exponent.</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#PrepassFinal-Used-in-legacy-Deferred-Lighting-renders-final-color-by-combining-textures-lighting-and-emission"><span class="toc-number">9.1.8.</span> <span class="toc-text">PrepassFinal: Used in legacy Deferred Lighting, renders final color by combining textures, lighting and emission.</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Vertex-Used-in-legacy-Vertex-Lit-rendering-when-object-is-not-lightmapped-all-vertex-lights-are-applied"><span class="toc-number">9.2.</span> <span class="toc-text">Vertex: Used in legacy Vertex Lit rendering when object is not lightmapped; all vertex lights are applied.</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#VertexLMRGBM-Used-in-legacy-Vertex-Lit-rendering-when-object-is-lightmapped-on-platforms-where-lightmap-is-RGBM-encoded-PC-console"><span class="toc-number">9.2.1.</span> <span class="toc-text">VertexLMRGBM: Used in legacy Vertex Lit rendering when object is lightmapped; on platforms where lightmap is RGBM encoded (PC &amp; console).</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#VertexLM-Used-in-legacy-Vertex-Lit-rendering-when-object-is-lightmapped-on-platforms-where-lightmap-is-double-LDR-encoded-mobile-platforms"><span class="toc-number">9.2.2.</span> <span class="toc-text">VertexLM: Used in legacy Vertex Lit rendering when object is lightmapped; on platforms where lightmap is double-LDR encoded (mobile platforms).</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PassFlags-tag"><span class="toc-number">9.3.</span> <span class="toc-text">PassFlags tag</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RequireOptions-tag"><span class="toc-number">9.4.</span> <span class="toc-text">RequireOptions tag</span></a></li></ol></li></ol>
+</div>
+</div>
+          <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/avatar.webp" data-sizes="auto" alt="OnricYF" class="lazyload">
+  <div class="sidebar-author-name">OnricYF</div>
+  <div class="sidebar-description">TRASH ARTIST</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>文章</div>
+    <div class="sidebar-state-number">144</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>分类</div>
+    <div class="sidebar-state-number">33</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>标签</div>
+    <div class="sidebar-state-number">82</div>
+  </div>
+</div>
+<div class="sidebar-social" >
+    <div class="icon-email sidebar-social-icon">
+      <a href=mailto:a1521070145@gmail.com itemprop="url" target="_blank" aria-label="email" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-github sidebar-social-icon">
+      <a href=https://github.com/Madoka9 itemprop="url" target="_blank" aria-label="github" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-bilibili sidebar-social-icon">
+      <a href=https://space.bilibili.com/5862963 itemprop="url" target="_blank" aria-label="bilibili" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-zhihu sidebar-social-icon">
+      <a href=https://www.zhihu.com/people/lan-mei-sheng-dai-77 itemprop="url" target="_blank" aria-label="zhihu" rel="noopener nofollow noreferrer"></a>
+    </div>
+</div>
+<div class="sidebar-menu">
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/" aria-label="首页"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">首页</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/archives" aria-label="归档"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">归档</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/about" aria-label="关于"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">关于</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/friend" aria-label="友链"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">友链</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/portfolio" aria-label="作品集"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">作品集</div>
+      </div>
+</div>
+</div>
+          <div class="sidebar-btn-wrapper" style="position:static">
+            <div class="sidebar-toc-btn current"></div>
+            <div class="sidebar-common-btn"></div>
+          </div>
+    </div>
+  </div>
+      <meting-js
+        theme="var(--color-link)"
+        id="385907592"
+        server="netease"
+        type="playlist"
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        class="aplayer-after-sidebar"
+      ></meting-js>
+  <div class="sidebar-widget">
+  </div>
+  </div>
+</aside>
+
+          <section id="main" aria-label="Main content"><article id="post-Note/PersonalArrange/UnityShader - Tags" class="h-entry article" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner" data-aos="fade-up">
+    <div class="article-meta">
+      <div class="article-date">
+  <span class="article-date-link icon-calendar" data-aos="zoom-in">
+    <time datetime="2025-01-17T14:04:10.000Z" itemprop="datePublished">2025-01-17</time>
+    <time style="display: none;" id="post-update-time">2026-07-16</time>
+  </span>
+</div>
+
+    </div>
+    
+    <div class="hr-line"></div>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+        <h3 id="Rendering-Order-Queue-tag"><a href="#Rendering-Order-Queue-tag" class="headerlink" title="Rendering Order - Queue tag"></a>Rendering Order - Queue tag</h3><p>在3D引擎中，我们经常要对 透明和不透明物体进行排序。先渲染不透明再渲染透明物体，Unity使用 <strong>Queue</strong>标签，分别放入不同的渲染队列中。</p>
+<ul>
+<li><h4 id="Background-背景，一般天空盒之类的使用这个标签，最早被渲染"><a href="#Background-背景，一般天空盒之类的使用这个标签，最早被渲染" class="headerlink" title="Background - 背景，一般天空盒之类的使用这个标签，最早被渲染"></a><code>Background</code> - 背景，一般天空盒之类的使用这个标签，最早被渲染</h4></li>
+<li><h3 id="Geometry-default-适用于大部分不透明的物体"><a href="#Geometry-default-适用于大部分不透明的物体" class="headerlink" title="Geometry (default) 适用于大部分不透明的物体"></a><code>Geometry</code> <em>(default)</em> 适用于大部分不透明的物体</h3></li>
+<li><h4 id="AlphaTest-如果Shader要使用AlphaTest功能-使用这个队列性能更高"><a href="#AlphaTest-如果Shader要使用AlphaTest功能-使用这个队列性能更高" class="headerlink" title="AlphaTest - 如果Shader要使用AlphaTest功能 使用这个队列性能更高"></a><code>AlphaTest</code> - 如果Shader要使用AlphaTest功能 使用这个队列性能更高</h4></li>
+<li><h4 id="Transparent-这个渲染队列在AlphaTest之后，Shader中有用到Alpha-Blend的，或者深入不写入的都应该放在这个队列。"><a href="#Transparent-这个渲染队列在AlphaTest之后，Shader中有用到Alpha-Blend的，或者深入不写入的都应该放在这个队列。" class="headerlink" title="Transparent - 这个渲染队列在AlphaTest之后，Shader中有用到Alpha Blend的，或者深入不写入的都应该放在这个队列。"></a><code>Transparent</code> - 这个渲染队列在AlphaTest之后，Shader中有用到Alpha Blend的，或者深入不写入的都应该放在这个队列。</h4></li>
+<li><h4 id="Overlay-最后渲染的队列，全屏幕后期的-都应该使用这个"><a href="#Overlay-最后渲染的队列，全屏幕后期的-都应该使用这个" class="headerlink" title="Overlay 最后渲染的队列，全屏幕后期的 都应该使用这个"></a><code>Overlay 最后渲染的队列，全屏幕后期的 都应该使用这个</code></h4></li>
+</ul>
+<h3 id="RenderType-tag"><a href="#RenderType-tag" class="headerlink" title="RenderType tag"></a>RenderType tag</h3><p>RenderType tag可以用自定义的字符串，在使用ShadeReplacement，全局替换渲染的时候有用。</p>
+<h3 id="DisableBatching-tag"><a href="#DisableBatching-tag" class="headerlink" title="DisableBatching tag"></a>DisableBatching tag</h3><p>很多着色器中，如果使用的Batching技术，物体的模型空间中的位置信息都没了。如果要<mark style="background: #BBFABBA6;">设计的模型空间坐标系的操作</mark> 的shader，就<mark style="background: #BBFABBA6;">得禁用 Batching</mark> ，保存模型空间的信息。 我们可以使用 “DisableBatching “&#x3D;“True”,<mark style="background: #BBFABBA6;">默认都是“False”</mark> </p>
+<h3 id="ForceNoShadowCasting-tag"><a href="#ForceNoShadowCasting-tag" class="headerlink" title="ForceNoShadowCasting tag"></a>ForceNoShadowCasting tag</h3><p>如果要替换一个<mark style="background: #BBFABBA6;">半透明的物体</mark> 的Shader，如果想要这个物体<mark style="background: #BBFABBA6;">不需要产生阴影</mark> ，就用这个。半透明物体渲染如果不需要阴影就加上标签。</p>
+<h3 id="IgnoreProjector-tag"><a href="#IgnoreProjector-tag" class="headerlink" title="IgnoreProjector tag"></a>IgnoreProjector tag</h3><p>Unity 有种Projector <mark style="background: #BBFABBA6;">投影</mark> 效果，如果加上这个Tag，那么就不会受到投影影响。（贴花，Projector阴影效果）</p>
+<h3 id="CanUseSpriteAtlas-tag"><a href="#CanUseSpriteAtlas-tag" class="headerlink" title="CanUseSpriteAtlas tag"></a>CanUseSpriteAtlas tag</h3><p>Set <code>CanUseSpriteAtlas</code> tag to “False” if the shader is meant for sprites, and will not work when they are packed into atlases (see <a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/SpritePacker.html">Sprite Packer</a>).</p>
+<h3 id="PreviewType-tag"><a href="#PreviewType-tag" class="headerlink" title="PreviewType tag"></a>PreviewType tag</h3><p><code>PreviewType</code> 正常我们都是用一个球体观察材质，设置标签”Plane“ 或者 “Skybox”</p>
+<h2 id="Pass-Tag"><a href="#Pass-Tag" class="headerlink" title="Pass Tag"></a>Pass Tag</h2><p>Pass Tag 一般控制灯光相关的信息，这些跟SubShader Tag一样，只能在Pass块里面起效果。</p>
+<h3 id="LightMode-tag"><a href="#LightMode-tag" class="headerlink" title="LightMode tag"></a>LightMode tag</h3><p>渲染路径标签， 一般现在渲染分为了 三类，顶点渲染路径，向前的渲染，对于的延迟渲染路径。</p>
+<ul>
+<li><h4 id="Always-Always-rendered-no-lighting-is-applied"><a href="#Always-Always-rendered-no-lighting-is-applied" class="headerlink" title="Always: Always rendered; no lighting is applied."></a>Always: Always rendered; no lighting is applied.</h4></li>
+<li><h4 id="ForwardBase-Used-in-Forward-rendering-ambient-main-directional-light-vertex-SH-lights-and-lightmaps-are-applied-只受到环境光，主要（强度最大那个）的方向光，球协光照和lightMap影响"><a href="#ForwardBase-Used-in-Forward-rendering-ambient-main-directional-light-vertex-SH-lights-and-lightmaps-are-applied-只受到环境光，主要（强度最大那个）的方向光，球协光照和lightMap影响" class="headerlink" title="ForwardBase: Used in Forward rendering, 　　ambient, main directional light, vertex&#x2F;SH lights and lightmaps are applied. 只受到环境光，主要（强度最大那个）的方向光，球协光照和lightMap影响"></a>ForwardBase: Used in <a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/RenderTech-ForwardRendering.html">Forward rendering</a>, 　　ambient, main directional light, vertex&#x2F;SH lights and lightmaps are applied. 只受到环境光，主要（强度最大那个）的方向光，球协光照和lightMap影响</h4></li>
+<li><h4 id="ForwardAdd-Used-in-Forward-rendering-additive-per-pixel-lights-are-applied-one-pass-per-light-如果灯光类型是-NO-IMPORT-或者其他类型光源-就会用到这个"><a href="#ForwardAdd-Used-in-Forward-rendering-additive-per-pixel-lights-are-applied-one-pass-per-light-如果灯光类型是-NO-IMPORT-或者其他类型光源-就会用到这个" class="headerlink" title="ForwardAdd: Used in Forward rendering; additive per-pixel lights are applied, one pass per light. 如果灯光类型是 NO-IMPORT 或者其他类型光源 就会用到这个"></a>ForwardAdd: Used in <a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/RenderTech-ForwardRendering.html">Forward rendering</a>; additive per-pixel lights are applied, one pass per light. 如果灯光类型是 NO-IMPORT 或者其他类型光源 就会用到这个</h4></li>
+<li><h4 id="Deferred-Used-in-Deferred-Shading-renders-g-buffer-延迟渲染的，渲染到Gbuffer"><a href="#Deferred-Used-in-Deferred-Shading-renders-g-buffer-延迟渲染的，渲染到Gbuffer" class="headerlink" title="Deferred: Used in Deferred Shading; renders g-buffer. 延迟渲染的，渲染到Gbuffer"></a>Deferred: Used in <a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/RenderTech-DeferredShading.html">Deferred Shading</a>; renders g-buffer. 延迟渲染的，渲染到Gbuffer</h4></li>
+<li><h4 id="ShadowCaster-Renders-object-depth-into-the-shadowmap-or-a-depth-texture-生成阴影要用深度图shader"><a href="#ShadowCaster-Renders-object-depth-into-the-shadowmap-or-a-depth-texture-生成阴影要用深度图shader" class="headerlink" title="ShadowCaster: Renders object depth into the shadowmap or a depth texture. 生成阴影要用深度图shader"></a>ShadowCaster: Renders object depth into the shadowmap or a depth texture. 生成阴影要用深度图shader</h4></li>
+<li><h4 id="MotionVectors-Used-to-calculate-per-object-motion-vectors-计算物件移动向量"><a href="#MotionVectors-Used-to-calculate-per-object-motion-vectors-计算物件移动向量" class="headerlink" title="MotionVectors: Used to calculate per-object motion vectors. 计算物件移动向量"></a>MotionVectors: Used to calculate per-object motion vectors. 计算物件移动向量</h4></li>
+<li><h4 id="PrepassBase-Used-in-legacy-Deferred-Lighting-renders-normals-and-specular-exponent"><a href="#PrepassBase-Used-in-legacy-Deferred-Lighting-renders-normals-and-specular-exponent" class="headerlink" title="PrepassBase: Used in legacy Deferred Lighting, renders normals and specular exponent."></a>PrepassBase: Used in <a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/RenderTech-DeferredLighting.html">legacy Deferred Lighting</a>, renders normals and specular exponent.</h4></li>
+<li><h4 id="PrepassFinal-Used-in-legacy-Deferred-Lighting-renders-final-color-by-combining-textures-lighting-and-emission"><a href="#PrepassFinal-Used-in-legacy-Deferred-Lighting-renders-final-color-by-combining-textures-lighting-and-emission" class="headerlink" title="PrepassFinal: Used in legacy Deferred Lighting, renders final color by combining textures, lighting and emission."></a>PrepassFinal: Used in <a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/RenderTech-DeferredLighting.html">legacy Deferred Lighting</a>, renders final color by combining textures, lighting and emission.</h4></li>
+<li><h3 id="Vertex-Used-in-legacy-Vertex-Lit-rendering-when-object-is-not-lightmapped-all-vertex-lights-are-applied"><a href="#Vertex-Used-in-legacy-Vertex-Lit-rendering-when-object-is-not-lightmapped-all-vertex-lights-are-applied" class="headerlink" title="Vertex: Used in legacy Vertex Lit rendering when object is not lightmapped; all vertex lights are applied."></a>Vertex: Used in <a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/RenderTech-VertexLit.html">legacy Vertex Lit rendering</a> when object is not lightmapped; all vertex lights are applied.</h3></li>
+<li><h4 id="VertexLMRGBM-Used-in-legacy-Vertex-Lit-rendering-when-object-is-lightmapped-on-platforms-where-lightmap-is-RGBM-encoded-PC-console"><a href="#VertexLMRGBM-Used-in-legacy-Vertex-Lit-rendering-when-object-is-lightmapped-on-platforms-where-lightmap-is-RGBM-encoded-PC-console" class="headerlink" title="VertexLMRGBM: Used in legacy Vertex Lit rendering when object is lightmapped; on platforms where lightmap is RGBM encoded (PC &amp; console)."></a>VertexLMRGBM: Used in <a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/RenderTech-VertexLit.html">legacy Vertex Lit rendering</a> when object is lightmapped; on platforms where lightmap is RGBM encoded (PC &amp; console).</h4></li>
+<li><h4 id="VertexLM-Used-in-legacy-Vertex-Lit-rendering-when-object-is-lightmapped-on-platforms-where-lightmap-is-double-LDR-encoded-mobile-platforms"><a href="#VertexLM-Used-in-legacy-Vertex-Lit-rendering-when-object-is-lightmapped-on-platforms-where-lightmap-is-double-LDR-encoded-mobile-platforms" class="headerlink" title="VertexLM: Used in legacy Vertex Lit rendering when object is lightmapped; on platforms where lightmap is double-LDR encoded (mobile platforms)."></a>VertexLM: Used in <a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/RenderTech-VertexLit.html">legacy Vertex Lit rendering</a> when object is lightmapped; on platforms where lightmap is double-LDR encoded (mobile platforms).</h4></li>
+<li><h3 id="PassFlags-tag"><a href="#PassFlags-tag" class="headerlink" title="PassFlags tag"></a>PassFlags tag</h3></li>
+<li><p>A pass can indicate flags that change how <a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/SL-RenderPipeline.html">rendering pipeline</a> passes data to it. This is done by using PassFlags tag, with a value that is space-separated flag names. Currently the flags supported are:</p>
+<ul>
+<li>OnlyDirectional: When used in ForwardBase pass type, this flag makes it so that only the main directional light and ambient&#x2F;lightprobe data is passed into the shader. This means that data of non-important lights is <em>not</em> passed into vertex-light or spherical harmonics shader variables. See <a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/RenderTech-ForwardRendering.html">Forward rendering</a> for details.</li>
+</ul>
+<h3 id="RequireOptions-tag"><a href="#RequireOptions-tag" class="headerlink" title="RequireOptions tag"></a>RequireOptions tag</h3><p>A pass can indicate that it should only be rendered when some external conditions are met. This is done by using RequireOptions tag, whose value is a string of space separated options. Currently the options supported by Unity are:</p>
+<ul>
+<li>SoftVegetation: Render this pass only if Soft Vegetation is on in <a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/class-QualitySettings.html">Quality Settings</a>.</li>
+</ul>
+</li>
+<li><p>参考文章：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_34469717/article/details/78427241">Unity Shader常见指令和标签_hellemic的博客-CSDN博客</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+    <footer class="article-footer">
+        <a class="article-category-link" href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" title="技术笔记" data-aos="zoom-in">技术笔记</a><a class="article-category-link" href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E5%9B%BE%E5%BD%A2%E5%AD%A6/" title="图形学" data-aos="zoom-in">图形学</a>
+
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/tags/PersonalArrange/" rel="tag" title="PersonalArrange">PersonalArrange</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/tags/Unity/" rel="tag" title="Unity">Unity</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/tags/%E6%8E%92%E5%BA%8F/" rel="tag" title="排序">排序</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/tags/%E6%B8%B2%E6%9F%93/" rel="tag" title="渲染">渲染</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/tags/%E7%9D%80%E8%89%B2%E5%99%A8/" rel="tag" title="着色器">着色器</a></li></ul>
+
+    </footer>
+  </div>
+    <nav id="article-nav" aria-label="Article navigation" data-aos="fade-up">
+      <div class="article-nav-link-wrap left">
+            <img data-src="/images/banner.webp" data-sizes="auto" alt="Unity Shader 常用内置结构appdata" class="lazyload">
+        <a href="/2025/01/17/Note/PersonalArrange/Unity%20Shader%20%E5%B8%B8%E7%94%A8%E5%86%85%E7%BD%AE%E7%BB%93%E6%9E%84appdata/" aria-label="前一篇: Unity Shader 常用内置结构appdata" title="前一篇: Unity Shader 常用内置结构appdata"></a>
+        <div class="article-nav-caption">前一篇</div>
+        <h3 class="article-nav-title">
+            Unity Shader 常用内置结构appdata
+        </h3>
+      </div>
+    <div class="article-nav-link-wrap right">
+          <img data-src="/images/banner.webp" data-sizes="auto" alt="UnityShader 内置变量" class="lazyload">
+      <a href="/2025/01/17/Note/PersonalArrange/UnityShader%20%E5%86%85%E7%BD%AE%E5%8F%98%E9%87%8F/" aria-label="后一篇: UnityShader 内置变量"  title="后一篇: UnityShader 内置变量"></a>
+      <div class="article-nav-caption">后一篇</div>
+      <h3 class="article-nav-title">
+          UnityShader 内置变量
+      </h3>
+    </div>
+  </nav>
+
+</article>
+
+
+</section>
+        </div>
+        <footer id="footer" aria-label="Site footer">
+  <div style="width: 100%; overflow: hidden">
+    <div class="footer-line"></div>
+  </div>
+  <div id="footer-info">
+    <div>
+      <span class="icon-copyright"></span>
+        2020-2026
+        <span class="footer-info-sep rotate"></span>
+      OnricYF
+    </div>
+      <div>
+        基于&nbsp;<a href="https://hexo.io/" rel="noopener nofollow noreferrer" target="_blank">Hexo</a>&nbsp;
+        Theme.<a href="https://github.com/D-Sketon/hexo-theme-reimu" rel="noopener nofollow noreferrer" target="_blank">Reimu</a>
+      </div>
+      <div>
+        <span class="icon-brush"></span>
+        87.2k
+        &nbsp;|&nbsp;
+        <span class="icon-coffee"></span>
+        07:26
+      </div>
+      <div>
+        <span class="icon-eye"></span>
+        <span id="busuanzi_container_site_pv">总访问量&nbsp;<span id="busuanzi_value_site_pv"></span></span>
+        &nbsp;|&nbsp;
+        <span class="icon-user"></span>
+        <span id="busuanzi_container_site_uv">总访客量&nbsp;<span id="busuanzi_value_site_uv"></span></span>
+      </div>
+  </div>
+</footer>
+
+          <div class="sidebar-top">
+            <div class="sidebar-top-taichi rotate"></div>
+            <div class="arrow-up"></div>
+          </div>
+        <div id="mask" class="hide"></div>
+      </div>
+      <nav id="mobile-nav" aria-label="Mobile navigation">
+  <div class="sidebar-wrap">
+        <div class="sidebar-toc-sidebar"><h3 class="toc-title">文章目录</h3>
+<div class="sidebar-toc-wrapper toc-div-class" >
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Rendering-Order-Queue-tag"><span class="toc-number">1.</span> <span class="toc-text">Rendering Order - Queue tag</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Background-%E8%83%8C%E6%99%AF%EF%BC%8C%E4%B8%80%E8%88%AC%E5%A4%A9%E7%A9%BA%E7%9B%92%E4%B9%8B%E7%B1%BB%E7%9A%84%E4%BD%BF%E7%94%A8%E8%BF%99%E4%B8%AA%E6%A0%87%E7%AD%BE%EF%BC%8C%E6%9C%80%E6%97%A9%E8%A2%AB%E6%B8%B2%E6%9F%93"><span class="toc-number">1.1.</span> <span class="toc-text">Background - 背景，一般天空盒之类的使用这个标签，最早被渲染</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Geometry-default-%E9%80%82%E7%94%A8%E4%BA%8E%E5%A4%A7%E9%83%A8%E5%88%86%E4%B8%8D%E9%80%8F%E6%98%8E%E7%9A%84%E7%89%A9%E4%BD%93"><span class="toc-number">2.</span> <span class="toc-text">Geometry (default) 适用于大部分不透明的物体</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#AlphaTest-%E5%A6%82%E6%9E%9CShader%E8%A6%81%E4%BD%BF%E7%94%A8AlphaTest%E5%8A%9F%E8%83%BD-%E4%BD%BF%E7%94%A8%E8%BF%99%E4%B8%AA%E9%98%9F%E5%88%97%E6%80%A7%E8%83%BD%E6%9B%B4%E9%AB%98"><span class="toc-number">2.1.</span> <span class="toc-text">AlphaTest - 如果Shader要使用AlphaTest功能 使用这个队列性能更高</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Transparent-%E8%BF%99%E4%B8%AA%E6%B8%B2%E6%9F%93%E9%98%9F%E5%88%97%E5%9C%A8AlphaTest%E4%B9%8B%E5%90%8E%EF%BC%8CShader%E4%B8%AD%E6%9C%89%E7%94%A8%E5%88%B0Alpha-Blend%E7%9A%84%EF%BC%8C%E6%88%96%E8%80%85%E6%B7%B1%E5%85%A5%E4%B8%8D%E5%86%99%E5%85%A5%E7%9A%84%E9%83%BD%E5%BA%94%E8%AF%A5%E6%94%BE%E5%9C%A8%E8%BF%99%E4%B8%AA%E9%98%9F%E5%88%97%E3%80%82"><span class="toc-number">2.2.</span> <span class="toc-text">Transparent - 这个渲染队列在AlphaTest之后，Shader中有用到Alpha Blend的，或者深入不写入的都应该放在这个队列。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Overlay-%E6%9C%80%E5%90%8E%E6%B8%B2%E6%9F%93%E7%9A%84%E9%98%9F%E5%88%97%EF%BC%8C%E5%85%A8%E5%B1%8F%E5%B9%95%E5%90%8E%E6%9C%9F%E7%9A%84-%E9%83%BD%E5%BA%94%E8%AF%A5%E4%BD%BF%E7%94%A8%E8%BF%99%E4%B8%AA"><span class="toc-number">2.3.</span> <span class="toc-text">Overlay 最后渲染的队列，全屏幕后期的 都应该使用这个</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RenderType-tag"><span class="toc-number">3.</span> <span class="toc-text">RenderType tag</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DisableBatching-tag"><span class="toc-number">4.</span> <span class="toc-text">DisableBatching tag</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ForceNoShadowCasting-tag"><span class="toc-number">5.</span> <span class="toc-text">ForceNoShadowCasting tag</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IgnoreProjector-tag"><span class="toc-number">6.</span> <span class="toc-text">IgnoreProjector tag</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CanUseSpriteAtlas-tag"><span class="toc-number">7.</span> <span class="toc-text">CanUseSpriteAtlas tag</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PreviewType-tag"><span class="toc-number">8.</span> <span class="toc-text">PreviewType tag</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Pass-Tag"><span class="toc-number">9.</span> <span class="toc-text">Pass Tag</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#LightMode-tag"><span class="toc-number">9.1.</span> <span class="toc-text">LightMode tag</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Always-Always-rendered-no-lighting-is-applied"><span class="toc-number">9.1.1.</span> <span class="toc-text">Always: Always rendered; no lighting is applied.</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ForwardBase-Used-in-Forward-rendering-ambient-main-directional-light-vertex-SH-lights-and-lightmaps-are-applied-%E5%8F%AA%E5%8F%97%E5%88%B0%E7%8E%AF%E5%A2%83%E5%85%89%EF%BC%8C%E4%B8%BB%E8%A6%81%EF%BC%88%E5%BC%BA%E5%BA%A6%E6%9C%80%E5%A4%A7%E9%82%A3%E4%B8%AA%EF%BC%89%E7%9A%84%E6%96%B9%E5%90%91%E5%85%89%EF%BC%8C%E7%90%83%E5%8D%8F%E5%85%89%E7%85%A7%E5%92%8ClightMap%E5%BD%B1%E5%93%8D"><span class="toc-number">9.1.2.</span> <span class="toc-text">ForwardBase: Used in Forward rendering, 　　ambient, main directional light, vertex&#x2F;SH lights and lightmaps are applied. 只受到环境光，主要（强度最大那个）的方向光，球协光照和lightMap影响</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ForwardAdd-Used-in-Forward-rendering-additive-per-pixel-lights-are-applied-one-pass-per-light-%E5%A6%82%E6%9E%9C%E7%81%AF%E5%85%89%E7%B1%BB%E5%9E%8B%E6%98%AF-NO-IMPORT-%E6%88%96%E8%80%85%E5%85%B6%E4%BB%96%E7%B1%BB%E5%9E%8B%E5%85%89%E6%BA%90-%E5%B0%B1%E4%BC%9A%E7%94%A8%E5%88%B0%E8%BF%99%E4%B8%AA"><span class="toc-number">9.1.3.</span> <span class="toc-text">ForwardAdd: Used in Forward rendering; additive per-pixel lights are applied, one pass per light. 如果灯光类型是 NO-IMPORT 或者其他类型光源 就会用到这个</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Deferred-Used-in-Deferred-Shading-renders-g-buffer-%E5%BB%B6%E8%BF%9F%E6%B8%B2%E6%9F%93%E7%9A%84%EF%BC%8C%E6%B8%B2%E6%9F%93%E5%88%B0Gbuffer"><span class="toc-number">9.1.4.</span> <span class="toc-text">Deferred: Used in Deferred Shading; renders g-buffer. 延迟渲染的，渲染到Gbuffer</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ShadowCaster-Renders-object-depth-into-the-shadowmap-or-a-depth-texture-%E7%94%9F%E6%88%90%E9%98%B4%E5%BD%B1%E8%A6%81%E7%94%A8%E6%B7%B1%E5%BA%A6%E5%9B%BEshader"><span class="toc-number">9.1.5.</span> <span class="toc-text">ShadowCaster: Renders object depth into the shadowmap or a depth texture. 生成阴影要用深度图shader</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#MotionVectors-Used-to-calculate-per-object-motion-vectors-%E8%AE%A1%E7%AE%97%E7%89%A9%E4%BB%B6%E7%A7%BB%E5%8A%A8%E5%90%91%E9%87%8F"><span class="toc-number">9.1.6.</span> <span class="toc-text">MotionVectors: Used to calculate per-object motion vectors. 计算物件移动向量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#PrepassBase-Used-in-legacy-Deferred-Lighting-renders-normals-and-specular-exponent"><span class="toc-number">9.1.7.</span> <span class="toc-text">PrepassBase: Used in legacy Deferred Lighting, renders normals and specular exponent.</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#PrepassFinal-Used-in-legacy-Deferred-Lighting-renders-final-color-by-combining-textures-lighting-and-emission"><span class="toc-number">9.1.8.</span> <span class="toc-text">PrepassFinal: Used in legacy Deferred Lighting, renders final color by combining textures, lighting and emission.</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Vertex-Used-in-legacy-Vertex-Lit-rendering-when-object-is-not-lightmapped-all-vertex-lights-are-applied"><span class="toc-number">9.2.</span> <span class="toc-text">Vertex: Used in legacy Vertex Lit rendering when object is not lightmapped; all vertex lights are applied.</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#VertexLMRGBM-Used-in-legacy-Vertex-Lit-rendering-when-object-is-lightmapped-on-platforms-where-lightmap-is-RGBM-encoded-PC-console"><span class="toc-number">9.2.1.</span> <span class="toc-text">VertexLMRGBM: Used in legacy Vertex Lit rendering when object is lightmapped; on platforms where lightmap is RGBM encoded (PC &amp; console).</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#VertexLM-Used-in-legacy-Vertex-Lit-rendering-when-object-is-lightmapped-on-platforms-where-lightmap-is-double-LDR-encoded-mobile-platforms"><span class="toc-number">9.2.2.</span> <span class="toc-text">VertexLM: Used in legacy Vertex Lit rendering when object is lightmapped; on platforms where lightmap is double-LDR encoded (mobile platforms).</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PassFlags-tag"><span class="toc-number">9.3.</span> <span class="toc-text">PassFlags tag</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RequireOptions-tag"><span class="toc-number">9.4.</span> <span class="toc-text">RequireOptions tag</span></a></li></ol></li></ol>
+</div>
+</div>
+        <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/avatar.webp" data-sizes="auto" alt="OnricYF" class="lazyload">
+  <div class="sidebar-author-name">OnricYF</div>
+  <div class="sidebar-description">TRASH ARTIST</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>文章</div>
+    <div class="sidebar-state-number">144</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>分类</div>
+    <div class="sidebar-state-number">33</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>标签</div>
+    <div class="sidebar-state-number">82</div>
+  </div>
+</div>
+<div class="sidebar-social" >
+    <div class="icon-email sidebar-social-icon">
+      <a href=mailto:a1521070145@gmail.com itemprop="url" target="_blank" aria-label="email" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-github sidebar-social-icon">
+      <a href=https://github.com/Madoka9 itemprop="url" target="_blank" aria-label="github" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-bilibili sidebar-social-icon">
+      <a href=https://space.bilibili.com/5862963 itemprop="url" target="_blank" aria-label="bilibili" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-zhihu sidebar-social-icon">
+      <a href=https://www.zhihu.com/people/lan-mei-sheng-dai-77 itemprop="url" target="_blank" aria-label="zhihu" rel="noopener nofollow noreferrer"></a>
+    </div>
+</div>
+<div class="sidebar-menu">
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/" aria-label="首页"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">首页</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/archives" aria-label="归档"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">归档</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/about" aria-label="关于"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">关于</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/friend" aria-label="友链"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">友链</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/portfolio" aria-label="作品集"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">作品集</div>
+      </div>
+</div>
+</div>
+  </div>
+      <div class="sidebar-btn-wrapper">
+        <div class="sidebar-toc-btn current"></div>
+        <div class="sidebar-common-btn"></div>
+      </div>
+</nav>
+
+    </div>
+    
+<script src="https://npm.webcache.cn/lazysizes@5.3.2/lazysizes.min.js" integrity="sha384-3gT&#x2F;vsepWkfz&#x2F;ff7PpWNUeMzeWoH3cDhm&#x2F;A8jM7ouoAK0&#x2F;fP&#x2F;9bcHHR5kHq2nf+e" crossorigin="anonymous"></script>
+
+
+<script src="https://npm.webcache.cn/clipboard@2.0.11/dist/clipboard.min.js" integrity="sha384-J08i8An&#x2F;QeARD9ExYpvphB8BsyOj3Gh2TSh1aLINKO3L0cMSH2dN3E22zFoXEi0Q" crossorigin="anonymous"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+  
+<script src="/js/aos.js"></script>
+
+  <script>
+    var aosInit = () => {
+      AOS.init({
+        duration: 1000,
+        easing: "ease",
+        once: true,
+        offset: 50,
+      });
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', aosInit);
+    } else {
+      aosInit();
+    }
+  </script>
+
+
+<script src="/js/pjax_script.js" data-pjax></script>
+
+
+
+
+  <script>
+    var setupFirework = () => {
+      if (!false || !window.matchMedia('(max-width: 768px)').matches) {
+        window.firework && window.firework(JSON.parse('{"excludeElements":["a","button"],"particles":[{"shape":"circle","move":["emit"],"easing":"easeOutExpo","colors":["var(--red-1)","var(--red-2)","var(--red-3)","var(--red-4)"],"number":20,"duration":[1200,1800],"shapeOptions":{"radius":[16,32],"alpha":[0.3,0.5]}},{"shape":"circle","move":["diffuse"],"easing":"easeOutExpo","colors":["var(--red-0)"],"number":1,"duration":[1200,1800],"shapeOptions":{"radius":20,"alpha":[0.2,0.5],"lineWidth":6}}]}'));
+      }
+    }
+  </script>
+  
+<script src="https://npm.webcache.cn/mouse-firework@0.2.0/dist/index.umd.js" integrity="sha384-qi9WggRt19tv8Vc7pCHW3ulMNLwrn515zaLEWZjl1px07vz8+pUoWX8n1rgq282T" crossorigin="anonymous" onload="setupFirework()" defer></script>
+
+
+  
+<script src="https://npm.webcache.cn/theme-shokax-pjax@0.0.3/dist/index.umd.js" integrity="sha384-xneY1WY8hOfUzswrE4CrYq35N4BdVcxqxwHPr9zawE&#x2F;jMSCxD+jAPU55x&#x2F;jj3wlf" crossorigin="anonymous"></script>
+
+  
+<script src="/js/pjax.js"></script>
+
+
+
+
+
+<div id="lazy-script">
+  <div>
+      
+      
+      <script data-pjax>
+        window.REIMU_POST = {
+          author: "OnricYF",
+          title: "UnityShader - Tags",
+          url: "http://example.com/2025/01/17/Note/PersonalArrange/UnityShader%20-%20Tags/",
+          excerpt: "",
+          description: "",
+          stripContent: "Rendering Order - Queue tag在3D引擎中，我们经常要对 透明和不透明物体进行排序。先渲染不透明再渲染透明物体，Unity使用 Queue标签，分别放入不同的渲染队列中。  Background - 背景，一般天空盒之类的使用这个标签，最早被渲染 Geometry (default) 适用于大部分不透明的物体 AlphaTest - 如果Shader要使用AlphaTest功能 使用这个队列性能更高 Transparent - 这个渲染队列在AlphaTest之后，Sha",
+          date: "Fri Jan 17 2025 22:04:10 GMT+0800",
+          updated: "Thu Jul 16 2026 11:10:11 GMT+0800",
+          cover: "/images/banner.webp",
+        };
+      </script>
+        
+<script src="/js/insert_highlight.js" data-pjax></script>
+
+      
+<script src="/js/tabs.js" data-pjax defer></script>
+
+      <script type="module" data-pjax>
+        (async () => {
+          const PhotoSwipeLightbox = (await safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe-lightbox.esm.min.js", "sha384-DiL6M/gG+wmTxmCRZyD1zee6lIhawn5TGvED0FOh7fXcN9B0aZ9dexSF/N6lrZi/")).default;
+          const initPswp = (gallery, children) => {
+            if (_$$(`${gallery} ${children}`).length > 0) {
+              new PhotoSwipeLightbox({
+                gallery,
+                children,
+                pswpModule: () => safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.esm.min.js", "sha384-WkkO3GCmgkC3VQWpaV8DqhKJqpzpF9JoByxDmnV8+oTJ7m3DfYEWX1fu1scuS4+s")
+              }).init();
+            }
+          }
+          const pswp = () => {
+            initPswp('.article-entry', 'a.article-gallery-item');
+            initPswp('.article-gallery', 'a.article-gallery-item');
+          }
+          pswp();
+        })();
+      </script>
+  </div>
+</div>
+
+
+  <script>
+    console.log(String.raw`%c 
+ ______     ______     __     __    __     __  __    
+/\  == \   /\  ___\   /\ \   /\ "-./  \   /\ \/\ \   
+\ \  __<   \ \  __\   \ \ \  \ \ \-./\ \  \ \ \_\ \  
+ \ \_\ \_\  \ \_____\  \ \_\  \ \_\ \ \_\  \ \_____\ 
+  \/_/ /_/   \/_____/   \/_/   \/_/  \/_/   \/_____/ 
+                                                  
+`,'color: #ff5252;')
+    console.log('%c Theme.Reimu v' + '1.12.0' + ' %c https://github.com/D-Sketon/hexo-theme-reimu ', 'color: white; background: #ff5252; padding:5px 0;', 'padding:4px;border:1px solid #ff5252;')
+  </script>
+  
+
+
+  
+<script src="https://npm.webcache.cn/busuanzi@2.3.0/bsz.pure.mini.js" integrity="sha384-0M75wtSkhjIInv4coYlaJU83+OypaRCIq2SukQVQX04eGTCBXJDuWAbJet56id+S" crossorigin="anonymous" async></script>
+
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      for (let registration of registrations) {
+        registration.unregister();
+      }
+    });
+  }
+</script>
+
+
+    <script>
+      var setupAPlayer = () => {
+        if (!true || !window.matchMedia('(max-width: 768px)').matches) {
+          if (window.matchMedia('(max-width: 959px)').matches) {
+            const meting = _$('meting-js');
+            if (meting) {
+              meting.setAttribute('fixed', 'true');
+              const aside = meting.parentNode?.parentNode;
+              if (aside?.tagName === 'ASIDE') {
+                meting.parentNode.removeChild(meting);
+                document.body.appendChild(meting);
+              }
+            }
+          }
+        }
+      };
+    </script>
+  
+<script src="https://npm.webcache.cn/aplayer@1.10.1/dist/APlayer.min.js" integrity="sha384-gdGYZwHnfJM54evoZhpO0s6ZF5BQiybkiyW7VXr+h5UfruuRL&#x2F;aORyw+5+HZoU6e" crossorigin="anonymous" defer onload="setupAPlayer()"></script>
+
+    
+<script src="https://npm.webcache.cn/meting@2.0.1/dist/Meting.min.js" integrity="sha384-ASVlpKF80A22OXTK3tfEjZm1EL6uFMKIC4p8+0maanw1S&#x2F;IyB+Y4JG+ZDU7GpKE8" crossorigin="anonymous" defer></script>
+
+
+
+  </body>
+  </html>

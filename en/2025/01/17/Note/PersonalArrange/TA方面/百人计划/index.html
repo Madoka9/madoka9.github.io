@@ -1,0 +1,856 @@
+  <!DOCTYPE html>
+  <html lang="en"  
+      data-theme-mode="auto"
+  >
+  <head>
+  <meta charset="utf-8">
+  
+  
+  
+  <script>window.REIMU_CONFIG = {};window.REIMU_CONFIG.icon_font = '4552607_4k4bc36ef96';window.REIMU_CONFIG.clipboard_tips = {"success":{"zh-CN":"复制成功 (*^▽^*)","en":"Copy successfully (*^▽^*)"},"fail":{"zh-CN":"复制失败 (ﾟ⊿ﾟ)ﾂ","en":"Copy failed (ﾟ⊿ﾟ)ﾂ"},"copyright":{"enable":false,"count":50,"license_type":"by-nc-sa"}};window.REIMU_CONFIG.clipboard_tips.copyright.content = '本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！';window.REIMU_CONFIG.code_block = {"expand":true};window.REIMU_CONFIG.base = 'http://example.com';window.REIMU_CONFIG.i18n_languages = ["en"];</script>
+  <title>
+    技术美术 - 基本原理和使用方法 | YF&#39;s Blog
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic|Noto Serif SC:400,400italic,700,700italic&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic|Noto Serif SC:400,400italic,700,700italic&display=swap" media="print" onload="this.media='all'">
+    <link rel="preload" href="//at.alicdn.com/t/c/font_4552607_4k4bc36ef96.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+    
+<link rel="stylesheet" href="/css/loader.css">
+
+    <meta name="description" content="#（一）渲染管线		[基本流程]：				应用阶段			-&gt;（输出渲染图元）			-&gt;几何阶段 （输出屏幕空间信息）			-&gt;光栅化阶段			-&gt;逐片元操作（像素着色）  Vertex Shader (顶点处理)-&gt;Triangle Processing-&gt;Rasterization(光栅化)-&gt;Pixel Shader -&gt;Frame Buffer">
+<meta property="og:type" content="article">
+<meta property="og:title" content="技术美术 - 基本原理和使用方法">
+<meta property="og:url" content="http://example.com/en/2025/01/17/Note/PersonalArrange/TA%E6%96%B9%E9%9D%A2/%E7%99%BE%E4%BA%BA%E8%AE%A1%E5%88%92/index.html">
+<meta property="og:site_name" content="YF&#39;s Blog">
+<meta property="og:description" content="#（一）渲染管线		[基本流程]：				应用阶段			-&gt;（输出渲染图元）			-&gt;几何阶段 （输出屏幕空间信息）			-&gt;光栅化阶段			-&gt;逐片元操作（像素着色）  Vertex Shader (顶点处理)-&gt;Triangle Processing-&gt;Rasterization(光栅化)-&gt;Pixel Shader -&gt;Frame Buffer">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220723171422.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220723171104.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220723170948.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220723170245.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220724191042.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220724194705.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220724195502.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220724202931.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220724195755.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220724203046.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220724200936.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220724201325.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220724201602.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220724203723.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220724205647.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220724205758.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220724205913.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220725152525.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220725152825.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220725153306.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220725160022.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220725163157.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220725163312.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220725163415.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220725163650.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220725164257.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220725164631.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220725165607.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220725170522.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220726130010.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220726140012.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220726140314.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220804224635.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220804225700.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220805112959.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220805113750.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220805114448.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220818165451.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1622620164684-8a6d35c2-5b0d-4c41-9ecb-e9f919648220.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1622734098485-50a21604-4b10-4af3-916a-71b901964228.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1622734113022-26837765-0d75-4c0a-911b-e839511c9451.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1622734214254-fec6a002-48d8-4f23-be22-8443f093e773.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624193334990-3c4970a8-5d88-44e4-880f-9cc27ae01b31.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220822133754.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624420738832-6c7907b8-660e-40be-9d04-c1ec4ff9e7b1.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/jpeg/12962324/1624421219850-4568f8db-d4b3-467e-8558-5c929d6eb073.jpeg">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/gif/12962324/1624421411741-e91d2b73-3735-4933-bc14-ce57b5e28eb7.gif">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/gif/12962324/1624421468076-786120a3-7a86-4d11-a697-3d60b799868f.gif">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/gif/12962324/1624421503849-3227fb64-4fb1-4569-882b-c1b04dc69601.gif">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/gif/12962324/1624421507550-9f24ae88-cee1-4d60-bf59-85547feae888.gif">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/gif/12962324/1624421932090-a889462e-5980-4925-9ad5-814309b70cdf.gif">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/gif/12962324/1624421936219-30b62aa0-1b64-4d3f-a005-7c27d888964e.gif">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/jpeg/12962324/1624614144699-91346764-3f43-4e17-9fe4-8191e6b6471d.jpeg">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624617050604-09ea4c09-c0ad-49b5-b629-5796a4b654d7.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624617544415-4ecb8586-250f-46a3-baa3-2b69839dc9c7.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624617699117-ecaf8042-9322-4926-bdaa-6ca0b1eb968d.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624694674891-a7db0ee7-dd30-40cb-8e50-c257bf411fe4.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624694685590-eb37cefc-66d8-4152-bcd1-a6fb551473be.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624703166039-db878452-5ca4-4c40-843a-3d5158894d59.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624703730418-46940e6d-d923-455a-9c4f-a5f7be6056d8.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624703888142-d92421a2-f27a-40a3-9c23-074907f11d6d.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624704240348-f99bdd62-37e2-4cdd-b32d-33df3b3b95d1.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624704901879-571b6b3d-c8f5-48b6-aecc-64f6fe33ed46.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/jpeg/12962324/1624705071634-a015674d-cec5-4cf5-b70c-af97f772c283.jpeg">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624705798269-b119cd9e-1a1d-46df-8203-eb7ad673310d.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624706647590-c5142fac-3499-4c29-b4c1-6cf807bda69f.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624707165127-a955ada0-991a-4c95-aded-7a0f264991d7.png">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624707356410-b97b4a4c-6693-41ea-8f44-fb356589af44.png">
+<meta property="article:published_time" content="2025-01-17T14:15:28.000Z">
+<meta property="article:modified_time" content="2026-07-16T03:38:13.916Z">
+<meta property="article:author" content="OnricYF">
+<meta property="article:tag" content="PersonalArrange">
+<meta property="article:tag" content="TA方面">
+<meta property="article:tag" content="抗锯齿">
+<meta property="article:tag" content="模板">
+<meta property="article:tag" content="着色器">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/blog/Pasted%20image%2020220723171422.png">
+    <link rel="alternate" href="/atom.xml" title="YF's Blog" type="application/atom+xml">
+    <link rel="shortcut icon" href="/images/favicon.ico">
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.css" integrity="sha384-IfxC36XL/toUyJ939C73PcgMuRzAZuIzZxE38drsmO5p6jD7ei+Zx/1oA/0l8ysE" crossorigin="anonymous">
+    
+<script src="https://npm.webcache.cn/pace-js@1.2.4/pace.min.js" integrity="sha384-k6YtvFUEIuEFBdrLKJ3YAUbBki333tj1CSUisai5Cswsg9wcLNaPzsTHDswp4Az8" crossorigin="anonymous"></script>
+
+    
+<link rel="stylesheet" href="https://npm.webcache.cn/@reimujs/aos@0.1.2/dist/aos.css" integrity="sha384-GMRP93c6Hkz9JVKGAuRR3nTS7M07RwPgTFenXiosjq2VbVgvdDNcz1g6Mkj8AONa" crossorigin="anonymous">
+
+    <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://npm.webcache.cn/aplayer@1.10.1/dist/APlayer.min.css" integrity="sha384-tLMkTWh2pfXNWGFlUS0w1TFtRG5xZ9lPWFOooj+vDDLIL+xBGQU/voDBY5XE2lVh" crossorigin="anonymous">
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+  <body>
+      <div id='loader'>
+    <div class="loading-left-bg loading-bg"></div>
+    <div class="loading-right-bg loading-bg"></div>
+    <div class="spinner-box">
+      <div class="loading-taichi rotate">
+          <svg width="150" height="150" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="https://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
+            <path d="M303.5 432A80 80 0 0 1 291.5 592A80 80 0 0 1 303.5 432z" fill="var(--red-1, #ff5252)" />
+            <path d="M512 65A447 447 0 0 1 512 959L512 929A417 417 0 0 0 512 95A417 417 0 0 0 512 929L512 959A447 447 0 0 1 512 65z 
+           M512 95A417 417 0 0 1 929 512A208.5 208.5 0 0 1 720.5 720.5L720.5 592A80 80 0 0 0 720.5 432A80 80 0 0 0 720.5 592L720.5 720.5A208.5 208.5 0 0 1 512 512A208.5 208.5 0 0 0 303.5 303.5A208.5 208.5 0 0 0 95 512A417 417 0 0 1 512 95z" fill="var(--red-1, #ff5252)" />
+          </svg>
+      </div>
+      <div class="loading-word">Loading...</div>
+    </div>
+  </div>
+  </div>
+  <script>
+    var time = null;
+    var loaderEl = document.getElementById('loader');
+    var startLoading = () => {
+      time = Date.now();
+      loaderEl.classList.remove("loading");
+    }
+    var hideLoader = () => {
+      document.body.style.overflow = 'auto';
+      loader.classList.add('loading');
+    };
+
+    var endLoading = () => {
+      if (!time) {
+        hideLoader();
+      } else {
+        if (Date.now() - time > 500) {
+          time = null;
+          hideLoader();
+        } else {
+          setTimeout(endLoading, 500 - (Date.now() - time));
+          time = null;
+        }
+      }
+    }
+    window.addEventListener('DOMContentLoaded', endLoading);
+    loaderEl.addEventListener('click', endLoading);
+  </script>
+<div id="copy-tooltip"></div>
+<div id="heatmap-tooltip"></div>
+
+
+    <div id="container">
+      <div id="wrap">
+        <div id="header-nav">
+  <nav id="main-nav" aria-label="Primary navigation">
+        <a class="main-nav-link-wrap" href="/en/">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Home</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/archives">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Archives</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/about">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">About</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/friend">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Friend</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/portfolio">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Portfolio</span>
+        </span>
+    <a id="main-nav-toggle" class="nav-icon" aria-label="Toggle navigation" role="button"></a>
+  </nav>
+  <nav id="sub-nav" aria-label="Secondary navigation">
+  </nav>
+    <nav id="i18n-nav" aria-label="Language selection">
+      <div class="custom-dropdown">
+        <div class="select-selected" id="select-selected" role="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Language menu">
+          <span id="nav-language-btn" class="nav-icon" style="padding: 0 20px 0 0"></span>
+          <span id="selected-lang">English</span>
+        </div>
+        <ul class="select-items" id="select-items" role="listbox" aria-label="Languages">
+            <li data-value="zh-CN" role="option" aria-selected="false">简体中文</li>
+            <li data-value="en" role="option" class="selected" aria-selected="true">English</li>
+        </ul>
+      </div>
+      <script>
+        var selectSelected = document.getElementById("select-selected");
+        var selectedLang = document.getElementById("selected-lang");
+        var selectItems = document.getElementById("select-items");
+        var selectOptions = selectItems.querySelectorAll("li");
+
+        selectSelected.addEventListener("click", () => {
+          selectItems.classList.toggle("show");
+          var expanded = selectSelected.getAttribute("aria-expanded") === "true";
+          selectSelected.setAttribute("aria-expanded", (!expanded).toString());
+        });
+
+        selectOptions.forEach((item) => {
+          item.addEventListener("click", () => {
+            const langMap = {};
+              langMap['zh-CN'] = '/2025/01/17/Note/PersonalArrange/TA方面/百人计划/';
+              langMap['en'] = '/en/2025/01/17/Note/PersonalArrange/TA方面/百人计划/';
+            selectedLang.textContent = item.textContent;
+            selectItems.classList.remove("show");
+            selectOptions.forEach((option) => {
+              option.classList.remove("selected");
+            });
+            item.classList.add("selected");
+            window.location = langMap[item.dataset.value];
+          });
+        });
+
+        document.addEventListener("click", (event) => {
+          if (!event.target.closest(".custom-dropdown")) {
+            selectItems.classList.remove("show");
+            selectSelected.setAttribute("aria-expanded", "false");
+          }
+        });
+      </script>
+    </nav>
+</div>
+<header id="header" aria-label="Site header">
+        <picture>
+        </picture>
+          <img  fetchpriority="high" src="/images/banner.webp" alt="技术美术 - 基本原理和使用方法">
+  <div id="header-outer">
+    <div id="header-title">
+          <span id="logo">
+            <h1 data-aos="slide-up">技术美术 - 基本原理和使用方法</h1>
+          </span>
+        <h2 id="subtitle-wrap" data-aos="slide-down">
+        </h2>
+    </div>
+  </div>
+</header>
+
+        <div id="content" aria-label="Page content"  class="sidebar-right" >
+          <aside id="sidebar" aria-label="Sidebar">
+  <div class="sidebar-wrapper-container sticky">
+  <div class="sidebar-wrapper">
+    <div class="sidebar-wrap" data-aos="fade-up">
+          <div class="sidebar-toc-sidebar"><h3 class="toc-title">Contents</h3>
+<div class="sidebar-toc-wrapper toc-div-class" >
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E5%92%8C%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="toc-number">1.</span> <span class="toc-text">基本原理和使用方法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Z-Buffer%EF%BC%88%E6%B7%B1%E5%BA%A6%E7%BC%93%E5%86%B2%E5%8C%BA%EF%BC%89"><span class="toc-number">1.1.</span> <span class="toc-text">1.Z-Buffer（深度缓冲区）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Z-Writer%EF%BC%88%E6%B7%B1%E5%BA%A6%E5%86%99%E5%85%A5%EF%BC%89"><span class="toc-number">1.2.</span> <span class="toc-text">2.Z Writer（深度写入）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Z-Test%E7%9A%84%E6%AF%94%E8%BE%83%E6%93%8D%E4%BD%9C"><span class="toc-number">1.3.</span> <span class="toc-text">3.Z-Test的比较操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-Unity%E7%9A%84%E6%B8%B2%E6%9F%93%E9%98%9F%E5%88%97"><span class="toc-number">1.4.</span> <span class="toc-text">4.Unity的渲染队列</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E7%AE%80%E8%BF%B0Early-Z%E6%8A%80%E6%9C%AF"><span class="toc-number">1.5.</span> <span class="toc-text">5.简述Early-Z技术</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E6%B7%B1%E5%BA%A6%E5%80%BC"><span class="toc-number">1.6.</span> <span class="toc-text">6.深度值</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A3%E7%A1%AE%E7%9A%84%E7%90%86%E8%A7%A3%E6%B7%B1%E5%BA%A6%E5%80%BC%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="toc-number">1.6.1.</span> <span class="toc-text">正确的理解深度值的概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%B7%B1%E5%BA%A6%E7%BC%93%E5%86%B2%E5%8C%BA%E4%B8%AD%E8%A6%81%E5%AD%98%E5%82%A8%E4%B8%80%E4%B8%AA%E9%9D%9E%E7%BA%BF%E6%80%A7%E7%9A%84%E6%B7%B1%E5%BA%A6%EF%BC%9F"><span class="toc-number">1.6.2.</span> <span class="toc-text">为什么深度缓冲区中要存储一个非线性的深度？</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%A6%E7%BB%86%E9%93%BE%E6%8E%A5"><span class="toc-number">1.6.2.1.</span> <span class="toc-text">详细链接</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8E%9F%E5%9B%A01%EF%BC%9A%E7%BB%99%E8%BF%91%E5%A4%84%E6%9B%B4%E5%A4%9A%E7%9A%84%E7%B2%BE%E5%BA%A6"><span class="toc-number">1.6.2.2.</span> <span class="toc-text">原因1：给近处更多的精度</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%A6%E4%B8%80%E4%B8%AA%E5%8E%9F%E5%9B%A0%EF%BC%9AZ-Fight-%E6%B7%B1%E5%BA%A6%E5%86%B2%E7%AA%81"><span class="toc-number">1.6.2.3.</span> <span class="toc-text">另一个原因：Z-Fight-深度冲突</span></a></li></ol></li></ol></li></ol></li></ol>
+</div>
+</div>
+          <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/avatar.webp" data-sizes="auto" alt="OnricYF" class="lazyload">
+  <div class="sidebar-author-name">OnricYF</div>
+  <div class="sidebar-description">TRASH ARTIST</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>Post</div>
+    <div class="sidebar-state-number">144</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>Category</div>
+    <div class="sidebar-state-number">33</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>Tag</div>
+    <div class="sidebar-state-number">82</div>
+  </div>
+</div>
+<div class="sidebar-social" >
+    <div class="icon-email sidebar-social-icon">
+      <a href=mailto:a1521070145@gmail.com itemprop="url" target="_blank" aria-label="email" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-github sidebar-social-icon">
+      <a href=https://github.com/Madoka9 itemprop="url" target="_blank" aria-label="github" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-bilibili sidebar-social-icon">
+      <a href=https://space.bilibili.com/5862963 itemprop="url" target="_blank" aria-label="bilibili" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-zhihu sidebar-social-icon">
+      <a href=https://www.zhihu.com/people/lan-mei-sheng-dai-77 itemprop="url" target="_blank" aria-label="zhihu" rel="noopener nofollow noreferrer"></a>
+    </div>
+</div>
+<div class="sidebar-menu">
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/" aria-label="Home"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Home</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/archives" aria-label="Archives"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Archives</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/about" aria-label="About"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">About</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/friend" aria-label="Friend"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Friend</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/portfolio" aria-label="Portfolio"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Portfolio</div>
+      </div>
+</div>
+</div>
+          <div class="sidebar-btn-wrapper" style="position:static">
+            <div class="sidebar-toc-btn current"></div>
+            <div class="sidebar-common-btn"></div>
+          </div>
+    </div>
+  </div>
+      <meting-js
+        theme="var(--color-link)"
+        id="385907592"
+        server="netease"
+        type="playlist"
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        class="aplayer-after-sidebar"
+      ></meting-js>
+  <div class="sidebar-widget">
+  </div>
+  </div>
+</aside>
+
+          <section id="main" aria-label="Main content"><article id="post-Note/PersonalArrange/TA方面/百人计划" class="h-entry article" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner" data-aos="fade-up">
+    <div class="article-meta">
+      <div class="article-date">
+  <span class="article-date-link icon-calendar" data-aos="zoom-in">
+    <time datetime="2025-01-17T14:15:28.000Z" itemprop="datePublished">2025-01-17</time>
+    <time style="display: none;" id="post-update-time">2026-07-16</time>
+  </span>
+</div>
+
+    </div>
+    
+    <div class="hr-line"></div>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+        <p>#（一）渲染管线<br>		[基本流程]：<br>				<mark style="background: #FF5582A6;">应用阶段</mark><br>			-&gt;（输出渲染图元）<br>			-&gt;<mark style="background: #FF5582A6;">几何阶段</mark> （输出屏幕空间信息）<br>			-&gt;<mark style="background: #FF5582A6;">光栅化阶段</mark><br>			-&gt;逐片元操作（像素着色）</p>
+<p> <mark style="background: #BBFABBA6;">Vertex Shader</mark> (顶点处理)-&gt;Triangle Processing-&gt;Rasterization(光栅化)-&gt;<mark style="background: #BBFABBA6;">Pixel Shader</mark> -&gt;Frame Buffer<br>	应用阶段：<br>		(1)<mark style="background: #FF5582A6;">准备好场景数据</mark> ：摄像机、模型、光源等<br>		(2)<mark style="background: #FF5582A6;">粒度剔除工作(culling)</mark> ：剔除不可见物体（优化加速算法）<br>		(3)<mark style="background: #FF5582A6;">设置好渲染状态准备渲染参数</mark> ：材质颜色、纹理、shader<br>		(4)<mark style="background: #FF5582A6;">调出DrawCall输出渲染图元到显存</mark> ：顶点数据、其他数据<br>	几何阶段：<br>		进行一个逐顶点，逐多边形的操作，输出屏幕空间的二维顶点坐标、每个顶点的深度值，着色信息等;<br>	光栅化阶段:<br>		逐顶点，逐像素的输出到屏幕上。三角设置、三角遍历。抗锯齿<br>	逐片元操作:<br>		像素着色[片元（Fragement）着色]<br>		-&gt;颜色混合[透明度测试(Alpha Test)、深度测试(Deep Buffer Test)、模板测试(Stencil Test)、混合(Blending)]<br>		-&gt;目标缓存区<br>	逐片元操作细节<br>		<img src="/images/blog/Pasted%20image%2020220723171422.png"><br>		<img src="/images/blog/Pasted%20image%2020220723171104.png"><br>		<img src="/images/blog/Pasted%20image%2020220723170948.png"><br>		<img src="/images/blog/Pasted%20image%2020220723170245.png"></p>
+<p>#（二）纹理<br>	任务:<br>		(1)了解Filter Mode 种类<br>			1.最近邻<br>			2.双线性插值<br>			3.立方卷积<br>			4.Q光滑曲线插值<br>		(2)纹理贴图的优化方式及原理<br>	[纹理管线]<br>		<img src="/images/blog/Pasted%20image%2020220724191042.png"><br>	[纹理采样设置]<br>		(1)Wrap Mode (包装模式)<br>			<img src="/images/blog/Pasted%20image%2020220724194705.png"><br>		(2)Filter Mode  (过滤模式)<br>			1.最近邻<br>				<img src="/images/blog/Pasted%20image%2020220724195502.png"><br>			  <img src="/images/blog/Pasted%20image%2020220724202931.png"><br>			2.双线性插值<br>				<img src="/images/blog/Pasted%20image%2020220724195755.png"><br>				<img src="/images/blog/Pasted%20image%2020220724203046.png"><br>			3.立方卷积<br>				<img src="/images/blog/Pasted%20image%2020220724200936.png"><br>			4.Q光滑曲线插值<br>				<img src="/images/blog/Pasted%20image%2020220724201325.png"><br>		 效果对比：<br>			 <img src="/images/blog/Pasted%20image%2020220724201602.png"><br>		MipMap(<strong>多级渐远纹理</strong>) :   参考文档:<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_42428486/article/details/118856697">(24条消息) Mipmap详解(有无Mipmap区别、原理、优点、缺点、优化)_爱吃的板栗.的博客-CSDN博客_mipmap</a><br>			<strong>简单来说就是一系列的纹理图像，后一个纹理图像是前一个的二分之一</strong><br>			效果图:<br>				<img src="/images/blog/Pasted%20image%2020220724203723.png"> ^396194<br>	CPU渲染优化常见方式–纹理图集&#x2F;数组<br>	GPU渲染优化常见方式–纹理压缩<br>	立方体贴图(CubeMapping)<br>	<img src="/images/blog/Pasted%20image%2020220724205647.png"><br>	凹凸贴图(Bump Mapping)<br>	 <img src="/images/blog/Pasted%20image%2020220724205758.png"><br>	 位移贴图(Displacement Mapping)<br>	 <img src="/images/blog/Pasted%20image%2020220724205913.png"></p>
+<p>#（三）光照基础<br>	[颜色空间]<br>		任务:<br>			1.色彩空间的定义<br>			2.人眼可见光范围<br>		<img src="/images/blog/Pasted%20image%2020220725152525.png"><br>		<mark style="background: #FF5582A6;">定义</mark> ：至少包含三个重要指标–色域、Gamma、白点<br>		<img src="/images/blog/Pasted%20image%2020220725152825.png"><br>	[模型与材质]<br>		任务:<br>			1.了解点顶色<br>			2.了解模型光滑组对法线的影响<br>		图形渲染管线<br>			<img src="/images/blog/Pasted%20image%2020220725153306.png"><br>		模型包含的信息(OBJ文件):<br>				<img src="/images/blog/Pasted%20image%2020220725160022.png"><br>	[HLSL常用函数]<br>		1.基本数学函数<br>			<img src="/images/blog/Pasted%20image%2020220725163157.png"><br>		2.幂指对函数<br>				<img src="/images/blog/Pasted%20image%2020220725163312.png"><br>		3.三角函数与双曲函数<br>					<img src="/images/blog/Pasted%20image%2020220725163415.png"><br>		4.数据范围类<br>			<img src="/images/blog/Pasted%20image%2020220725163650.png"><br>		5.类型判断类<br>			<img src="/images/blog/Pasted%20image%2020220725164257.png"><br>		6.向量与矩阵类<br>			<img src="/images/blog/Pasted%20image%2020220725164631.png"><br>		7.光线运算类<br>			<img src="/images/blog/Pasted%20image%2020220725165607.png"><br>		8.2D纹理查找<br>			<img src="/images/blog/Pasted%20image%2020220725170522.png"><br>	[光照模型]<br>		1.局部光照模型: &#x3D; 漫反射+镜面反射(高光)+环境光+自发光<br>			定义:只关心从光源发出照射到物体并反射到摄像机的光线<br>			<mark style="background: #BBFABBA6;">漫反射</mark> :<br>				定义:光线从光源发出照射到模型表面被均匀反射到各个方向；漫反射过程中光线发生了吸收和散射，改变了光的方向和颜色。<br>				计算方法:<mark style="background: #FF5582A6;">Lambert余弦定律</mark> –反射光强与光源方向和法线方向的夹角的余弦值成正比。<br>					<img src="/images/blog/Pasted%20image%2020220726130010.png"><br>			<mark style="background: #BBFABBA6;">镜面反射</mark> :<br>				定义:光线在物体表面发生反射但光强不变方向改变(没有发生吸收和散射)。<br>				计算方法:<br>					<img src="/images/blog/Pasted%20image%2020220726140012.png"><br>			<mark style="background: #BBFABBA6;">环境光</mark> :<br>				定义:在局部光照模型中没有考虑间接光照的影响，因此引入环境光来处理间接光照<br>				计算方法:<br>					<img src="/images/blog/Pasted%20image%2020220726140314.png"><br>			<mark style="background: #BBFABBA6;">自发光</mark> :<br>				定义:物体自身发射出的光线，一般使用发光贴图描述物体的自发光。<br>		2.Phong模型<br>			<img src="/images/blog/Pasted%20image%2020220804224635.png"><br>		3.Blinn-Phong模型<br>			<img src="/images/blog/Pasted%20image%2020220804225700.png"><br>		Phong模型和Blinn-Phong的区别：<br>			(1)Blinn-Phong是Phong模型的优化，使用了<mark style="background: #FF5582A6;">半角向量与法线的点积</mark> 代替了<mark style="background: #FF5582A6;">反射向量与视线的点积</mark> (只考虑了视线与反射光在法线两侧的情况)；<br>			(2)半角向量比反射向量的计算更加简洁<br>			(3)半角向量与法线的夹角不会大于90°。当材质反光度很低时，一部分高光的反射向量与视线的夹角超过90°，使用Phong模型会导致一部分高光缺失(当视线与光照在法线同侧且高光反射对亮度有较大影响，发生断层)<br>	[凹凸映射(BumpMapping)]<br>		(1)法线映射-Normal Mapping<br>			<img src="/images/blog/Pasted%20image%2020220805112959.png"><br>		(2)视差映射-Parallax Mapping<br>			<img src="/images/blog/Pasted%20image%2020220805113750.png"><br>		(3)浮雕映射-Relief Mapping<br>			<img src="/images/blog/Pasted%20image%2020220805114448.png"><br>	[伽马矫正]<br>			(1)颜色空间<br>			(2)传递函数<br>				-   什么是传递函数：<br>				-   知道了颜色的颜色值之后，想要在电子设备上显示，就需要把它转换为视频信号，传递函数就是用来做转换的。<br>				-   一个传递函数包括两部分：<br>					-   光转电传递函数（OETF），把场景线性光转到非线性视频信号值。<br>					-   电转光传递函数（EOTF），把非线性视频信号值转到显示光亮度。<br>				-   一个简单理解：拍照时，将照片存储在内存卡中，就是用视频信号存储的，如果要看这个照片，就把视频信号再转换成光信号。<br>				- <img src="/images/blog/Pasted%20image%2020220818165451.png"><br>				-  <mark style="background: #BBFABBA6;"> 传递函数其实就是Gamma校正所使用的函数。</mark><br>			(3)Gamma 矫正<br>				 ·<strong>简单定义</strong>：<br>					-   Vout &#x3D; Vingamma<br>					-   <strong>Gamma是指对线性三色值和非线性视频信号之间进行<mark style="background: #FF5582A6;">编码</mark> 和<mark style="background: #FF5582A6;">解码</mark> 的操作。</strong><br>				 ·图例：<br>					-   gamma编码：<br>					-   左图为存在硬盘中，将捕获到的物理数据做一次gamma值约为0.4的映射，这个过程称为gamma编码<br>					-   由图中可以看到，此时图像要比实际物理像素更亮（图不一定是实际的情况，只是亮度提高了的直观表示）<br>					-   gamma校正：<br>					-   中间为显示图像时，需要为每一个像素做一次gamma值约为2.2的校正，来使的最终结果为正确的物理数据。<br>					-   可以看到经过gamma校正好，之前偏亮的图像亮度降低了。<br>					-   <img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1622620164684-8a6d35c2-5b0d-4c41-9ecb-e9f919648220.png"><br>						 ·为什么不用线性的方式存储，而要来回转换呢？<br>						-   ①和人眼的特性有关<br>						-   人眼对暗部的变化感应更敏感<br>						-   ②非线性转换为了优化存储空间和带宽<br>						-   我们用于显示图像数据都是8bit，要充分利用带宽，就需要使用更多位置去存储暗部值。也就是 暗部使用高精度保存，亮部使用相对较低精度保存。<br>					Gamma校正函数的理解<br>						-   它是一个幂函数，y&#x3D;xgamma<br>						-   永远会穿过（1,1）和（0,0），对应的就是白色和黑色<br>						-   对于gamma的值<br>						-   如果gamma&#x3D;1，函数就是y&#x3D;x，输入值&#x3D;输出值，也就是不做校正<br>						-   如果gamma&gt;1，函数图像下压，输入值会被下压<br>						-   <img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1622734098485-50a21604-4b10-4af3-916a-71b901964228.png"><br>						-   如果gamma&lt;1，函数图像上拱，输入值会被放大<br>						-   <img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1622734113022-26837765-0d75-4c0a-911b-e839511c9451.png"><br>						-   结合幂函数的性质，如果对图像进行连续两次的gamma校正，且函数互为倒数，那么数据就会被还原回来。<br>							-   <img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1622734214254-fec6a002-48d8-4f23-be22-8443f093e773.png"><br>	[LDR与HDR]<br>		 <em>1.HDR 、LDR、动态范围</em><br>				-   <strong>Dynamic Range</strong>（动态范围）&#x3D;最高亮度&#x2F;最低亮度<br>				-   <strong>HDR</strong>&#x3D; High Dynamic Range<br>				-   <strong>LDR</strong> &#x3D; Low Dynamic Range<br>				-   <strong>ToneMapping</strong>：将超高的动态范围（HDR）转换到我们日常显示的屏幕上的低动态范围（LDR）的过程<br>				-   一些小芝士：<br>					-   因为不同的厂家生产的屏幕亮度（物理）实际上是不统一的，那么我们在说LDR时，它是一个0到1范围的值，对应到不同的屏幕上就是匹配当前屏幕的最低亮度（0）和最高亮度（1）<br>					-   自然界中的亮度差异是非常大的。例如，蜡烛的光强度大约为15，而太阳光的强度大约为10w。这中间的差异是非常大的，有着超级高的动态范围。<br>					-   我们日常使用的屏幕，其最高亮度是经过一系列经验积累的，所以使用、用起来不会对眼睛有伤害；但自然界中的，比如我们直视太阳时，实际上是会对眼睛产生伤害的。<br>			<em>2.LDR和HDR</em><br>				 [LDR]<br>					-   8位精度<br>					-   对于8位精度的补充：8位 &#x3D; 28&#x3D; 256（0~255）<br>					-   单通道0-1<br>					-   常用LDR图片存储的格式有jpg&#x2F;png等<br>					-   常用DCC工具中的拾色器、一般的图片、电脑屏幕都是LDR<br>					-   例如拾色器中0-255（256）<br>				 [HDR]<br>					-   远高于8位精度<br>					-   单通道可以超过1<br>					-   常用HDR图片存储的格式有hdr&#x2F;tif&#x2F;exr&#x2F;raw等（其中很多是相机常用格式）<br>					-   HDRI、真实世界<br>				 补充：相机是如何将HDR映射到LDR的<br>					-   首先将曝光值进行计算，映射到相机可以感应的范围<br>					-   受光圈、快门、传感器的灵敏度等影响<br>					-   然后把这个值输入为线性的值，存储到图片中（一般为raw格式）<br>					-   之后会经过一个变化（LUT），通过白平衡、色彩校正、色调映射、伽马校正这个过程，最后的结果烘焙成LUT（pbr中LUT的图，就是这个过程的结果）<br>					-   每个相机厂商的LUT格式不太一样。<br>				- <em>一些可以直接下载HDR图的网址</em><br>					-   <a target="_blank" rel="noopener" href="http://www.hdrlabs.com/sibl/archive.html">http://www.hdrlabs.com/sibl/archive.html</a><br>					-   <a target="_blank" rel="noopener" href="https://www.openfootage.net/hdri-panorama/">https://www.openfootage.net/hdri-panorama/</a><br>	[FlowMap]<br>		-   <strong>flowmap的原理</strong>：<br>			-   通过所带有的向量场信息对uv进行了一个偏移，来干扰我们采样时候的这个过程。<br>			-   如图可以看到，经过flowmap发生偏移后，让原本正常的采样变成了一个扭曲的效果<br>			-   <strong>注意</strong>：<br>			-   不同软件的不同uv坐标：UE4与Unity相比，反转了绿通道，所以使用的flowmap也会发生变化。（根据不同的引擎需求进行调整）<br>			-   <img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624193334990-3c4970a8-5d88-44e4-880f-9cc27ae01b31.png"><br>		### flowmap shader的基本流程<br>			-   1.采样flowmap获取向量场信息<br>			-   2.用向量场信息，使采样贴图时的uv随时间变化<br>			-   3.对同一贴图以半个周期的相位差采集两次，并线性插值，使贴图流动连续<br>			### 实现思路<br>			<strong>目标：根据flowmap上的值，使纹理随时间偏移</strong><br>			-   <strong>操作1</strong>：最简单的uv随时间偏移的方法： uv - time<br>			-   关于为什么是相减：<br>			-   先理解一下相加的情况：模型上的某个点（u，v）+（time，0）<br>			-   可以理解为随着time增加，采样到的像素越远<br>			-   这个效果在视觉上可以形容为：更远距离的像素偏移向这个点，也就是说和我们直观认识到的运算法则是<strong>相反</strong>的。<br>			-   用uv值作为向量时，是遵守运算法则的<br>			-   uv偏移并没有改变顶点位置，只是采样到了更远的像素<br>			-   <strong>操作2</strong>：从flowmap获取流动方向<br>			-   从flowmap获取流动的方向，再乘time，就可以达到让某个点根据flowmap流动的目的<br>			-   问题：flowmap不能直接使用<br>			-   解决：将flowmap上的色值从[0，1]映射到方向向量的[-1，1]<br>			-   也就是一个乘2减1的操作，之前推导mvp矩阵时也用过这个方法<br>			-   <strong>操作3</strong>：流动无缝循环，把偏移控制在一定的范围内（随着时间进行，变形太过夸张）<br>			-   构造两个相位相差半个周期的波形函数<br>			-   用相位差半个周期的两层采样进行加权混合，用纹理流动另一层采样来覆盖一个周期重新开始时的不自然情况<br>		代码：<br>			[[FlowMap_Code]]<br>#（四）进阶应用<br>	[模板测试]<br>		<img src="/images/blog/Pasted%20image%2020220822133754.png"><br>		1.引例<br>			-   <img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624420738832-6c7907b8-660e-40be-9d04-c1ec4ff9e7b1.png"><br>			-   左图为颜色缓冲区中的一张图，在模板缓冲区中我们会给这张图的每一个片元分配一个0-255的数字（8位，默认为0）<br>			-   中、右图可以看到，我们修改了一些0为1，通过自定义的一些准则，如输出模板缓冲区中1对应的片元的颜色；0的不输出，最后通过模板测试的结果就如右图所示<br>		2.通过模板测试的应用，实现的效果举例<br>			-   ①传送门效果：可以看到左边传送门内的景象正是右侧的场景<br>			-   <img src="https://cdn.nlark.com/yuque/0/2021/jpeg/12962324/1624421219850-4568f8db-d4b3-467e-8558-5c929d6eb073.jpeg"><br>			-   ②Minions讲解的一些效果，例如3D卡牌效果、侦探镜效果等<br>			-   链接：<a target="_blank" rel="noopener" href="https://www.patreon.com/posts/14832618">https://www.patreon.com/posts/14832618</a><br>			-   <img src="https://cdn.nlark.com/yuque/0/2021/gif/12962324/1624421411741-e91d2b73-3735-4933-bc14-ce57b5e28eb7.gif"><img src="https://cdn.nlark.com/yuque/0/2021/gif/12962324/1624421468076-786120a3-7a86-4d11-a697-3d60b799868f.gif"><img src="https://cdn.nlark.com/yuque/0/2021/gif/12962324/1624421503849-3227fb64-4fb1-4569-882b-c1b04dc69601.gif"><img src="https://cdn.nlark.com/yuque/0/2021/gif/12962324/1624421507550-9f24ae88-cee1-4d60-bf59-85547feae888.gif"><br>			-   ③每个正方体面显示不同场景（每个面作为蒙版来显示场景）<br>			-   <img src="https://cdn.nlark.com/yuque/0/2021/gif/12962324/1624421932090-a889462e-5980-4925-9ad5-814309b70cdf.gif"><img src="https://cdn.nlark.com/yuque/0/2021/gif/12962324/1624421936219-30b62aa0-1b64-4d3f-a005-7c27d888964e.gif"><br>		3.理解<br>			-   对于上述的例子总结一下，这些效果基本可以归结为三层组成<br>			-   以②中的传送门为例子，三层分别对应：门外场景、门内场景、门<br>			-   也就是说可以理解为：包括两层物体&#x2F;场景、和一层遮罩<br>	    4. 逐片元操作流程：<br>			-   <img src="https://cdn.nlark.com/yuque/0/2021/jpeg/12962324/1624614144699-91346764-3f43-4e17-9fe4-8191e6b6471d.jpeg"><br>			-   可以看到逐片元的流程依次为<br>			-   <strong>像素所有权测试→裁剪测试→透明度测试→模板测试→深度测试→透明度混合</strong><br>			-   PixelOwnershipTest：<br>			-   简单来说就是控制当前屏幕像素的使用权限<br>			-   e.g.：游戏引擎仅渲染游戏窗口<br>			-   ScissorTest（裁剪测试）：<br>			-   在渲染窗口再定义要渲染哪一部分<br>			-   和裁剪空间一起理解，也就是只渲染能看到的部分<br>			-   e.g.只渲染窗口的左下角部分<br>			-   AlphaTest（透明度测试）<br>			-   提前设置一个透明度预值<br>			-   只能实现不透明效果和全透明效果<br>			-   e.g. 设置透明度a为0.5，如果片元大于这个值就通过测试，如果小于0.5就剔除掉<br>			-   StencilTest（模板测试）<br>			-   DepthTest（深度测试）<br>			-   Blending（透明度混合）<br>			-   可以实现半透明效果<br>			-   完成接下来的其他一系列操作后，我们会将合格的片元&#x2F;像素输出到帧缓冲区（FrameBuffer）<br>			-   逐片元操作是可以配置但不可编程的（对应图中为黄色背景），也就是说是由管线&#x2F;硬件自身规定好的，我们只能对里边的内容进行配置。<br>		* 基本原理和使用方法*<br>			## 1.语法表示&#x2F;结构解释<br>			-   <img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624617050604-09ea4c09-c0ad-49b5-b629-5796a4b654d7.png"><br>			-   <strong>Ref</strong>：当前片元的参考值（0-255）<br>			-   <strong>ReadMask</strong>：读掩码<br>			-   <strong>WriteMask</strong>：写掩码<br>			-   <strong>Comp</strong>：比较操作函数<br>			-   <strong>Pass</strong>：测试通过，之后进行操作（StencilOperation，后边有详细讲解）<br>			-   <strong>Fail</strong>：测试未通过，也会进行一个操作<br>			-   <strong>ZFail：<strong>模板测试通过，深度测试未通过<br>			## 2.ComparisonFunction<br>			-   我们可以根据需求配置<br>			-   <img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624617544415-4ecb8586-250f-46a3-baa3-2b69839dc9c7.png"><br>			## 3.StencilOperation 更新值<br>			-   有不同的更新操作，根据自己的需求进行配置<br>			-   <img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624617699117-ecaf8042-9322-4926-bdaa-6ca0b1eb968d.png"><br>	[深度测试]<br>		## 从逻辑上理解<br>			-   <img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624694674891-a7db0ee7-dd30-40cb-8e50-c257bf411fe4.png"><br>			-   <img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624694685590-eb37cefc-66d8-4152-bcd1-a6fb551473be.png"><br>			-   理解：<br>			-   和模板测试差不多，都是通过一个比较来判断一系列操<br>			-   如果ZWrite On，且当前深度值和深度缓冲区的值作比较，如果通过就写入深度，不通过就忽略深度<br>			-   当前深度值和深度缓冲区中的值做比较，如果通过就写入颜色缓冲区，不通过就不写入颜色缓冲区<br>		-   我们要渲染一个场景的话，通常会有多个物体。<br>		-   首先要</strong>控制渲染顺序</strong><br>		-   画家算法：<br>		-   这里是指油画的画法，也就是画一幅油画，是从远处开始画，然后近处的东西一点点叠加在上面（GAMES系列的课提到过多次）<br>		-   存在的问题：例如一列物体，最前面的物体最大，站在正前面看只能看到最前面的物体，这样一来后边的就不用画了，不然就是性能浪费（OverDraw）。<br>		-   Z-Buffer算法：<br>		-   通过深度缓冲区来控制渲染顺序<br>		-   <strong>控制Z-Buffer对深度的存储</strong><br>		-   例如：什么时候更新深度缓冲区、什么时候使用深度缓冲区<br>		-   两个典型的功能：<br>		-   Z Test<br>		-   Z Write<br>		-   具体后边会讲<br>		-   <strong>控制不同类型物体的渲染顺序</strong><br>		-   透明物体<br>		-   不透明物体<br>		-   <strong>渲染队****列（很有用的概念，后边会讲）</strong><br>		-   <strong>减少OverDraw</strong><br>		-   Early-Z，一种优化手段，后边会讲<br>		-   Z-cull（优化手段）<br>		-   Z-check（确认正确遮挡关系）</p>
+<h1 id="基本原理和使用方法"><a href="#基本原理和使用方法" class="headerlink" title="基本原理和使用方法"></a>基本原理和使用方法</h1><h2 id="1-Z-Buffer（深度缓冲区）"><a href="#1-Z-Buffer（深度缓冲区）" class="headerlink" title="1.Z-Buffer（深度缓冲区）"></a>1.Z-Buffer（深度缓冲区）</h2><ul>
+<li><p>和颜色缓冲区一样，在每个片段中存储了信息，并且通常和颜色缓冲有着一样的宽度和高度</p>
+</li>
+<li><p><strong>颜色缓冲区</strong>：</p>
+</li>
+<li><p>就是最终在显示屏硬件上显示颜色的GPU显存区域了，这个缓冲区储存了每帧更新后的最终颜色值，图形流水线经过一系列测试，包括片段丢弃、颜色混合等，最终生成的像素颜色值就储存在这里，然后提交给显示硬件显示。</p>
+</li>
+<li><p>深度缓冲是由窗口系统自动创建的，它会以16、24、32位float形式存储深度值。大部分系统中深度值是24位的</p>
+</li>
+<li><p>Z-Buffer中存储的是当前的深度信息，对于每个像素存储一个深度值。</p>
+</li>
+<li><p>我们可以通过Z-Write 、Z-Test来调用Z-Buffer，来达到想要的渲染效果</p>
+</li>
+</ul>
+<h2 id="2-Z-Writer（深度写入）"><a href="#2-Z-Writer（深度写入）" class="headerlink" title="2.Z Writer（深度写入）"></a>2.Z Writer（深度写入）</h2><ul>
+<li><p>深度写入包括两种状态</p>
+</li>
+<li><p>ZWrite On 、 ZWrite Off</p>
+</li>
+<li><p>当我们开启深度写入，物体被渲染时针对物体在屏幕（FrameBuffer）上每个像素的深度都写入到深度缓冲区。</p>
+</li>
+<li><p>关闭深度写入状态，物体的深度就不会写入深度缓冲区。</p>
+</li>
+<li><p>除了ZWrite的是否写入深度缓冲区，更重要的是：是否通过深度测试，也就是Z-Test</p>
+</li>
+<li><p>如果Z-Test都没通过，也就不会写入深度了。</p>
+</li>
+<li><p>也就是说，<strong>只有ZTest和ZWrite都可行的情况下才写入深度缓冲区</strong></p>
+</li>
+<li><p>综上，ZWrite有On、Off两种情况；ZTest有通过、不通过两种情况，两者结合的四种情况如下：</p>
+</li>
+<li><p><img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624703166039-db878452-5ca4-4c40-843a-3d5158894d59.png"></p>
+</li>
+</ul>
+<h2 id="3-Z-Test的比较操作"><a href="#3-Z-Test的比较操作" class="headerlink" title="3.Z-Test的比较操作"></a>3.Z-Test的比较操作</h2><ul>
+<li><img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624703730418-46940e6d-d923-455a-9c4f-a5f7be6056d8.png"></li>
+<li><strong>默认情况下</strong>：</li>
+<li>Z Write：On</li>
+<li>Z Test：LEqual</li>
+</ul>
+<p><mark style="background: #FF5582A6;">-   深度缓冲一开始为无穷大</mark> </p>
+<h2 id="4-Unity的渲染队列"><a href="#4-Unity的渲染队列" class="headerlink" title="4.Unity的渲染队列"></a>4.Unity的渲染队列</h2><ul>
+<li><p><strong>Unity内置的几种渲染队列</strong>：</p>
+</li>
+<li><p><img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624703888142-d92421a2-f27a-40a3-9c23-074907f11d6d.png"></p>
+</li>
+<li><p><strong>按照渲染顺序从先到后排序，队列数越小，越先渲染；反之同理。</strong></p>
+</li>
+<li><p><strong>Unity中设置渲染队列</strong>：</p>
+</li>
+<li><p>语法：Tags { “Queue” &#x3D; “渲染队列名”}</p>
+</li>
+<li><p>默认是Geometry</p>
+</li>
+<li><p>*<em>Unity中</em><em><strong>不透明物体</strong></em>*的渲染顺序：**<strong>从前往后</strong></p>
+</li>
+<li><p><strong>也就是说深度小的先渲染，其次再渲染深度大的</strong></p>
+</li>
+<li><p>*<em>Unity中</em><em><strong>透明物体</strong></em>*的渲染顺序：**<strong>从后往前（类似画家算法，会造成OverDraw）</strong></p>
+</li>
+<li><p>可以在shader的Inspector面板中查看渲染队列相关属性</p>
+</li>
+<li><p><img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624704240348-f99bdd62-37e2-4cdd-b32d-33df3b3b95d1.png"></p>
+</li>
+</ul>
+<h2 id="5-简述Early-Z技术"><a href="#5-简述Early-Z技术" class="headerlink" title="5.简述Early-Z技术"></a>5.简述Early-Z技术</h2><ul>
+<li><p>Early-Z是位于三角形遍历之后、逐片元操作之前的。</p>
+</li>
+<li><p>传统的渲染管线中，ZTest是在Blending阶段，这时进行深度测试的话，所以对象的像素着色器都会计算一遍，没有性能提升，只是为了得到正确的效果，造成了大量的无用计算。（<strong>深度测试失败的片元是已经经过计算的片元，也就是说：到在一步测试不通过而被抛弃，前边的计算就是无用功了</strong>）</p>
+</li>
+<li><p>为了减少这些不必要的计算，现代GPU运用了Early-Z技术，在顶点和片元阶段之间（光栅化之后，片元着色器之前）进行一次深度测试（如下左图黑框部分）。</p>
+</li>
+<li><p>如果这次深度测试失败，那就不用在片元着色器中作无关紧要的计算了，这样一来就会带来性能提升。</p>
+</li>
+<li><p>最终的ZTest仍然要进行，以保证正确的遮挡关系。</p>
+</li>
+<li><p>如右图前一次的Z-Cull是为了裁剪达到性能优化的目的，后一次的Z-check是为了保证正确的遮挡关系。</p>
+</li>
+<li><p><img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624704901879-571b6b3d-c8f5-48b6-aecc-64f6fe33ed46.png"><img src="https://cdn.nlark.com/yuque/0/2021/jpeg/12962324/1624705071634-a015674d-cec5-4cf5-b70c-af97f772c283.jpeg"></p>
+</li>
+</ul>
+<h2 id="6-深度值"><a href="#6-深度值" class="headerlink" title="6.深度值"></a>6.深度值</h2><h3 id="正确的理解深度值的概念"><a href="#正确的理解深度值的概念" class="headerlink" title="正确的理解深度值的概念"></a>正确的理解深度值的概念</h3><ul>
+<li><p>首先先了解一下模型在渲染管线中的几次空间变换</p>
+</li>
+<li><p><img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624705798269-b119cd9e-1a1d-46df-8203-eb7ad673310d.png"></p>
+</li>
+<li><p>模型一开始所在的模型空间：<strong>无深度。</strong></p>
+</li>
+<li><p>通过M矩阵变换到世界空间，此时模型坐标已经变换到了齐次坐标（x，y，z，w）：<strong>深度存在z分量</strong>。</p>
+</li>
+<li><p>通过V矩阵变换到观察空间（摄像机空间）：<strong>深度存在z分量（线性）</strong></p>
+</li>
+<li><p>通过P矩阵变换到裁剪空间：<strong>深度缓冲中此空间的z&#x2F;w中（已经变成了非线性的深度）</strong></p>
+</li>
+<li><p>最后通过一些投影映射变换到屏幕空间</p>
+</li>
+</ul>
+<h3 id="为什么深度缓冲区中要存储一个非线性的深度？"><a href="#为什么深度缓冲区中要存储一个非线性的深度？" class="headerlink" title="为什么深度缓冲区中要存储一个非线性的深度？"></a>为什么深度缓冲区中要存储一个非线性的深度？</h3><h4 id="详细链接"><a href="#详细链接" class="headerlink" title="详细链接"></a>详细链接</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://learnopengl-cn.readthedocs.io/zh/latest/04%20Advanced%20OpenGL/01%20Depth%20testing/">https://learnopengl-cn.readthedocs.io/zh/latest/04%20Advanced%20OpenGL/01%20Depth%20testing/</a></li>
+</ul>
+<h4 id="原因1：给近处更多的精度"><a href="#原因1：给近处更多的精度" class="headerlink" title="原因1：给近处更多的精度"></a>原因1：给近处更多的精度</h4><ul>
+<li><p>在深度缓冲区中的深度值是介于 0.0~1.0之间的，从观察者看到的内容与场景中所有对象的z值作比较。</p>
+</li>
+<li><p>这些z值可以投影平截头体（就是视锥）的近平面和远平面之间的任何值。</p>
+</li>
+<li><p>&#x2F;&#x2F;补充：</p>
+</li>
+<li><p><strong>平截头体</strong>：又称视景体、视锥，是三维世界中在屏幕上可见的区域，即虚拟摄像机的视野</p>
+</li>
+<li><p>下图中红框的位置是平截头体，就是摄像机拍摄的范围。</p>
+</li>
+<li><p>贴上维基百科：<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%A7%86%E4%BD%93">https://zh.wikipedia.org/wiki/%E8%A7%86%E4%BD%93</a></p>
+</li>
+<li><p><img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624706647590-c5142fac-3499-4c29-b4c1-6cf807bda69f.png"></p>
+</li>
+<li><p>要转换这些视图空间的z值到[0，1]范围内，方法之一就是线性转换，具体如下图</p>
+</li>
+<li><p><img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624707165127-a955ada0-991a-4c95-aded-7a0f264991d7.png"></p>
+</li>
+<li><p>然而实践中几乎不使用线性深度缓冲区，正确的投影特性的非线性深度方程是和1&#x2F;z成正比的。这样一来会有如下效果：在Z很近的时候有高精度，Z很远的时候低精度，这符合我们生活中的情况，具体如下图</p>
+</li>
+<li><p>其实可以回想前几节课中伽马校正部分对比理解一下，也是根据实际情况（人眼特性），给暗部更多的精度，这里是近处给更多精度。</p>
+</li>
+<li><p><img src="https://cdn.nlark.com/yuque/0/2021/png/12962324/1624707356410-b97b4a4c-6693-41ea-8f44-fb356589af44.png"></p>
+</li>
+</ul>
+<h4 id="另一个原因：Z-Fight-深度冲突"><a href="#另一个原因：Z-Fight-深度冲突" class="headerlink" title="另一个原因：Z-Fight-深度冲突"></a>另一个原因：Z-Fight-深度冲突</h4><ul>
+<li><p>当两个平面或三角形紧密相互平行的时候，深度缓冲区不具有足够的精度来确定哪一个考前。</p>
+</li>
+<li><p>结果就是这两个形状不断切换顺序，导致怪异问题，看起来像是两个形状在争夺靠前的位置。</p>
+</li>
+<li><p>这就被称为<strong>深度冲突</strong>。</p>
+</li>
+<li><p>深度冲突是深度缓冲区的普遍问题，当对象的距离越远一般越强（因为深度缓冲区在z值非常大的时候没有很高的精度）</p>
+</li>
+<li><p>深度冲突无法避免，但是有技巧可以防止出现：</p>
+</li>
+<li><p>物理上的做法，就是让物体不要靠得太近。</p>
+</li>
+<li><p>尽可能的把近平面设置的远一点。</p>
+</li>
+<li><p>放弃一些性能来得到更高精度的深度值。<br>[曲面细分着色器]<br>[[3.3 曲面细分着色器]]<br>[[几何着色器]]<br>[[几何着色器]]</p>
+</li>
+</ul>
+
+    </div>
+    <footer class="article-footer">
+        <a class="article-category-link" href="/en/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" title="技术笔记" data-aos="zoom-in">技术笔记</a><a class="article-category-link" href="/en/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/%E6%8A%80%E6%9C%AF%E7%BE%8E%E6%9C%AF/" title="技术美术" data-aos="zoom-in">技术美术</a>
+
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/en/tags/PersonalArrange/" rel="tag" title="PersonalArrange">PersonalArrange</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/en/tags/TA%E6%96%B9%E9%9D%A2/" rel="tag" title="TA方面">TA方面</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/en/tags/%E6%8A%97%E9%94%AF%E9%BD%BF/" rel="tag" title="抗锯齿">抗锯齿</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/en/tags/%E6%A8%A1%E6%9D%BF/" rel="tag" title="模板">模板</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/en/tags/%E7%9D%80%E8%89%B2%E5%99%A8/" rel="tag" title="着色器">着色器</a></li></ul>
+
+    </footer>
+  </div>
+    <nav id="article-nav" aria-label="Article navigation" data-aos="fade-up">
+      <div class="article-nav-link-wrap left">
+            <img data-src="/images/banner.webp" data-sizes="auto" alt="RHI" class="lazyload">
+        <a href="/en/2025/02/08/Note/UnrealEngine/RHI/RHI/" aria-label="Prev: RHI" title="Prev: RHI"></a>
+        <div class="article-nav-caption">Prev</div>
+        <h3 class="article-nav-title">
+            RHI
+        </h3>
+      </div>
+    <div class="article-nav-link-wrap right">
+          <img data-src="/images/banner.webp" data-sizes="auto" alt="1.Source" class="lazyload">
+      <a href="/en/2025/01/17/%E7%89%A9%E7%90%86%E6%A8%A1%E6%8B%9F/%E6%B5%81%E4%BD%93%E7%9B%B8%E5%85%B3/FluxFluid%E6%B4%AA%E6%B0%B4%E6%95%88%E6%9E%9C%E5%8E%9F%E7%90%86%E4%B8%8E%E5%A4%8D%E5%88%BB%E3%80%82/" aria-label="Next: 1.Source"  title="Next: 1.Source"></a>
+      <div class="article-nav-caption">Next</div>
+      <h3 class="article-nav-title">
+          1.Source
+      </h3>
+    </div>
+  </nav>
+
+</article>
+
+
+</section>
+        </div>
+        <footer id="footer" aria-label="Site footer">
+  <div style="width: 100%; overflow: hidden">
+    <div class="footer-line"></div>
+  </div>
+  <div id="footer-info">
+    <div>
+      <span class="icon-copyright"></span>
+        2020-2026
+        <span class="footer-info-sep rotate"></span>
+      OnricYF
+    </div>
+      <div>
+        Powered by&nbsp;<a href="https://hexo.io/" rel="noopener nofollow noreferrer" target="_blank">Hexo</a>&nbsp;
+        Theme.<a href="https://github.com/D-Sketon/hexo-theme-reimu" rel="noopener nofollow noreferrer" target="_blank">Reimu</a>
+      </div>
+      <div>
+        <span class="icon-brush"></span>
+        87.2k
+        &nbsp;|&nbsp;
+        <span class="icon-coffee"></span>
+        07:26
+      </div>
+      <div>
+        <span class="icon-eye"></span>
+        <span id="busuanzi_container_site_pv">Number of visits&nbsp;<span id="busuanzi_value_site_pv"></span></span>
+        &nbsp;|&nbsp;
+        <span class="icon-user"></span>
+        <span id="busuanzi_container_site_uv">Number of visitors&nbsp;<span id="busuanzi_value_site_uv"></span></span>
+      </div>
+  </div>
+</footer>
+
+          <div class="sidebar-top">
+            <div class="sidebar-top-taichi rotate"></div>
+            <div class="arrow-up"></div>
+          </div>
+        <div id="mask" class="hide"></div>
+      </div>
+      <nav id="mobile-nav" aria-label="Mobile navigation">
+  <div class="sidebar-wrap">
+        <div class="sidebar-toc-sidebar"><h3 class="toc-title">Contents</h3>
+<div class="sidebar-toc-wrapper toc-div-class" >
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E5%92%8C%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="toc-number">1.</span> <span class="toc-text">基本原理和使用方法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Z-Buffer%EF%BC%88%E6%B7%B1%E5%BA%A6%E7%BC%93%E5%86%B2%E5%8C%BA%EF%BC%89"><span class="toc-number">1.1.</span> <span class="toc-text">1.Z-Buffer（深度缓冲区）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Z-Writer%EF%BC%88%E6%B7%B1%E5%BA%A6%E5%86%99%E5%85%A5%EF%BC%89"><span class="toc-number">1.2.</span> <span class="toc-text">2.Z Writer（深度写入）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Z-Test%E7%9A%84%E6%AF%94%E8%BE%83%E6%93%8D%E4%BD%9C"><span class="toc-number">1.3.</span> <span class="toc-text">3.Z-Test的比较操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-Unity%E7%9A%84%E6%B8%B2%E6%9F%93%E9%98%9F%E5%88%97"><span class="toc-number">1.4.</span> <span class="toc-text">4.Unity的渲染队列</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E7%AE%80%E8%BF%B0Early-Z%E6%8A%80%E6%9C%AF"><span class="toc-number">1.5.</span> <span class="toc-text">5.简述Early-Z技术</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E6%B7%B1%E5%BA%A6%E5%80%BC"><span class="toc-number">1.6.</span> <span class="toc-text">6.深度值</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A3%E7%A1%AE%E7%9A%84%E7%90%86%E8%A7%A3%E6%B7%B1%E5%BA%A6%E5%80%BC%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="toc-number">1.6.1.</span> <span class="toc-text">正确的理解深度值的概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%B7%B1%E5%BA%A6%E7%BC%93%E5%86%B2%E5%8C%BA%E4%B8%AD%E8%A6%81%E5%AD%98%E5%82%A8%E4%B8%80%E4%B8%AA%E9%9D%9E%E7%BA%BF%E6%80%A7%E7%9A%84%E6%B7%B1%E5%BA%A6%EF%BC%9F"><span class="toc-number">1.6.2.</span> <span class="toc-text">为什么深度缓冲区中要存储一个非线性的深度？</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%A6%E7%BB%86%E9%93%BE%E6%8E%A5"><span class="toc-number">1.6.2.1.</span> <span class="toc-text">详细链接</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8E%9F%E5%9B%A01%EF%BC%9A%E7%BB%99%E8%BF%91%E5%A4%84%E6%9B%B4%E5%A4%9A%E7%9A%84%E7%B2%BE%E5%BA%A6"><span class="toc-number">1.6.2.2.</span> <span class="toc-text">原因1：给近处更多的精度</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%A6%E4%B8%80%E4%B8%AA%E5%8E%9F%E5%9B%A0%EF%BC%9AZ-Fight-%E6%B7%B1%E5%BA%A6%E5%86%B2%E7%AA%81"><span class="toc-number">1.6.2.3.</span> <span class="toc-text">另一个原因：Z-Fight-深度冲突</span></a></li></ol></li></ol></li></ol></li></ol>
+</div>
+</div>
+        <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/avatar.webp" data-sizes="auto" alt="OnricYF" class="lazyload">
+  <div class="sidebar-author-name">OnricYF</div>
+  <div class="sidebar-description">TRASH ARTIST</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>Post</div>
+    <div class="sidebar-state-number">144</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>Category</div>
+    <div class="sidebar-state-number">33</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>Tag</div>
+    <div class="sidebar-state-number">82</div>
+  </div>
+</div>
+<div class="sidebar-social" >
+    <div class="icon-email sidebar-social-icon">
+      <a href=mailto:a1521070145@gmail.com itemprop="url" target="_blank" aria-label="email" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-github sidebar-social-icon">
+      <a href=https://github.com/Madoka9 itemprop="url" target="_blank" aria-label="github" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-bilibili sidebar-social-icon">
+      <a href=https://space.bilibili.com/5862963 itemprop="url" target="_blank" aria-label="bilibili" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-zhihu sidebar-social-icon">
+      <a href=https://www.zhihu.com/people/lan-mei-sheng-dai-77 itemprop="url" target="_blank" aria-label="zhihu" rel="noopener nofollow noreferrer"></a>
+    </div>
+</div>
+<div class="sidebar-menu">
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/" aria-label="Home"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Home</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/archives" aria-label="Archives"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Archives</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/about" aria-label="About"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">About</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/friend" aria-label="Friend"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Friend</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/portfolio" aria-label="Portfolio"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Portfolio</div>
+      </div>
+</div>
+</div>
+  </div>
+      <div class="sidebar-btn-wrapper">
+        <div class="sidebar-toc-btn current"></div>
+        <div class="sidebar-common-btn"></div>
+      </div>
+</nav>
+
+    </div>
+    
+<script src="https://npm.webcache.cn/lazysizes@5.3.2/lazysizes.min.js" integrity="sha384-3gT&#x2F;vsepWkfz&#x2F;ff7PpWNUeMzeWoH3cDhm&#x2F;A8jM7ouoAK0&#x2F;fP&#x2F;9bcHHR5kHq2nf+e" crossorigin="anonymous"></script>
+
+
+<script src="https://npm.webcache.cn/clipboard@2.0.11/dist/clipboard.min.js" integrity="sha384-J08i8An&#x2F;QeARD9ExYpvphB8BsyOj3Gh2TSh1aLINKO3L0cMSH2dN3E22zFoXEi0Q" crossorigin="anonymous"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+  
+<script src="/js/aos.js"></script>
+
+  <script>
+    var aosInit = () => {
+      AOS.init({
+        duration: 1000,
+        easing: "ease",
+        once: true,
+        offset: 50,
+      });
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', aosInit);
+    } else {
+      aosInit();
+    }
+  </script>
+
+
+<script src="/js/pjax_script.js" data-pjax></script>
+
+
+
+
+  <script>
+    var setupFirework = () => {
+      if (!false || !window.matchMedia('(max-width: 768px)').matches) {
+        window.firework && window.firework(JSON.parse('{"excludeElements":["a","button"],"particles":[{"shape":"circle","move":["emit"],"easing":"easeOutExpo","colors":["var(--red-1)","var(--red-2)","var(--red-3)","var(--red-4)"],"number":20,"duration":[1200,1800],"shapeOptions":{"radius":[16,32],"alpha":[0.3,0.5]}},{"shape":"circle","move":["diffuse"],"easing":"easeOutExpo","colors":["var(--red-0)"],"number":1,"duration":[1200,1800],"shapeOptions":{"radius":20,"alpha":[0.2,0.5],"lineWidth":6}}]}'));
+      }
+    }
+  </script>
+  
+<script src="https://npm.webcache.cn/mouse-firework@0.2.0/dist/index.umd.js" integrity="sha384-qi9WggRt19tv8Vc7pCHW3ulMNLwrn515zaLEWZjl1px07vz8+pUoWX8n1rgq282T" crossorigin="anonymous" onload="setupFirework()" defer></script>
+
+
+  
+<script src="https://npm.webcache.cn/theme-shokax-pjax@0.0.3/dist/index.umd.js" integrity="sha384-xneY1WY8hOfUzswrE4CrYq35N4BdVcxqxwHPr9zawE&#x2F;jMSCxD+jAPU55x&#x2F;jj3wlf" crossorigin="anonymous"></script>
+
+  
+<script src="/js/pjax.js"></script>
+
+
+
+
+
+<div id="lazy-script">
+  <div>
+      
+      
+      <script data-pjax>
+        window.REIMU_POST = {
+          author: "OnricYF",
+          title: "技术美术 - 基本原理和使用方法",
+          url: "http://example.com/2025/01/17/Note/PersonalArrange/TA%E6%96%B9%E9%9D%A2/%E7%99%BE%E4%BA%BA%E8%AE%A1%E5%88%92/",
+          excerpt: "",
+          description: "",
+          stripContent: "#（一）渲染管线  [基本流程]：    应用阶段   -&amp;gt;（输出渲染图元）   -&amp;gt;几何阶段 （输出屏幕空间信息）   -&amp;gt;光栅化阶段   -&amp;gt;逐片元操作（像素着色）  Vertex Shader (顶点处理)-&amp;gt;Triangle Processing-&amp;gt;Rasterization(光栅化)-&amp;gt;Pixel Shader -&amp;gt;Frame Buffer 应用阶段：  (1)准备好场景数据 ：摄像机、模型、光源等  (2)粒度剔除工作(culling)",
+          date: "Fri Jan 17 2025 22:15:28 GMT+0800",
+          updated: "Thu Jul 16 2026 11:38:13 GMT+0800",
+          cover: "/images/banner.webp",
+        };
+      </script>
+        
+<script src="/js/insert_highlight.js" data-pjax></script>
+
+      
+<script src="/js/tabs.js" data-pjax defer></script>
+
+      <script type="module" data-pjax>
+        (async () => {
+          const PhotoSwipeLightbox = (await safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe-lightbox.esm.min.js", "sha384-DiL6M/gG+wmTxmCRZyD1zee6lIhawn5TGvED0FOh7fXcN9B0aZ9dexSF/N6lrZi/")).default;
+          const initPswp = (gallery, children) => {
+            if (_$$(`${gallery} ${children}`).length > 0) {
+              new PhotoSwipeLightbox({
+                gallery,
+                children,
+                pswpModule: () => safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.esm.min.js", "sha384-WkkO3GCmgkC3VQWpaV8DqhKJqpzpF9JoByxDmnV8+oTJ7m3DfYEWX1fu1scuS4+s")
+              }).init();
+            }
+          }
+          const pswp = () => {
+            initPswp('.article-entry', 'a.article-gallery-item');
+            initPswp('.article-gallery', 'a.article-gallery-item');
+          }
+          pswp();
+        })();
+      </script>
+  </div>
+</div>
+
+
+  <script>
+    console.log(String.raw`%c 
+ ______     ______     __     __    __     __  __    
+/\  == \   /\  ___\   /\ \   /\ "-./  \   /\ \/\ \   
+\ \  __<   \ \  __\   \ \ \  \ \ \-./\ \  \ \ \_\ \  
+ \ \_\ \_\  \ \_____\  \ \_\  \ \_\ \ \_\  \ \_____\ 
+  \/_/ /_/   \/_____/   \/_/   \/_/  \/_/   \/_____/ 
+                                                  
+`,'color: #ff5252;')
+    console.log('%c Theme.Reimu v' + '1.12.0' + ' %c https://github.com/D-Sketon/hexo-theme-reimu ', 'color: white; background: #ff5252; padding:5px 0;', 'padding:4px;border:1px solid #ff5252;')
+  </script>
+  
+
+
+  
+<script src="https://npm.webcache.cn/busuanzi@2.3.0/bsz.pure.mini.js" integrity="sha384-0M75wtSkhjIInv4coYlaJU83+OypaRCIq2SukQVQX04eGTCBXJDuWAbJet56id+S" crossorigin="anonymous" async></script>
+
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      for (let registration of registrations) {
+        registration.unregister();
+      }
+    });
+  }
+</script>
+
+
+    <script>
+      var setupAPlayer = () => {
+        if (!true || !window.matchMedia('(max-width: 768px)').matches) {
+          if (window.matchMedia('(max-width: 959px)').matches) {
+            const meting = _$('meting-js');
+            if (meting) {
+              meting.setAttribute('fixed', 'true');
+              const aside = meting.parentNode?.parentNode;
+              if (aside?.tagName === 'ASIDE') {
+                meting.parentNode.removeChild(meting);
+                document.body.appendChild(meting);
+              }
+            }
+          }
+        }
+      };
+    </script>
+  
+<script src="https://npm.webcache.cn/aplayer@1.10.1/dist/APlayer.min.js" integrity="sha384-gdGYZwHnfJM54evoZhpO0s6ZF5BQiybkiyW7VXr+h5UfruuRL&#x2F;aORyw+5+HZoU6e" crossorigin="anonymous" defer onload="setupAPlayer()"></script>
+
+    
+<script src="https://npm.webcache.cn/meting@2.0.1/dist/Meting.min.js" integrity="sha384-ASVlpKF80A22OXTK3tfEjZm1EL6uFMKIC4p8+0maanw1S&#x2F;IyB+Y4JG+ZDU7GpKE8" crossorigin="anonymous" defer></script>
+
+
+
+  </body>
+  </html>

@@ -1,0 +1,842 @@
+  <!DOCTYPE html>
+  <html lang="zh-CN"  
+      data-theme-mode="auto"
+  >
+  <head>
+  <meta charset="utf-8">
+  
+  
+  
+  <script>window.REIMU_CONFIG = {};window.REIMU_CONFIG.icon_font = '4552607_4k4bc36ef96';window.REIMU_CONFIG.clipboard_tips = {"success":{"zh-CN":"复制成功 (*^▽^*)","en":"Copy successfully (*^▽^*)"},"fail":{"zh-CN":"复制失败 (ﾟ⊿ﾟ)ﾂ","en":"Copy failed (ﾟ⊿ﾟ)ﾂ"},"copyright":{"enable":false,"count":50,"license_type":"by-nc-sa"}};window.REIMU_CONFIG.clipboard_tips.copyright.content = '本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！';window.REIMU_CONFIG.code_block = {"expand":true};window.REIMU_CONFIG.base = 'http://example.com';window.REIMU_CONFIG.i18n_languages = ["en"];</script>
+  <title>
+    1.1计算机网络的定义及特点 | YF&#39;s Blog
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic|Noto Serif SC:400,400italic,700,700italic&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic|Noto Serif SC:400,400italic,700,700italic&display=swap" media="print" onload="this.media='all'">
+    <link rel="preload" href="//at.alicdn.com/t/c/font_4552607_4k4bc36ef96.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+    
+<link rel="stylesheet" href="/css/loader.css">
+
+    <meta name="description" content="1.1计算机网络的定义及特点应用 ：		定义 ：	组成：	1. 通信子网		1. 提供信息交换的网络节点和通信线路	2. 资源子网		1. 提供共享的软件资源和硬件资源特点 :	连通性与共享性		 1.2互联网概述1.2.1 网络的网络(互连网)(1)计算机网络	(2)互连网		云内	云外(3)互联网 !&#x3D; 互连网	 1.2.2Internet发展的三个阶段**(1)ARPANET	(2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="1.1计算机网络的定义及特点">
+<meta property="og:url" content="http://example.com/2025/01/17/Note/%E5%A4%A7%E4%B8%89%E8%AF%BE%E7%A8%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E4%B8%80%E3%80%81%E6%A6%82%E8%BF%B0/index.html">
+<meta property="og:site_name" content="YF&#39;s Blog">
+<meta property="og:description" content="1.1计算机网络的定义及特点应用 ：		定义 ：	组成：	1. 通信子网		1. 提供信息交换的网络节点和通信线路	2. 资源子网		1. 提供共享的软件资源和硬件资源特点 :	连通性与共享性		 1.2互联网概述1.2.1 网络的网络(互连网)(1)计算机网络	(2)互连网		云内	云外(3)互联网 !&#x3D; 互连网	 1.2.2Internet发展的三个阶段**(1)ARPANET	(2">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915142423.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915142536.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915143059.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915143145.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915143502.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915143530.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915143623.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915143702.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915143826.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915144052.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915144109.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915144412.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915144553.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915145837.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915150314.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915150832.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915150945.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915151152.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915151421.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915151535.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915151731.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915151759.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915151838.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915152046.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915152201.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915152237.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915152505.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915152554.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915152813.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915152910.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915153035.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915153256.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220915154055.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920140610.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920140956.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920141238.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920141451.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920141503.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920142154.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920142233.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920142318.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920142507.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920142540.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920142721.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920142827.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920142841.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920143001.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920143256.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920143341.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920143529.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920143628.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920143647.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920143813.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920143936.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920150455.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920151750.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920151209.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920151423.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920151434.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920151521.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920152332.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920152451.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/804b85120d704603a702716778cd778e.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5bCP576K5Yqq5Yqb5Y-Y5by6,size_20,color_FFFFFF,t_70,g_se,x_16">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920152828.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920152841.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920152851.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920153109.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920153332.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920153420.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920153520.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920153549.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920153655.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920153758.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920153836.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220920154148.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220922141323.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220922141338.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220922141523.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220922141642.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220922141846.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220922141959.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220922142212.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220922142339.png">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020220922142447.png">
+<meta property="article:published_time" content="2025-01-17T14:04:11.000Z">
+<meta property="article:modified_time" content="2026-07-16T03:23:21.770Z">
+<meta property="article:author" content="OnricYF">
+<meta property="article:tag" content="大三课程学习笔记">
+<meta property="article:tag" content="计算机网络">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/blog/Pasted%20image%2020220915142423.png">
+    <link rel="alternate" href="/atom.xml" title="YF's Blog" type="application/atom+xml">
+    <link rel="shortcut icon" href="/images/favicon.ico">
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.css" integrity="sha384-IfxC36XL/toUyJ939C73PcgMuRzAZuIzZxE38drsmO5p6jD7ei+Zx/1oA/0l8ysE" crossorigin="anonymous">
+    
+<script src="https://npm.webcache.cn/pace-js@1.2.4/pace.min.js" integrity="sha384-k6YtvFUEIuEFBdrLKJ3YAUbBki333tj1CSUisai5Cswsg9wcLNaPzsTHDswp4Az8" crossorigin="anonymous"></script>
+
+    
+<link rel="stylesheet" href="https://npm.webcache.cn/@reimujs/aos@0.1.2/dist/aos.css" integrity="sha384-GMRP93c6Hkz9JVKGAuRR3nTS7M07RwPgTFenXiosjq2VbVgvdDNcz1g6Mkj8AONa" crossorigin="anonymous">
+
+    <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://npm.webcache.cn/aplayer@1.10.1/dist/APlayer.min.css" integrity="sha384-tLMkTWh2pfXNWGFlUS0w1TFtRG5xZ9lPWFOooj+vDDLIL+xBGQU/voDBY5XE2lVh" crossorigin="anonymous">
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+  <body>
+      <div id='loader'>
+    <div class="loading-left-bg loading-bg"></div>
+    <div class="loading-right-bg loading-bg"></div>
+    <div class="spinner-box">
+      <div class="loading-taichi rotate">
+          <svg width="150" height="150" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="https://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
+            <path d="M303.5 432A80 80 0 0 1 291.5 592A80 80 0 0 1 303.5 432z" fill="var(--red-1, #ff5252)" />
+            <path d="M512 65A447 447 0 0 1 512 959L512 929A417 417 0 0 0 512 95A417 417 0 0 0 512 929L512 959A447 447 0 0 1 512 65z 
+           M512 95A417 417 0 0 1 929 512A208.5 208.5 0 0 1 720.5 720.5L720.5 592A80 80 0 0 0 720.5 432A80 80 0 0 0 720.5 592L720.5 720.5A208.5 208.5 0 0 1 512 512A208.5 208.5 0 0 0 303.5 303.5A208.5 208.5 0 0 0 95 512A417 417 0 0 1 512 95z" fill="var(--red-1, #ff5252)" />
+          </svg>
+      </div>
+      <div class="loading-word">少女祈祷中...</div>
+    </div>
+  </div>
+  </div>
+  <script>
+    var time = null;
+    var loaderEl = document.getElementById('loader');
+    var startLoading = () => {
+      time = Date.now();
+      loaderEl.classList.remove("loading");
+    }
+    var hideLoader = () => {
+      document.body.style.overflow = 'auto';
+      loader.classList.add('loading');
+    };
+
+    var endLoading = () => {
+      if (!time) {
+        hideLoader();
+      } else {
+        if (Date.now() - time > 500) {
+          time = null;
+          hideLoader();
+        } else {
+          setTimeout(endLoading, 500 - (Date.now() - time));
+          time = null;
+        }
+      }
+    }
+    window.addEventListener('DOMContentLoaded', endLoading);
+    loaderEl.addEventListener('click', endLoading);
+  </script>
+<div id="copy-tooltip"></div>
+<div id="heatmap-tooltip"></div>
+
+
+    <div id="container">
+      <div id="wrap">
+        <div id="header-nav">
+  <nav id="main-nav" aria-label="Primary navigation">
+        <a class="main-nav-link-wrap" href="/">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">首页</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/archives">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">归档</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/about">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">关于</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/friend">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">友链</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/portfolio">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">作品集</span>
+        </span>
+    <a id="main-nav-toggle" class="nav-icon" aria-label="Toggle navigation" role="button"></a>
+  </nav>
+  <nav id="sub-nav" aria-label="Secondary navigation">
+  </nav>
+    <nav id="i18n-nav" aria-label="Language selection">
+      <div class="custom-dropdown">
+        <div class="select-selected" id="select-selected" role="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Language menu">
+          <span id="nav-language-btn" class="nav-icon" style="padding: 0 20px 0 0"></span>
+          <span id="selected-lang">简体中文</span>
+        </div>
+        <ul class="select-items" id="select-items" role="listbox" aria-label="Languages">
+            <li data-value="zh-CN" role="option" class="selected" aria-selected="true">简体中文</li>
+            <li data-value="en" role="option" aria-selected="false">English</li>
+        </ul>
+      </div>
+      <script>
+        var selectSelected = document.getElementById("select-selected");
+        var selectedLang = document.getElementById("selected-lang");
+        var selectItems = document.getElementById("select-items");
+        var selectOptions = selectItems.querySelectorAll("li");
+
+        selectSelected.addEventListener("click", () => {
+          selectItems.classList.toggle("show");
+          var expanded = selectSelected.getAttribute("aria-expanded") === "true";
+          selectSelected.setAttribute("aria-expanded", (!expanded).toString());
+        });
+
+        selectOptions.forEach((item) => {
+          item.addEventListener("click", () => {
+            const langMap = {};
+              langMap['zh-CN'] = '/2025/01/17/Note/大三课程学习笔记/计算机网络/一、概述/';
+              langMap['en'] = '/en/2025/01/17/Note/大三课程学习笔记/计算机网络/一、概述/';
+            selectedLang.textContent = item.textContent;
+            selectItems.classList.remove("show");
+            selectOptions.forEach((option) => {
+              option.classList.remove("selected");
+            });
+            item.classList.add("selected");
+            window.location = langMap[item.dataset.value];
+          });
+        });
+
+        document.addEventListener("click", (event) => {
+          if (!event.target.closest(".custom-dropdown")) {
+            selectItems.classList.remove("show");
+            selectSelected.setAttribute("aria-expanded", "false");
+          }
+        });
+      </script>
+    </nav>
+</div>
+<header id="header" aria-label="Site header">
+        <picture>
+        </picture>
+          <img  fetchpriority="high" src="/images/banner.webp" alt="1.1计算机网络的定义及特点">
+  <div id="header-outer">
+    <div id="header-title">
+          <span id="logo">
+            <h1 data-aos="slide-up">1.1计算机网络的定义及特点</h1>
+          </span>
+        <h2 id="subtitle-wrap" data-aos="slide-down">
+        </h2>
+    </div>
+  </div>
+</header>
+
+        <div id="content" aria-label="Page content"  class="sidebar-right" >
+          <aside id="sidebar" aria-label="Sidebar">
+  <div class="sidebar-wrapper-container sticky">
+  <div class="sidebar-wrapper">
+    <div class="sidebar-wrap" data-aos="fade-up">
+          <div class="sidebar-toc-sidebar"><h3 class="toc-title">文章目录</h3>
+<div class="sidebar-toc-wrapper toc-div-class" >
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-1%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E7%9A%84%E5%AE%9A%E4%B9%89%E5%8F%8A%E7%89%B9%E7%82%B9"><span class="toc-number">1.</span> <span class="toc-text">1.1计算机网络的定义及特点</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-2%E4%BA%92%E8%81%94%E7%BD%91%E6%A6%82%E8%BF%B0"><span class="toc-number">2.</span> <span class="toc-text">1.2互联网概述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-1-%E7%BD%91%E7%BB%9C%E7%9A%84%E7%BD%91%E7%BB%9C-%E4%BA%92%E8%BF%9E%E7%BD%91"><span class="toc-number">2.1.</span> <span class="toc-text">1.2.1 网络的网络(互连网)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-2Internet%E5%8F%91%E5%B1%95%E7%9A%84%E4%B8%89%E4%B8%AA%E9%98%B6%E6%AE%B5"><span class="toc-number">2.2.</span> <span class="toc-text">1.2.2Internet发展的三个阶段</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-3-Internet%E7%9A%84%E6%A0%87%E5%87%86%E5%8C%96%E5%B7%A5%E4%BD%9C"><span class="toc-number">2.3.</span> <span class="toc-text">1.2.3 Internet的标准化工作</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-3%E4%BA%92%E8%81%94%E7%BD%91%E7%9A%84%E7%BB%84%E6%88%90"><span class="toc-number">3.</span> <span class="toc-text">1.3互联网的组成</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-3-1%E4%BA%92%E8%81%94%E7%BD%91%E8%BE%B9%E7%BC%98%E9%83%A8%E5%88%86"><span class="toc-number">3.1.</span> <span class="toc-text">1.3.1互联网边缘部分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-3-2-%E4%BA%92%E8%81%94%E7%BD%91%E7%9A%84%E6%A0%B8%E5%BF%83%E9%83%A8%E5%88%86"><span class="toc-number">3.2.</span> <span class="toc-text">1.3.2 互联网的核心部分</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-4%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9C%A8%E6%88%91%E5%9B%BD%E7%9A%84%E5%8F%91%E5%B1%95"><span class="toc-number">4.</span> <span class="toc-text">1.4计算机网络在我国的发展</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-5-%E7%BD%91%E7%BB%9C%E7%9A%84%E5%88%86%E7%B1%BB"><span class="toc-number">5.</span> <span class="toc-text">1.5 网络的分类</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%8C%89%E7%85%A7%E7%BD%91%E7%BB%9C%E7%9A%84%E4%BD%9C%E7%94%A8%E8%8C%83%E5%9B%B4%E5%88%86%E7%B1%BB"><span class="toc-number">5.1.</span> <span class="toc-text">1. 按照网络的作用范围分类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%8C%89%E7%85%A7%E7%BD%91%E7%BB%9C%E7%9A%84%E4%BD%BF%E7%94%A8%E8%80%85%E8%BF%9B%E8%A1%8C%E5%88%86%E7%B1%BB"><span class="toc-number">5.2.</span> <span class="toc-text">2.按照网络的使用者进行分类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E6%8C%89%E5%9C%A8%E4%BA%92%E8%81%94%E7%BD%91%E4%BD%93%E7%B3%BB%E6%9E%B6%E6%9E%84%E4%B8%AD%E6%89%80%E5%A4%84%E7%9A%84%E5%9C%B0%E4%BD%8D%E4%BD%8D%E7%BD%AE"><span class="toc-number">5.3.</span> <span class="toc-text">3. 按在互联网体系架构中所处的地位位置</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-6-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E7%9A%84%E4%B8%83%E4%B8%AA%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87"><span class="toc-number">6.</span> <span class="toc-text">1.6 计算机网络的七个性能指标</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E9%80%9F%E7%8E%87"><span class="toc-number">6.1.</span> <span class="toc-text">1.速率</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%B8%A6%E5%AE%BD"><span class="toc-number">6.2.</span> <span class="toc-text">2.带宽</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%90%9E%E5%90%90%E9%87%8F"><span class="toc-number">6.3.</span> <span class="toc-text">3.吞吐量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E6%97%B6%E5%BB%B6"><span class="toc-number">6.4.</span> <span class="toc-text">4.时延</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%8F%91%E9%80%81%E6%97%B6%E5%BB%B6"><span class="toc-number">6.4.1.</span> <span class="toc-text">(1)发送时延</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BC%A0%E6%92%AD%E6%97%B6%E5%BB%B6"><span class="toc-number">6.4.2.</span> <span class="toc-text">(2)传播时延</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%91%E9%80%81%E6%97%B6%E5%BB%B6%E5%92%8C%E4%BC%A0%E6%92%AD%E6%97%B6%E5%BB%B6%E6%9C%89%E6%9C%AC%E8%B4%A8%E7%9A%84%E4%B8%8D%E5%90%8C"><span class="toc-number">6.4.3.</span> <span class="toc-text">- 发送时延和传播时延有本质的不同</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%A4%84%E7%90%86%E6%97%B6%E5%BB%B6"><span class="toc-number">6.4.4.</span> <span class="toc-text">(3)处理时延</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%8E%92%E9%98%9F%E6%97%B6%E5%BB%B6"><span class="toc-number">6.4.5.</span> <span class="toc-text">(4) 排队时延</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E6%97%B6%E5%BB%B6-%E5%8F%91%E9%80%81%E6%97%B6%E5%BB%B6-%E4%BC%A0%E6%92%AD%E6%97%B6%E5%BB%B6-%E5%A4%84%E7%90%86%E6%97%B6%E5%BB%B6-%E6%8E%92%E9%98%9F%E6%97%B6%E5%BB%B6"><span class="toc-number">6.4.6.</span> <span class="toc-text">- 总时延 &#x3D; 发送时延 + 传播时延 + 处理时延 + 排队时延</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E7%A7%8D%E6%97%B6%E5%BB%B6%E4%BA%A7%E7%94%9F%E7%9A%84%E5%9C%B0%E6%96%B9%E4%B8%8D%E5%90%8C"><span class="toc-number">6.4.7.</span> <span class="toc-text">- 四种时延产生的地方不同</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BE%8B%E9%A2%98"><span class="toc-number">6.5.</span> <span class="toc-text">例题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E8%AE%A1%E7%AE%97%E5%8F%91%E9%80%81%E6%97%B6%E5%BB%B6"><span class="toc-number">6.6.</span> <span class="toc-text">1. 计算发送时延</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%88%A4%E6%96%AD"><span class="toc-number">6.7.</span> <span class="toc-text">2. 判断</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E6%97%B6%E5%BB%B6%E5%B8%A6%E5%AE%BD%E7%A7%AF"><span class="toc-number">6.8.</span> <span class="toc-text">5.时延带宽积</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E5%BE%80%E8%BF%94%E6%97%B6%E9%97%B4RTT"><span class="toc-number">6.9.</span> <span class="toc-text">6.往返时间RTT</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E5%88%A9%E7%94%A8%E7%8E%87"><span class="toc-number">6.10.</span> <span class="toc-text">7.利用率</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BF%A1%E9%81%93%E5%88%A9%E7%94%A8%E7%8E%87"><span class="toc-number">6.10.1.</span> <span class="toc-text">(1)信道利用率</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E7%BD%91%E7%BB%9C%E5%88%A9%E7%94%A8%E7%8E%87"><span class="toc-number">6.10.2.</span> <span class="toc-text">(2)网络利用率</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%97%B6%E5%BB%B6%E4%B8%8E%E7%BD%91%E7%BB%9C%E5%88%A9%E7%94%A8%E7%8E%87%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-number">6.10.3.</span> <span class="toc-text">(3)时延与网络利用率的关系</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-7-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="toc-number">7.</span> <span class="toc-text">1.7 计算机网络体系结构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-7-1-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E7%9A%84%E5%BD%A2%E6%88%90"><span class="toc-number">7.1.</span> <span class="toc-text">1.7.1 计算机网络体系结构的形成</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E6%98%AF%E4%B8%80%E4%B8%AA%E9%9D%9E%E5%B8%B8%E5%A4%8D%E6%9D%82%E7%9A%84%E7%B3%BB%E7%BB%9F%E3%80%82"><span class="toc-number">7.1.1.</span> <span class="toc-text">计算机网络是一个非常复杂的系统。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E5%87%BA%E4%BA%86%E4%B8%8D%E5%90%8C%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="toc-number">7.1.2.</span> <span class="toc-text">提出了不同体系结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%BD%E9%99%85%E6%A0%87%E5%87%86%EF%BC%9A%E5%BC%80%E6%94%BE%E7%B3%BB%E7%BB%9F%E4%BA%92%E8%BF%9E%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B-OSI-RM"><span class="toc-number">7.1.3.</span> <span class="toc-text">国际标准：开放系统互连参考模型 OSI&#x2F;RM</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-7-2-%E5%8D%8F%E8%AE%AE%E4%B8%8E%E5%88%92%E5%88%86%E5%B1%82%E6%AC%A1"><span class="toc-number">7.2.</span> <span class="toc-text">1.7.2 协议与划分层次</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%8F%E8%AE%AE%E7%9A%84%E4%B8%A4%E7%A7%8D%E5%BD%A2%E5%BC%8F-%EF%BC%9A%E6%96%87%E5%AD%97%E6%8F%8F%E8%BF%B0-%E5%92%8C-%E7%A8%8B%E5%BA%8F%E4%BB%A3%E7%A0%81"><span class="toc-number">7.2.1.</span> <span class="toc-text">协议的两种形式  ：文字描述 和 程序代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B1%82%E6%AC%A1%E5%BC%8F%E5%8D%8F%E8%AE%AE%E7%BB%93%E6%9E%84"><span class="toc-number">7.2.2.</span> <span class="toc-text">层次式协议结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E5%B1%82%E7%9A%84%E4%BC%98%E7%82%B9%E4%B8%8E%E7%BC%BA%E7%82%B9"><span class="toc-number">7.2.3.</span> <span class="toc-text">分层的优点与缺点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%84%E5%B1%82%E5%AE%8C%E6%88%90%E7%9A%84%E4%B8%BB%E8%A6%81%E5%8A%9F%E8%83%BD"><span class="toc-number">7.2.4.</span> <span class="toc-text">各层完成的主要功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E7%9A%84%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="toc-number">7.2.5.</span> <span class="toc-text">计算机网络的体系结构</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-7-3-%E5%85%B7%E6%9C%89%E4%BA%94%E5%B1%82%E5%8D%8F%E8%AE%AE%E7%9A%84%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="toc-number">7.3.</span> <span class="toc-text">1.7.3 具有五层协议的体系结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E5%BA%94%E7%94%A8%E5%B1%82"><span class="toc-number">7.3.1.</span> <span class="toc-text">5. 应用层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E8%BF%90%E8%BE%93%E5%B1%82"><span class="toc-number">7.3.2.</span> <span class="toc-text">4.运输层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E7%BD%91%E7%BB%9C%E5%B1%82"><span class="toc-number">7.3.3.</span> <span class="toc-text">3.网络层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82"><span class="toc-number">7.3.4.</span> <span class="toc-text">2.数据链路层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%89%A9%E7%90%86%E5%B1%82"><span class="toc-number">7.3.5.</span> <span class="toc-text">1.物理层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%9C%A8%E5%90%84%E5%B1%82%E4%B9%8B%E9%97%B4%E7%9A%84%E4%BC%A0%E9%80%92%E8%BF%87%E7%A8%8B"><span class="toc-number">7.3.6.</span> <span class="toc-text">数据在各层之间的传递过程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-7-4-%E5%AE%9E%E4%BD%93%E3%80%81%E5%8D%8F%E8%AE%AE%E3%80%81%E6%9C%8D%E5%8A%A1%E5%92%8C%E6%9C%8D%E5%8A%A1%E8%AE%BF%E9%97%AE%E7%82%B9"><span class="toc-number">7.4.</span> <span class="toc-text">1.7.4 实体、协议、服务和服务访问点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E4%BD%93%EF%BC%8C%E5%8D%8F%E8%AE%AE"><span class="toc-number">7.5.</span> <span class="toc-text">实体，协议</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E8%AE%BF%E9%97%AE%E7%82%B9-SAP"><span class="toc-number">7.5.1.</span> <span class="toc-text">服务访问点(SAP)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%B8%E9%82%BB%E4%B8%A4%E5%B1%82%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-number">7.5.2.</span> <span class="toc-text">相邻两层之间的关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%8F%E8%AE%AE%E4%B8%8E%E6%9C%8D%E5%8A%A1%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">7.5.3.</span> <span class="toc-text">协议与服务的区别</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-7-5-TCP-IP-%E7%9A%84%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="toc-number">7.6.</span> <span class="toc-text">1.7.5 TCP&#x2F;IP 的体系结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%92%E8%81%94%E7%BD%91%E4%B8%ADC-S%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F"><span class="toc-number">7.6.1.</span> <span class="toc-text">互联网中C&#x2F;S工作方式</span></a></li></ol></li></ol></li></ol>
+</div>
+</div>
+          <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/avatar.webp" data-sizes="auto" alt="OnricYF" class="lazyload">
+  <div class="sidebar-author-name">OnricYF</div>
+  <div class="sidebar-description">TRASH ARTIST</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>文章</div>
+    <div class="sidebar-state-number">144</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>分类</div>
+    <div class="sidebar-state-number">33</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>标签</div>
+    <div class="sidebar-state-number">82</div>
+  </div>
+</div>
+<div class="sidebar-social" >
+    <div class="icon-email sidebar-social-icon">
+      <a href=mailto:a1521070145@gmail.com itemprop="url" target="_blank" aria-label="email" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-github sidebar-social-icon">
+      <a href=https://github.com/Madoka9 itemprop="url" target="_blank" aria-label="github" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-bilibili sidebar-social-icon">
+      <a href=https://space.bilibili.com/5862963 itemprop="url" target="_blank" aria-label="bilibili" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-zhihu sidebar-social-icon">
+      <a href=https://www.zhihu.com/people/lan-mei-sheng-dai-77 itemprop="url" target="_blank" aria-label="zhihu" rel="noopener nofollow noreferrer"></a>
+    </div>
+</div>
+<div class="sidebar-menu">
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/" aria-label="首页"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">首页</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/archives" aria-label="归档"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">归档</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/about" aria-label="关于"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">关于</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/friend" aria-label="友链"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">友链</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/portfolio" aria-label="作品集"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">作品集</div>
+      </div>
+</div>
+</div>
+          <div class="sidebar-btn-wrapper" style="position:static">
+            <div class="sidebar-toc-btn current"></div>
+            <div class="sidebar-common-btn"></div>
+          </div>
+    </div>
+  </div>
+      <meting-js
+        theme="var(--color-link)"
+        id="385907592"
+        server="netease"
+        type="playlist"
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        class="aplayer-after-sidebar"
+      ></meting-js>
+  <div class="sidebar-widget">
+  </div>
+  </div>
+</aside>
+
+          <section id="main" aria-label="Main content"><article id="post-Note/大三课程学习笔记/计算机网络/一、概述" class="h-entry article" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner" data-aos="fade-up">
+    <div class="article-meta">
+      <div class="article-date">
+  <span class="article-date-link icon-calendar" data-aos="zoom-in">
+    <time datetime="2025-01-17T14:04:11.000Z" itemprop="datePublished">2025-01-17</time>
+    <time style="display: none;" id="post-update-time">2026-07-16</time>
+  </span>
+</div>
+
+    </div>
+    
+    <div class="hr-line"></div>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+        <h1 id="1-1计算机网络的定义及特点"><a href="#1-1计算机网络的定义及特点" class="headerlink" title="1.1计算机网络的定义及特点"></a>1.1计算机网络的定义及特点</h1><p><mark style="background: #ADCCFFA6;">应用</mark> ：<br>	<img src="/images/blog/Pasted%20image%2020220915142423.png"><br>	<img src="/images/blog/Pasted%20image%2020220915142536.png"><br><mark style="background: #ADCCFFA6;">定义</mark> ：<br>	<img src="/images/blog/Pasted%20image%2020220915143059.png"><br>组成：<br>	1. 通信子网<br>		1. 提供信息交换的网络节点和通信线路<br>	2. 资源子网<br>		1. 提供共享的软件资源和硬件资源<br><mark style="background: #ADCCFFA6;">特点</mark> :<br>	连通性与共享性<br>		<img src="/images/blog/Pasted%20image%2020220915143145.png"></p>
+<h1 id="1-2互联网概述"><a href="#1-2互联网概述" class="headerlink" title="1.2互联网概述"></a>1.2互联网概述</h1><h2 id="1-2-1-网络的网络-互连网"><a href="#1-2-1-网络的网络-互连网" class="headerlink" title="1.2.1 网络的网络(互连网)"></a>1.2.1 网络的网络(互连网)</h2><p>(1)计算机网络<br>	<img src="/images/blog/Pasted%20image%2020220915143502.png"><br>(2)互连网<br>	<img src="/images/blog/Pasted%20image%2020220915143530.png"><br>	云内<br><img src="/images/blog/Pasted%20image%2020220915143623.png"><br>	云外<br><img src="/images/blog/Pasted%20image%2020220915143702.png"><br>(3)互联网 !&#x3D; 互连网<br>	<img src="/images/blog/Pasted%20image%2020220915143826.png"><br><img src="/images/blog/Pasted%20image%2020220915144052.png"><br><img src="/images/blog/Pasted%20image%2020220915144109.png"></p>
+<h2 id="1-2-2Internet发展的三个阶段"><a href="#1-2-2Internet发展的三个阶段" class="headerlink" title="1.2.2Internet发展的三个阶段"></a>1.2.2Internet发展的三个阶段</h2><p>**(1)ARPANET<br>	<img src="/images/blog/Pasted%20image%2020220915144412.png"><br>(2)NSF<br>	<img src="/images/blog/Pasted%20image%2020220915144553.png"><br>(3)ISP<br>	<img src="/images/blog/Pasted%20image%2020220915145837.png"><br>	<img src="/images/blog/Pasted%20image%2020220915150314.png"></p>
+<h2 id="1-2-3-Internet的标准化工作"><a href="#1-2-3-Internet的标准化工作" class="headerlink" title="1.2.3 Internet的标准化工作"></a>1.2.3 Internet的标准化工作</h2><pre><code>![](/images/blog/Pasted%20image%2020220915150607.png)
+</code></pre>
+<p>RFC<br>	<img src="/images/blog/Pasted%20image%2020220915150832.png"><br>标准化过程<br>	<img src="/images/blog/Pasted%20image%2020220915150945.png"></p>
+<h1 id="1-3互联网的组成"><a href="#1-3互联网的组成" class="headerlink" title="1.3互联网的组成"></a>1.3互联网的组成</h1><p>边缘部分与核心部分<br><img src="/images/blog/Pasted%20image%2020220915151152.png"></p>
+<h2 id="1-3-1互联网边缘部分"><a href="#1-3-1互联网边缘部分" class="headerlink" title="1.3.1互联网边缘部分"></a>1.3.1互联网边缘部分</h2><pre><code>![](/images/blog/Pasted%20image%2020220915151259.png)
+</code></pre>
+<p>端系统<br>	<img src="/images/blog/Pasted%20image%2020220915151421.png"><br>两种通信方式: 客户&#x2F;服务器方式 ， 对等方式<br>		<img src="/images/blog/Pasted%20image%2020220915151535.png"><br>	(1)C&#x2F;S<br>		<img src="/images/blog/Pasted%20image%2020220915151731.png"><br>		主要特点<br>			<img src="/images/blog/Pasted%20image%2020220915151759.png"><br>	(2)P2P<br>		<img src="/images/blog/Pasted%20image%2020220915151838.png"></p>
+<h2 id="1-3-2-互联网的核心部分"><a href="#1-3-2-互联网的核心部分" class="headerlink" title="1.3.2 互联网的核心部分"></a>1.3.2 互联网的核心部分</h2><pre><code>![](/images/blog/Pasted%20image%2020220915151947.png)
+</code></pre>
+<p>”交换(Switching)“的含义<br>	<img src="/images/blog/Pasted%20image%2020220915152046.png"><br><img src="/images/blog/Pasted%20image%2020220915152201.png"><br>	1、电路交换<br>			<img src="/images/blog/Pasted%20image%2020220915152237.png"><br>		电路交换过程<br>			(1)建立连接<br>			(2)通话<br>			(3)释放连接<br>			<img src="/images/blog/Pasted%20image%2020220915152505.png"><br>		电路交换特点:通话的两个用户始终占用端到端的通信资源<br>			<img src="/images/blog/Pasted%20image%2020220915152554.png"><br>			(1)需要建立连接<br>			(2)通信双方独占线路资源<br>			(3)通信线路的利用率低<br>	2、报文交换<br>		<img src="/images/blog/Pasted%20image%2020220915152813.png"><br>	3、分组交换<br>		(1)分段<br>			<img src="/images/blog/Pasted%20image%2020220915152910.png"><br>		(2)分组<br>			<img src="/images/blog/Pasted%20image%2020220915153035.png"><br>		分组在互联网中的转发<br>			<img src="/images/blog/Pasted%20image%2020220915153256.png"><br>		分组交换的优点<br>			高效<br>			灵活<br>		分组交换的缺点<br>			排队延迟<br>			不保证带宽<br>			增加开销<br>三种交换的比较<br>	<img src="/images/blog/Pasted%20image%2020220915154055.png"></p>
+<p><img src="/images/blog/Pasted%20image%2020220920140610.png"></p>
+<h1 id="1-4计算机网络在我国的发展"><a href="#1-4计算机网络在我国的发展" class="headerlink" title="1.4计算机网络在我国的发展"></a>1.4计算机网络在我国的发展</h1><p><img src="/images/blog/Pasted%20image%2020220920140956.png"><br><img src="/images/blog/Pasted%20image%2020220920141238.png"><br><img src="/images/blog/Pasted%20image%2020220920141451.png"><br><img src="/images/blog/Pasted%20image%2020220920141503.png"></p>
+<h1 id="1-5-网络的分类"><a href="#1-5-网络的分类" class="headerlink" title="1.5 网络的分类"></a>1.5 网络的分类</h1><h2 id="1-按照网络的作用范围分类"><a href="#1-按照网络的作用范围分类" class="headerlink" title="1. 按照网络的作用范围分类"></a>1. 按照网络的作用范围分类</h2><p><img src="/images/blog/Pasted%20image%2020220920142154.png"></p>
+<h2 id="2-按照网络的使用者进行分类"><a href="#2-按照网络的使用者进行分类" class="headerlink" title="2.按照网络的使用者进行分类"></a>2.按照网络的使用者进行分类</h2><p><img src="/images/blog/Pasted%20image%2020220920142233.png"></p>
+<h2 id="3-按在互联网体系架构中所处的地位位置"><a href="#3-按在互联网体系架构中所处的地位位置" class="headerlink" title="3. 按在互联网体系架构中所处的地位位置"></a>3. 按在互联网体系架构中所处的地位位置</h2><p><img src="/images/blog/Pasted%20image%2020220920142318.png"></p>
+<h1 id="1-6-计算机网络的七个性能指标"><a href="#1-6-计算机网络的七个性能指标" class="headerlink" title="1.6 计算机网络的七个性能指标"></a>1.6 计算机网络的七个性能指标</h1><p><img src="/images/blog/Pasted%20image%2020220920142507.png"></p>
+<h2 id="1-速率"><a href="#1-速率" class="headerlink" title="1.速率"></a>1.速率</h2><p><img src="/images/blog/Pasted%20image%2020220920142540.png"></p>
+<h2 id="2-带宽"><a href="#2-带宽" class="headerlink" title="2.带宽"></a>2.带宽</h2><p><img src="/images/blog/Pasted%20image%2020220920142721.png"><br><img src="/images/blog/Pasted%20image%2020220920142827.png"><br><img src="/images/blog/Pasted%20image%2020220920142841.png"></p>
+<h2 id="3-吞吐量"><a href="#3-吞吐量" class="headerlink" title="3.吞吐量"></a>3.吞吐量</h2><p><img src="/images/blog/Pasted%20image%2020220920143001.png"></p>
+<h2 id="4-时延"><a href="#4-时延" class="headerlink" title="4.时延"></a>4.时延</h2><h3 id="1-发送时延"><a href="#1-发送时延" class="headerlink" title="(1)发送时延"></a>(1)发送时延</h3><p><img src="/images/blog/Pasted%20image%2020220920143256.png"></p>
+<h3 id="2-传播时延"><a href="#2-传播时延" class="headerlink" title="(2)传播时延"></a>(2)传播时延</h3><p><img src="/images/blog/Pasted%20image%2020220920143341.png"></p>
+<h3 id="发送时延和传播时延有本质的不同"><a href="#发送时延和传播时延有本质的不同" class="headerlink" title="- 发送时延和传播时延有本质的不同"></a>- 发送时延和传播时延有本质的不同</h3><p><img src="/images/blog/Pasted%20image%2020220920143529.png"></p>
+<h3 id="3-处理时延"><a href="#3-处理时延" class="headerlink" title="(3)处理时延"></a>(3)处理时延</h3><p><img src="/images/blog/Pasted%20image%2020220920143628.png"></p>
+<h3 id="4-排队时延"><a href="#4-排队时延" class="headerlink" title="(4) 排队时延"></a>(4) 排队时延</h3><p><img src="/images/blog/Pasted%20image%2020220920143647.png"></p>
+<h3 id="总时延-发送时延-传播时延-处理时延-排队时延"><a href="#总时延-发送时延-传播时延-处理时延-排队时延" class="headerlink" title="- 总时延 &#x3D; 发送时延 + 传播时延 + 处理时延 + 排队时延"></a>- 总时延 &#x3D; 发送时延 + 传播时延 + 处理时延 + 排队时延</h3><p><img src="/images/blog/Pasted%20image%2020220920143813.png"></p>
+<h3 id="四种时延产生的地方不同"><a href="#四种时延产生的地方不同" class="headerlink" title="- 四种时延产生的地方不同"></a>- 四种时延产生的地方不同</h3><p><img src="/images/blog/Pasted%20image%2020220920143936.png"></p>
+<h2 id="例题"><a href="#例题" class="headerlink" title="例题"></a>例题</h2><h2 id="1-计算发送时延"><a href="#1-计算发送时延" class="headerlink" title="1. 计算发送时延"></a>1. 计算发送时延</h2><p>100MB(二进制) 1Mbit&#x2F;s(十进制)<br>发送时延 &#x3D; 100 * 2^20 * 8 &#x2F; 1 * 10^6 &#x3D; 838.9s<br>二进制: 1M &#x3D; 2^10K &#x3D; 2^20<br>十进制: 1M &#x3D; 10^3K &#x3D; 10^6</p>
+<h2 id="2-判断"><a href="#2-判断" class="headerlink" title="2. 判断"></a>2. 判断</h2><p><img src="/images/blog/Pasted%20image%2020220920150455.png"><br>1.正确<br>2.正确<br>3.错误  传播速率与媒介有关<br>4.正确  若数据块大小较大，如100MB，提高发送速率，总时延明显减小；若数据块较小，如1B，提高发送速率，总时延确实会减小但是可以忽略不记。</p>
+<h2 id="5-时延带宽积"><a href="#5-时延带宽积" class="headerlink" title="5.时延带宽积"></a>5.时延带宽积</h2><p><img src="/images/blog/Pasted%20image%2020220920151750.png"><br>链路的时延带宽积又称为以比特为单位的链路长度。<br>管道中的比特数表示从发送端发出但尚未到达接收端的比特数。<br>只有在代表链路的管道都充满比特时，链路才得到了充分利用。</p>
+<h2 id="6-往返时间RTT"><a href="#6-往返时间RTT" class="headerlink" title="6.往返时间RTT"></a>6.往返时间RTT</h2><p><img src="/images/blog/Pasted%20image%2020220920151209.png"></p>
+<h2 id="7-利用率"><a href="#7-利用率" class="headerlink" title="7.利用率"></a>7.利用率</h2><h3 id="1-信道利用率"><a href="#1-信道利用率" class="headerlink" title="(1)信道利用率"></a>(1)信道利用率</h3><p><img src="/images/blog/Pasted%20image%2020220920151423.png"></p>
+<h3 id="2-网络利用率"><a href="#2-网络利用率" class="headerlink" title="(2)网络利用率"></a>(2)网络利用率</h3><p><img src="/images/blog/Pasted%20image%2020220920151434.png"></p>
+<h3 id="3-时延与网络利用率的关系"><a href="#3-时延与网络利用率的关系" class="headerlink" title="(3)时延与网络利用率的关系"></a>(3)时延与网络利用率的关系</h3><p><img src="/images/blog/Pasted%20image%2020220920151521.png"></p>
+<h1 id="1-7-计算机网络体系结构"><a href="#1-7-计算机网络体系结构" class="headerlink" title="1.7 计算机网络体系结构"></a>1.7 计算机网络体系结构</h1><h2 id="1-7-1-计算机网络体系结构的形成"><a href="#1-7-1-计算机网络体系结构的形成" class="headerlink" title="1.7.1 计算机网络体系结构的形成"></a>1.7.1 计算机网络体系结构的形成</h2><ul>
+<li>OSI&#x2F;RM (7层)<ul>
+<li>物理层</li>
+<li>数据链路层</li>
+<li>网络层</li>
+<li>传输层</li>
+<li>会话层</li>
+<li>表示层</li>
+<li>应用层</li>
+</ul>
+</li>
+<li>TCP&#x2F;IP(4层) <ul>
+<li>网络接口层</li>
+<li>网际层</li>
+<li>传输层</li>
+<li>应用层</li>
+</ul>
+</li>
+<li>5层体系结构<ul>
+<li>物理层</li>
+<li>数据链路层</li>
+<li>网络层</li>
+<li>传输层</li>
+<li>应用层</li>
+</ul>
+</li>
+</ul>
+<h3 id="计算机网络是一个非常复杂的系统。"><a href="#计算机网络是一个非常复杂的系统。" class="headerlink" title="计算机网络是一个非常复杂的系统。"></a>计算机网络是一个非常复杂的系统。</h3><p>两台计算机要互相传送文件需解决很多问题<br><img src="/images/blog/Pasted%20image%2020220920152332.png"></p>
+<h3 id="提出了不同体系结构"><a href="#提出了不同体系结构" class="headerlink" title="提出了不同体系结构"></a>提出了不同体系结构</h3><p>最初的 ARPANET 设计时提出了分层的设计方法。<br>分层：将庞大而复杂的问题，转化为若干较小的局部问题。<br>1974 年，IBM 按照分层的方法制定并提出了系统网络体系结构 SNA (System Network Architecture) 。<br>此后，其他一些公司也相继推出了具有不同名称的体系结构。<br>但由于网络体系结构的不同，不同公司的设备很难互相连通。</p>
+<h3 id="国际标准：开放系统互连参考模型-OSI-RM"><a href="#国际标准：开放系统互连参考模型-OSI-RM" class="headerlink" title="国际标准：开放系统互连参考模型 OSI&#x2F;RM"></a>国际标准：开放系统互连参考模型 OSI&#x2F;RM</h3><p>ISO (国际标准化组织) 提出的 OSI&#x2F;RM (Open Systems Interconnection Reference Model) 是使各种计算机在世界范围内互连成网的标准框架。<br>OSI&#x2F;RM 是个抽象的概念。<br>1983年，形成了著名的 ISO 7498 国际标准，即七层协议的体系结构。</p>
+<p>OSI 试图达到一种理想境界：全球计算机网络都遵循这个统一标准，因而全球的计算机将能够很方便地进行互连和交换数据。</p>
+<p>但 ISO&#x2F;OSI 失败了</p>
+<p>基于 TCP&#x2F;IP 的互联网已抢先在全球相当大的范围成功地运行了。<br>OSI 的专家们在完成 OSI 标准时没有商业驱动力；<br>OSI 的协议实现起来过分复杂，且运行效率很低；<br>OSI 标准的制定周期太长，使得按 OSI 标准生产的设备无法及时进入市场；<br>OSI 的层次划分也不太合理，有些功能在多个层次中重复出现。</p>
+<p>存在两种国际标准</p>
+<p>法律上的 (de jure) 国际标准 OSI<br>但并没有得到市场的认可。</p>
+<p>事实上的 (de facto) 国际标准 TCP&#x2F;IP</p>
+<p>获得了最广泛的应用。</p>
+<h2 id="1-7-2-协议与划分层次"><a href="#1-7-2-协议与划分层次" class="headerlink" title="1.7.2 协议与划分层次"></a>1.7.2 协议与划分层次</h2><ul>
+<li>网络协议 (network protocol)，简称为协议，是为进行网络中的数据交换而建立的规则、标准或约定。<br>三个组成要素：  </li>
+<li>语法：数据与控制信息的结构或格式 。  </li>
+<li>语义：需要发出何种控制信息，完成何种动作以及做出何种响应。  </li>
+<li>同步（时序）：事件实现顺序的详细说明。<br><img src="/images/blog/Pasted%20image%2020220920152451.png"></li>
+</ul>
+<h3 id="协议的两种形式-：文字描述-和-程序代码"><a href="#协议的两种形式-：文字描述-和-程序代码" class="headerlink" title="协议的两种形式  ：文字描述 和 程序代码"></a>协议的两种形式  ：文字描述 和 程序代码</h3><p><img src="https://img-blog.csdnimg.cn/804b85120d704603a702716778cd778e.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBA5bCP576K5Yqq5Yqb5Y-Y5by6,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>不论什么形式，都必须能够对网络上信息交换过程做出精确的解释。</p>
+<h3 id="层次式协议结构"><a href="#层次式协议结构" class="headerlink" title="层次式协议结构"></a>层次式协议结构</h3><p>ARPANET 的研制经验表明：对于非常复杂的计算机网络协议，其结构应该是层次式的。</p>
+<p>划分层次的概念举例：两台主机通过网络传送文件<br><img src="/images/blog/Pasted%20image%2020220920152828.png"><br><img src="/images/blog/Pasted%20image%2020220920152841.png"><br><img src="/images/blog/Pasted%20image%2020220920152851.png"></p>
+<h3 id="分层的优点与缺点"><a href="#分层的优点与缺点" class="headerlink" title="分层的优点与缺点"></a>分层的优点与缺点</h3><ol>
+<li><p>优点：各层之间是独立的。<br>灵活性好。<br>结构上可分割开。<br>易于实现和维护<br>能促进标准化工作。</p>
+</li>
+<li><p>缺点：有些功能会重复出现，因而产生了额外开销。</p>
+</li>
+</ol>
+<p>注意：每一层的功能应非常明确。<br>层数太少，就会使每一层的协议太复杂。<br>层数太多，又会在描述和综合各层功能的系统工程任务时遇到较多的困难。</p>
+<h3 id="各层完成的主要功能"><a href="#各层完成的主要功能" class="headerlink" title="各层完成的主要功能"></a>各层完成的主要功能</h3><ol>
+<li>差错控制：使相应层次对等方的通信更加可靠。</li>
+<li>流量控制：发送端的发送速率必须使接收端来得及接收，不要太快。</li>
+<li>分段和重装：发送端将要发送的数据块划分为更小的单位，在接收端将其还原。</li>
+<li>复用和分用：发送端几个高层会话复用一条低层的连接，在接收端再进行分用。</li>
+<li>连接建立和释放：交换数据前先建立一条逻辑连接，数据传送结束后释放连接。</li>
+</ol>
+<h3 id="计算机网络的体系结构"><a href="#计算机网络的体系结构" class="headerlink" title="计算机网络的体系结构"></a>计算机网络的体系结构</h3><p>网络的体系结构 (Network Architecture) 是计算机网络的各层及其协议的集合，就是这个计算机网络及其构件所应完成的功能的精确定义（不涉及实现）。<br>实现 (implementation) 是遵循这种体系结构的前提下，用何种硬件或软件完成这些功能的问题。</p>
+<p>体系结构是抽象的，而实现则是具体的，是真正在运行的计算机硬件和软件。</p>
+<h2 id="1-7-3-具有五层协议的体系结构"><a href="#1-7-3-具有五层协议的体系结构" class="headerlink" title="1.7.3 具有五层协议的体系结构"></a>1.7.3 具有五层协议的体系结构</h2><p><img src="/images/blog/Pasted%20image%2020220920153109.png"></p>
+<h3 id="5-应用层"><a href="#5-应用层" class="headerlink" title="5. 应用层"></a>5. 应用层</h3><p><img src="/images/blog/Pasted%20image%2020220920153332.png"><br>传输单元：报文</p>
+<h3 id="4-运输层"><a href="#4-运输层" class="headerlink" title="4.运输层"></a>4.运输层</h3><p><img src="/images/blog/Pasted%20image%2020220920153420.png"><br><img src="/images/blog/Pasted%20image%2020220920153520.png"><br>传输单元：</p>
+<ul>
+<li>TCP: 报文段</li>
+<li>UDP: 用户数据报</li>
+</ul>
+<h3 id="3-网络层"><a href="#3-网络层" class="headerlink" title="3.网络层"></a>3.网络层</h3><p><img src="/images/blog/Pasted%20image%2020220920153549.png"><br><img src="/images/blog/Pasted%20image%2020220920153655.png"><br>传输单元：数据报</p>
+<h3 id="2-数据链路层"><a href="#2-数据链路层" class="headerlink" title="2.数据链路层"></a>2.数据链路层</h3><p><img src="/images/blog/Pasted%20image%2020220920153758.png"><br>传输单元：帧</p>
+<h3 id="1-物理层"><a href="#1-物理层" class="headerlink" title="1.物理层"></a>1.物理层</h3><p><img src="/images/blog/Pasted%20image%2020220920153836.png"></p>
+<h3 id="数据在各层之间的传递过程"><a href="#数据在各层之间的传递过程" class="headerlink" title="数据在各层之间的传递过程"></a>数据在各层之间的传递过程</h3><p><img src="/images/blog/Pasted%20image%2020220920154148.png"><br><img src="/images/blog/Pasted%20image%2020220922141323.png"></p>
+<h2 id="1-7-4-实体、协议、服务和服务访问点"><a href="#1-7-4-实体、协议、服务和服务访问点" class="headerlink" title="1.7.4 实体、协议、服务和服务访问点"></a>1.7.4 实体、协议、服务和服务访问点</h2><h2 id="实体，协议"><a href="#实体，协议" class="headerlink" title="实体，协议"></a>实体，协议</h2><p><img src="/images/blog/Pasted%20image%2020220922141338.png"></p>
+<h3 id="服务访问点-SAP"><a href="#服务访问点-SAP" class="headerlink" title="服务访问点(SAP)"></a>服务访问点(SAP)</h3><p><img src="/images/blog/Pasted%20image%2020220922141523.png"></p>
+<h3 id="相邻两层之间的关系"><a href="#相邻两层之间的关系" class="headerlink" title="相邻两层之间的关系"></a>相邻两层之间的关系</h3><p><img src="/images/blog/Pasted%20image%2020220922141642.png"></p>
+<h3 id="协议与服务的区别"><a href="#协议与服务的区别" class="headerlink" title="协议与服务的区别"></a>协议与服务的区别</h3><p><img src="/images/blog/Pasted%20image%2020220922141846.png"></p>
+<h2 id="1-7-5-TCP-IP-的体系结构"><a href="#1-7-5-TCP-IP-的体系结构" class="headerlink" title="1.7.5 TCP&#x2F;IP 的体系结构"></a>1.7.5 TCP&#x2F;IP 的体系结构</h2><p><img src="/images/blog/Pasted%20image%2020220922141959.png"><br><img src="/images/blog/Pasted%20image%2020220922142212.png"><br><img src="/images/blog/Pasted%20image%2020220922142339.png"></p>
+<ul>
+<li>4.应用层</li>
+<li>3.运输层</li>
+<li>2.网际层</li>
+<li>1.网络接口层</li>
+</ul>
+<h3 id="互联网中C-S工作方式"><a href="#互联网中C-S工作方式" class="headerlink" title="互联网中C&#x2F;S工作方式"></a>互联网中C&#x2F;S工作方式</h3><p><img src="/images/blog/Pasted%20image%2020220922142447.png"></p>
+
+    </div>
+    <footer class="article-footer">
+        <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="学习笔记" data-aos="zoom-in">学习笔记</a><a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" title="计算机网络" data-aos="zoom-in">计算机网络</a>
+
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/tags/%E5%A4%A7%E4%B8%89%E8%AF%BE%E7%A8%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="tag" title="大三课程学习笔记">大三课程学习笔记</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag" title="计算机网络">计算机网络</a></li></ul>
+
+    </footer>
+  </div>
+    <nav id="article-nav" aria-label="Article navigation" data-aos="fade-up">
+      <div class="article-nav-link-wrap left">
+            <img data-src="/images/banner.webp" data-sizes="auto" alt="软体 Niagara" class="lazyload">
+        <a href="/2025/01/17/%E7%89%A9%E7%90%86%E6%A8%A1%E6%8B%9F/%E8%BD%AF%E4%BD%93/%E8%BD%AF%E4%BD%93%20Niagara/" aria-label="前一篇: 软体 Niagara" title="前一篇: 软体 Niagara"></a>
+        <div class="article-nav-caption">前一篇</div>
+        <h3 class="article-nav-title">
+            软体 Niagara
+        </h3>
+      </div>
+    <div class="article-nav-link-wrap right">
+          <img data-src="/images/banner.webp" data-sizes="auto" alt="计算机网络 - 1.数据链路层的基础概念" class="lazyload">
+      <a href="/2025/01/17/Note/%E5%A4%A7%E4%B8%89%E8%AF%BE%E7%A8%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E4%B8%89%E3%80%81%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/" aria-label="后一篇: 计算机网络 - 1.数据链路层的基础概念"  title="后一篇: 计算机网络 - 1.数据链路层的基础概念"></a>
+      <div class="article-nav-caption">后一篇</div>
+      <h3 class="article-nav-title">
+          计算机网络 - 1.数据链路层的基础概念
+      </h3>
+    </div>
+  </nav>
+
+</article>
+
+
+</section>
+        </div>
+        <footer id="footer" aria-label="Site footer">
+  <div style="width: 100%; overflow: hidden">
+    <div class="footer-line"></div>
+  </div>
+  <div id="footer-info">
+    <div>
+      <span class="icon-copyright"></span>
+        2020-2026
+        <span class="footer-info-sep rotate"></span>
+      OnricYF
+    </div>
+      <div>
+        基于&nbsp;<a href="https://hexo.io/" rel="noopener nofollow noreferrer" target="_blank">Hexo</a>&nbsp;
+        Theme.<a href="https://github.com/D-Sketon/hexo-theme-reimu" rel="noopener nofollow noreferrer" target="_blank">Reimu</a>
+      </div>
+      <div>
+        <span class="icon-brush"></span>
+        87.2k
+        &nbsp;|&nbsp;
+        <span class="icon-coffee"></span>
+        07:26
+      </div>
+      <div>
+        <span class="icon-eye"></span>
+        <span id="busuanzi_container_site_pv">总访问量&nbsp;<span id="busuanzi_value_site_pv"></span></span>
+        &nbsp;|&nbsp;
+        <span class="icon-user"></span>
+        <span id="busuanzi_container_site_uv">总访客量&nbsp;<span id="busuanzi_value_site_uv"></span></span>
+      </div>
+  </div>
+</footer>
+
+          <div class="sidebar-top">
+            <div class="sidebar-top-taichi rotate"></div>
+            <div class="arrow-up"></div>
+          </div>
+        <div id="mask" class="hide"></div>
+      </div>
+      <nav id="mobile-nav" aria-label="Mobile navigation">
+  <div class="sidebar-wrap">
+        <div class="sidebar-toc-sidebar"><h3 class="toc-title">文章目录</h3>
+<div class="sidebar-toc-wrapper toc-div-class" >
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-1%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E7%9A%84%E5%AE%9A%E4%B9%89%E5%8F%8A%E7%89%B9%E7%82%B9"><span class="toc-number">1.</span> <span class="toc-text">1.1计算机网络的定义及特点</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-2%E4%BA%92%E8%81%94%E7%BD%91%E6%A6%82%E8%BF%B0"><span class="toc-number">2.</span> <span class="toc-text">1.2互联网概述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-1-%E7%BD%91%E7%BB%9C%E7%9A%84%E7%BD%91%E7%BB%9C-%E4%BA%92%E8%BF%9E%E7%BD%91"><span class="toc-number">2.1.</span> <span class="toc-text">1.2.1 网络的网络(互连网)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-2Internet%E5%8F%91%E5%B1%95%E7%9A%84%E4%B8%89%E4%B8%AA%E9%98%B6%E6%AE%B5"><span class="toc-number">2.2.</span> <span class="toc-text">1.2.2Internet发展的三个阶段</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-3-Internet%E7%9A%84%E6%A0%87%E5%87%86%E5%8C%96%E5%B7%A5%E4%BD%9C"><span class="toc-number">2.3.</span> <span class="toc-text">1.2.3 Internet的标准化工作</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-3%E4%BA%92%E8%81%94%E7%BD%91%E7%9A%84%E7%BB%84%E6%88%90"><span class="toc-number">3.</span> <span class="toc-text">1.3互联网的组成</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-3-1%E4%BA%92%E8%81%94%E7%BD%91%E8%BE%B9%E7%BC%98%E9%83%A8%E5%88%86"><span class="toc-number">3.1.</span> <span class="toc-text">1.3.1互联网边缘部分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-3-2-%E4%BA%92%E8%81%94%E7%BD%91%E7%9A%84%E6%A0%B8%E5%BF%83%E9%83%A8%E5%88%86"><span class="toc-number">3.2.</span> <span class="toc-text">1.3.2 互联网的核心部分</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-4%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9C%A8%E6%88%91%E5%9B%BD%E7%9A%84%E5%8F%91%E5%B1%95"><span class="toc-number">4.</span> <span class="toc-text">1.4计算机网络在我国的发展</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-5-%E7%BD%91%E7%BB%9C%E7%9A%84%E5%88%86%E7%B1%BB"><span class="toc-number">5.</span> <span class="toc-text">1.5 网络的分类</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%8C%89%E7%85%A7%E7%BD%91%E7%BB%9C%E7%9A%84%E4%BD%9C%E7%94%A8%E8%8C%83%E5%9B%B4%E5%88%86%E7%B1%BB"><span class="toc-number">5.1.</span> <span class="toc-text">1. 按照网络的作用范围分类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%8C%89%E7%85%A7%E7%BD%91%E7%BB%9C%E7%9A%84%E4%BD%BF%E7%94%A8%E8%80%85%E8%BF%9B%E8%A1%8C%E5%88%86%E7%B1%BB"><span class="toc-number">5.2.</span> <span class="toc-text">2.按照网络的使用者进行分类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E6%8C%89%E5%9C%A8%E4%BA%92%E8%81%94%E7%BD%91%E4%BD%93%E7%B3%BB%E6%9E%B6%E6%9E%84%E4%B8%AD%E6%89%80%E5%A4%84%E7%9A%84%E5%9C%B0%E4%BD%8D%E4%BD%8D%E7%BD%AE"><span class="toc-number">5.3.</span> <span class="toc-text">3. 按在互联网体系架构中所处的地位位置</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-6-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E7%9A%84%E4%B8%83%E4%B8%AA%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87"><span class="toc-number">6.</span> <span class="toc-text">1.6 计算机网络的七个性能指标</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E9%80%9F%E7%8E%87"><span class="toc-number">6.1.</span> <span class="toc-text">1.速率</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%B8%A6%E5%AE%BD"><span class="toc-number">6.2.</span> <span class="toc-text">2.带宽</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%90%9E%E5%90%90%E9%87%8F"><span class="toc-number">6.3.</span> <span class="toc-text">3.吞吐量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E6%97%B6%E5%BB%B6"><span class="toc-number">6.4.</span> <span class="toc-text">4.时延</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%8F%91%E9%80%81%E6%97%B6%E5%BB%B6"><span class="toc-number">6.4.1.</span> <span class="toc-text">(1)发送时延</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BC%A0%E6%92%AD%E6%97%B6%E5%BB%B6"><span class="toc-number">6.4.2.</span> <span class="toc-text">(2)传播时延</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%91%E9%80%81%E6%97%B6%E5%BB%B6%E5%92%8C%E4%BC%A0%E6%92%AD%E6%97%B6%E5%BB%B6%E6%9C%89%E6%9C%AC%E8%B4%A8%E7%9A%84%E4%B8%8D%E5%90%8C"><span class="toc-number">6.4.3.</span> <span class="toc-text">- 发送时延和传播时延有本质的不同</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%A4%84%E7%90%86%E6%97%B6%E5%BB%B6"><span class="toc-number">6.4.4.</span> <span class="toc-text">(3)处理时延</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%8E%92%E9%98%9F%E6%97%B6%E5%BB%B6"><span class="toc-number">6.4.5.</span> <span class="toc-text">(4) 排队时延</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E6%97%B6%E5%BB%B6-%E5%8F%91%E9%80%81%E6%97%B6%E5%BB%B6-%E4%BC%A0%E6%92%AD%E6%97%B6%E5%BB%B6-%E5%A4%84%E7%90%86%E6%97%B6%E5%BB%B6-%E6%8E%92%E9%98%9F%E6%97%B6%E5%BB%B6"><span class="toc-number">6.4.6.</span> <span class="toc-text">- 总时延 &#x3D; 发送时延 + 传播时延 + 处理时延 + 排队时延</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E7%A7%8D%E6%97%B6%E5%BB%B6%E4%BA%A7%E7%94%9F%E7%9A%84%E5%9C%B0%E6%96%B9%E4%B8%8D%E5%90%8C"><span class="toc-number">6.4.7.</span> <span class="toc-text">- 四种时延产生的地方不同</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BE%8B%E9%A2%98"><span class="toc-number">6.5.</span> <span class="toc-text">例题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E8%AE%A1%E7%AE%97%E5%8F%91%E9%80%81%E6%97%B6%E5%BB%B6"><span class="toc-number">6.6.</span> <span class="toc-text">1. 计算发送时延</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%88%A4%E6%96%AD"><span class="toc-number">6.7.</span> <span class="toc-text">2. 判断</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E6%97%B6%E5%BB%B6%E5%B8%A6%E5%AE%BD%E7%A7%AF"><span class="toc-number">6.8.</span> <span class="toc-text">5.时延带宽积</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E5%BE%80%E8%BF%94%E6%97%B6%E9%97%B4RTT"><span class="toc-number">6.9.</span> <span class="toc-text">6.往返时间RTT</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E5%88%A9%E7%94%A8%E7%8E%87"><span class="toc-number">6.10.</span> <span class="toc-text">7.利用率</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BF%A1%E9%81%93%E5%88%A9%E7%94%A8%E7%8E%87"><span class="toc-number">6.10.1.</span> <span class="toc-text">(1)信道利用率</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E7%BD%91%E7%BB%9C%E5%88%A9%E7%94%A8%E7%8E%87"><span class="toc-number">6.10.2.</span> <span class="toc-text">(2)网络利用率</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%97%B6%E5%BB%B6%E4%B8%8E%E7%BD%91%E7%BB%9C%E5%88%A9%E7%94%A8%E7%8E%87%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-number">6.10.3.</span> <span class="toc-text">(3)时延与网络利用率的关系</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#1-7-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="toc-number">7.</span> <span class="toc-text">1.7 计算机网络体系结构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-7-1-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E7%9A%84%E5%BD%A2%E6%88%90"><span class="toc-number">7.1.</span> <span class="toc-text">1.7.1 计算机网络体系结构的形成</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E6%98%AF%E4%B8%80%E4%B8%AA%E9%9D%9E%E5%B8%B8%E5%A4%8D%E6%9D%82%E7%9A%84%E7%B3%BB%E7%BB%9F%E3%80%82"><span class="toc-number">7.1.1.</span> <span class="toc-text">计算机网络是一个非常复杂的系统。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E5%87%BA%E4%BA%86%E4%B8%8D%E5%90%8C%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="toc-number">7.1.2.</span> <span class="toc-text">提出了不同体系结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%BD%E9%99%85%E6%A0%87%E5%87%86%EF%BC%9A%E5%BC%80%E6%94%BE%E7%B3%BB%E7%BB%9F%E4%BA%92%E8%BF%9E%E5%8F%82%E8%80%83%E6%A8%A1%E5%9E%8B-OSI-RM"><span class="toc-number">7.1.3.</span> <span class="toc-text">国际标准：开放系统互连参考模型 OSI&#x2F;RM</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-7-2-%E5%8D%8F%E8%AE%AE%E4%B8%8E%E5%88%92%E5%88%86%E5%B1%82%E6%AC%A1"><span class="toc-number">7.2.</span> <span class="toc-text">1.7.2 协议与划分层次</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%8F%E8%AE%AE%E7%9A%84%E4%B8%A4%E7%A7%8D%E5%BD%A2%E5%BC%8F-%EF%BC%9A%E6%96%87%E5%AD%97%E6%8F%8F%E8%BF%B0-%E5%92%8C-%E7%A8%8B%E5%BA%8F%E4%BB%A3%E7%A0%81"><span class="toc-number">7.2.1.</span> <span class="toc-text">协议的两种形式  ：文字描述 和 程序代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B1%82%E6%AC%A1%E5%BC%8F%E5%8D%8F%E8%AE%AE%E7%BB%93%E6%9E%84"><span class="toc-number">7.2.2.</span> <span class="toc-text">层次式协议结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E5%B1%82%E7%9A%84%E4%BC%98%E7%82%B9%E4%B8%8E%E7%BC%BA%E7%82%B9"><span class="toc-number">7.2.3.</span> <span class="toc-text">分层的优点与缺点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%84%E5%B1%82%E5%AE%8C%E6%88%90%E7%9A%84%E4%B8%BB%E8%A6%81%E5%8A%9F%E8%83%BD"><span class="toc-number">7.2.4.</span> <span class="toc-text">各层完成的主要功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E7%9A%84%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="toc-number">7.2.5.</span> <span class="toc-text">计算机网络的体系结构</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-7-3-%E5%85%B7%E6%9C%89%E4%BA%94%E5%B1%82%E5%8D%8F%E8%AE%AE%E7%9A%84%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="toc-number">7.3.</span> <span class="toc-text">1.7.3 具有五层协议的体系结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E5%BA%94%E7%94%A8%E5%B1%82"><span class="toc-number">7.3.1.</span> <span class="toc-text">5. 应用层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E8%BF%90%E8%BE%93%E5%B1%82"><span class="toc-number">7.3.2.</span> <span class="toc-text">4.运输层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E7%BD%91%E7%BB%9C%E5%B1%82"><span class="toc-number">7.3.3.</span> <span class="toc-text">3.网络层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82"><span class="toc-number">7.3.4.</span> <span class="toc-text">2.数据链路层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%89%A9%E7%90%86%E5%B1%82"><span class="toc-number">7.3.5.</span> <span class="toc-text">1.物理层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%9C%A8%E5%90%84%E5%B1%82%E4%B9%8B%E9%97%B4%E7%9A%84%E4%BC%A0%E9%80%92%E8%BF%87%E7%A8%8B"><span class="toc-number">7.3.6.</span> <span class="toc-text">数据在各层之间的传递过程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-7-4-%E5%AE%9E%E4%BD%93%E3%80%81%E5%8D%8F%E8%AE%AE%E3%80%81%E6%9C%8D%E5%8A%A1%E5%92%8C%E6%9C%8D%E5%8A%A1%E8%AE%BF%E9%97%AE%E7%82%B9"><span class="toc-number">7.4.</span> <span class="toc-text">1.7.4 实体、协议、服务和服务访问点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E4%BD%93%EF%BC%8C%E5%8D%8F%E8%AE%AE"><span class="toc-number">7.5.</span> <span class="toc-text">实体，协议</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E8%AE%BF%E9%97%AE%E7%82%B9-SAP"><span class="toc-number">7.5.1.</span> <span class="toc-text">服务访问点(SAP)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%B8%E9%82%BB%E4%B8%A4%E5%B1%82%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-number">7.5.2.</span> <span class="toc-text">相邻两层之间的关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%8F%E8%AE%AE%E4%B8%8E%E6%9C%8D%E5%8A%A1%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">7.5.3.</span> <span class="toc-text">协议与服务的区别</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-7-5-TCP-IP-%E7%9A%84%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="toc-number">7.6.</span> <span class="toc-text">1.7.5 TCP&#x2F;IP 的体系结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%92%E8%81%94%E7%BD%91%E4%B8%ADC-S%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F"><span class="toc-number">7.6.1.</span> <span class="toc-text">互联网中C&#x2F;S工作方式</span></a></li></ol></li></ol></li></ol>
+</div>
+</div>
+        <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/avatar.webp" data-sizes="auto" alt="OnricYF" class="lazyload">
+  <div class="sidebar-author-name">OnricYF</div>
+  <div class="sidebar-description">TRASH ARTIST</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>文章</div>
+    <div class="sidebar-state-number">144</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>分类</div>
+    <div class="sidebar-state-number">33</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>标签</div>
+    <div class="sidebar-state-number">82</div>
+  </div>
+</div>
+<div class="sidebar-social" >
+    <div class="icon-email sidebar-social-icon">
+      <a href=mailto:a1521070145@gmail.com itemprop="url" target="_blank" aria-label="email" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-github sidebar-social-icon">
+      <a href=https://github.com/Madoka9 itemprop="url" target="_blank" aria-label="github" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-bilibili sidebar-social-icon">
+      <a href=https://space.bilibili.com/5862963 itemprop="url" target="_blank" aria-label="bilibili" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-zhihu sidebar-social-icon">
+      <a href=https://www.zhihu.com/people/lan-mei-sheng-dai-77 itemprop="url" target="_blank" aria-label="zhihu" rel="noopener nofollow noreferrer"></a>
+    </div>
+</div>
+<div class="sidebar-menu">
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/" aria-label="首页"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">首页</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/archives" aria-label="归档"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">归档</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/about" aria-label="关于"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">关于</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/friend" aria-label="友链"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">友链</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/portfolio" aria-label="作品集"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">作品集</div>
+      </div>
+</div>
+</div>
+  </div>
+      <div class="sidebar-btn-wrapper">
+        <div class="sidebar-toc-btn current"></div>
+        <div class="sidebar-common-btn"></div>
+      </div>
+</nav>
+
+    </div>
+    
+<script src="https://npm.webcache.cn/lazysizes@5.3.2/lazysizes.min.js" integrity="sha384-3gT&#x2F;vsepWkfz&#x2F;ff7PpWNUeMzeWoH3cDhm&#x2F;A8jM7ouoAK0&#x2F;fP&#x2F;9bcHHR5kHq2nf+e" crossorigin="anonymous"></script>
+
+
+<script src="https://npm.webcache.cn/clipboard@2.0.11/dist/clipboard.min.js" integrity="sha384-J08i8An&#x2F;QeARD9ExYpvphB8BsyOj3Gh2TSh1aLINKO3L0cMSH2dN3E22zFoXEi0Q" crossorigin="anonymous"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+  
+<script src="/js/aos.js"></script>
+
+  <script>
+    var aosInit = () => {
+      AOS.init({
+        duration: 1000,
+        easing: "ease",
+        once: true,
+        offset: 50,
+      });
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', aosInit);
+    } else {
+      aosInit();
+    }
+  </script>
+
+
+<script src="/js/pjax_script.js" data-pjax></script>
+
+
+
+
+  <script>
+    var setupFirework = () => {
+      if (!false || !window.matchMedia('(max-width: 768px)').matches) {
+        window.firework && window.firework(JSON.parse('{"excludeElements":["a","button"],"particles":[{"shape":"circle","move":["emit"],"easing":"easeOutExpo","colors":["var(--red-1)","var(--red-2)","var(--red-3)","var(--red-4)"],"number":20,"duration":[1200,1800],"shapeOptions":{"radius":[16,32],"alpha":[0.3,0.5]}},{"shape":"circle","move":["diffuse"],"easing":"easeOutExpo","colors":["var(--red-0)"],"number":1,"duration":[1200,1800],"shapeOptions":{"radius":20,"alpha":[0.2,0.5],"lineWidth":6}}]}'));
+      }
+    }
+  </script>
+  
+<script src="https://npm.webcache.cn/mouse-firework@0.2.0/dist/index.umd.js" integrity="sha384-qi9WggRt19tv8Vc7pCHW3ulMNLwrn515zaLEWZjl1px07vz8+pUoWX8n1rgq282T" crossorigin="anonymous" onload="setupFirework()" defer></script>
+
+
+  
+<script src="https://npm.webcache.cn/theme-shokax-pjax@0.0.3/dist/index.umd.js" integrity="sha384-xneY1WY8hOfUzswrE4CrYq35N4BdVcxqxwHPr9zawE&#x2F;jMSCxD+jAPU55x&#x2F;jj3wlf" crossorigin="anonymous"></script>
+
+  
+<script src="/js/pjax.js"></script>
+
+
+
+
+
+<div id="lazy-script">
+  <div>
+      
+      
+      <script data-pjax>
+        window.REIMU_POST = {
+          author: "OnricYF",
+          title: "1.1计算机网络的定义及特点",
+          url: "http://example.com/2025/01/17/Note/%E5%A4%A7%E4%B8%89%E8%AF%BE%E7%A8%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E4%B8%80%E3%80%81%E6%A6%82%E8%BF%B0/",
+          excerpt: "",
+          description: "",
+          stripContent: "1.1计算机网络的定义及特点应用 ：  定义 ： 组成： 1. 通信子网  1. 提供信息交换的网络节点和通信线路 2. 资源子网  1. 提供共享的软件资源和硬件资源特点 : 连通性与共享性   1.2互联网概述1.2.1 网络的网络(互连网)(1)计算机网络 (2)互连网  云内 云外(3)互联网 !&amp;#x3D; 互连网  1.2.2Internet发展的三个阶段**(1)ARPANET (2)NSF (3)ISP   1.2.3 Internet的标准化工作![](/images/blog",
+          date: "Fri Jan 17 2025 22:04:11 GMT+0800",
+          updated: "Thu Jul 16 2026 11:23:21 GMT+0800",
+          cover: "/images/banner.webp",
+        };
+      </script>
+        
+<script src="/js/insert_highlight.js" data-pjax></script>
+
+      
+<script src="/js/tabs.js" data-pjax defer></script>
+
+      <script type="module" data-pjax>
+        (async () => {
+          const PhotoSwipeLightbox = (await safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe-lightbox.esm.min.js", "sha384-DiL6M/gG+wmTxmCRZyD1zee6lIhawn5TGvED0FOh7fXcN9B0aZ9dexSF/N6lrZi/")).default;
+          const initPswp = (gallery, children) => {
+            if (_$$(`${gallery} ${children}`).length > 0) {
+              new PhotoSwipeLightbox({
+                gallery,
+                children,
+                pswpModule: () => safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.esm.min.js", "sha384-WkkO3GCmgkC3VQWpaV8DqhKJqpzpF9JoByxDmnV8+oTJ7m3DfYEWX1fu1scuS4+s")
+              }).init();
+            }
+          }
+          const pswp = () => {
+            initPswp('.article-entry', 'a.article-gallery-item');
+            initPswp('.article-gallery', 'a.article-gallery-item');
+          }
+          pswp();
+        })();
+      </script>
+  </div>
+</div>
+
+
+  <script>
+    console.log(String.raw`%c 
+ ______     ______     __     __    __     __  __    
+/\  == \   /\  ___\   /\ \   /\ "-./  \   /\ \/\ \   
+\ \  __<   \ \  __\   \ \ \  \ \ \-./\ \  \ \ \_\ \  
+ \ \_\ \_\  \ \_____\  \ \_\  \ \_\ \ \_\  \ \_____\ 
+  \/_/ /_/   \/_____/   \/_/   \/_/  \/_/   \/_____/ 
+                                                  
+`,'color: #ff5252;')
+    console.log('%c Theme.Reimu v' + '1.12.0' + ' %c https://github.com/D-Sketon/hexo-theme-reimu ', 'color: white; background: #ff5252; padding:5px 0;', 'padding:4px;border:1px solid #ff5252;')
+  </script>
+  
+
+
+  
+<script src="https://npm.webcache.cn/busuanzi@2.3.0/bsz.pure.mini.js" integrity="sha384-0M75wtSkhjIInv4coYlaJU83+OypaRCIq2SukQVQX04eGTCBXJDuWAbJet56id+S" crossorigin="anonymous" async></script>
+
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      for (let registration of registrations) {
+        registration.unregister();
+      }
+    });
+  }
+</script>
+
+
+    <script>
+      var setupAPlayer = () => {
+        if (!true || !window.matchMedia('(max-width: 768px)').matches) {
+          if (window.matchMedia('(max-width: 959px)').matches) {
+            const meting = _$('meting-js');
+            if (meting) {
+              meting.setAttribute('fixed', 'true');
+              const aside = meting.parentNode?.parentNode;
+              if (aside?.tagName === 'ASIDE') {
+                meting.parentNode.removeChild(meting);
+                document.body.appendChild(meting);
+              }
+            }
+          }
+        }
+      };
+    </script>
+  
+<script src="https://npm.webcache.cn/aplayer@1.10.1/dist/APlayer.min.js" integrity="sha384-gdGYZwHnfJM54evoZhpO0s6ZF5BQiybkiyW7VXr+h5UfruuRL&#x2F;aORyw+5+HZoU6e" crossorigin="anonymous" defer onload="setupAPlayer()"></script>
+
+    
+<script src="https://npm.webcache.cn/meting@2.0.1/dist/Meting.min.js" integrity="sha384-ASVlpKF80A22OXTK3tfEjZm1EL6uFMKIC4p8+0maanw1S&#x2F;IyB+Y4JG+ZDU7GpKE8" crossorigin="anonymous" defer></script>
+
+
+
+  </body>
+  </html>

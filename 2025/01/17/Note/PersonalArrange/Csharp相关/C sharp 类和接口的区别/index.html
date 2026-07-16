@@ -1,0 +1,649 @@
+  <!DOCTYPE html>
+  <html lang="zh-CN"  
+      data-theme-mode="auto"
+  >
+  <head>
+  <meta charset="utf-8">
+  
+  
+  
+  <script>window.REIMU_CONFIG = {};window.REIMU_CONFIG.icon_font = '4552607_4k4bc36ef96';window.REIMU_CONFIG.clipboard_tips = {"success":{"zh-CN":"复制成功 (*^▽^*)","en":"Copy successfully (*^▽^*)"},"fail":{"zh-CN":"复制失败 (ﾟ⊿ﾟ)ﾂ","en":"Copy failed (ﾟ⊿ﾟ)ﾂ"},"copyright":{"enable":false,"count":50,"license_type":"by-nc-sa"}};window.REIMU_CONFIG.clipboard_tips.copyright.content = '本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！';window.REIMU_CONFIG.code_block = {"expand":true};window.REIMU_CONFIG.base = 'http://example.com';window.REIMU_CONFIG.i18n_languages = ["en"];</script>
+  <title>
+    **为什么还要有接口？** | YF&#39;s Blog
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic|Noto Serif SC:400,400italic,700,700italic&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic|Noto Serif SC:400,400italic,700,700italic&display=swap" media="print" onload="this.media='all'">
+    <link rel="preload" href="//at.alicdn.com/t/c/font_4552607_4k4bc36ef96.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+    
+<link rel="stylesheet" href="/css/loader.css">
+
+    <meta name="description" content="1、接口类似于类，但接口的成员都没有执行方式，它只是方法、属性、事件和索引符的组合而已，并且也只能包含这四种成员；、、类除了这四种成员之外还可以别的成员(如字段)。2、不能实例化一个接口，接口只包括成员的签名；、、而类可以实例化(abstract抽象类除外)。3、接口没有构造函数，、、类有构造函数。4、接口不能进行运算符的重载，、、类可以进行运算符重载。5、接口的成员没有任何修饰符，其成员总是公共">
+<meta property="og:type" content="article">
+<meta property="og:title" content="**为什么还要有接口？**">
+<meta property="og:url" content="http://example.com/2025/01/17/Note/PersonalArrange/Csharp%E7%9B%B8%E5%85%B3/C%20sharp%20%E7%B1%BB%E5%92%8C%E6%8E%A5%E5%8F%A3%E7%9A%84%E5%8C%BA%E5%88%AB/index.html">
+<meta property="og:site_name" content="YF&#39;s Blog">
+<meta property="og:description" content="1、接口类似于类，但接口的成员都没有执行方式，它只是方法、属性、事件和索引符的组合而已，并且也只能包含这四种成员；、、类除了这四种成员之外还可以别的成员(如字段)。2、不能实例化一个接口，接口只包括成员的签名；、、而类可以实例化(abstract抽象类除外)。3、接口没有构造函数，、、类有构造函数。4、接口不能进行运算符的重载，、、类可以进行运算符重载。5、接口的成员没有任何修饰符，其成员总是公共">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/blog/Pasted%20image%2020221212120715.png">
+<meta property="article:published_time" content="2025-01-17T14:04:10.000Z">
+<meta property="article:modified_time" content="2026-07-16T03:23:21.756Z">
+<meta property="article:author" content="OnricYF">
+<meta property="article:tag" content="C#">
+<meta property="article:tag" content="Csharp">
+<meta property="article:tag" content="PersonalArrange">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/blog/Pasted%20image%2020221212120715.png">
+    <link rel="alternate" href="/atom.xml" title="YF's Blog" type="application/atom+xml">
+    <link rel="shortcut icon" href="/images/favicon.ico">
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.css" integrity="sha384-IfxC36XL/toUyJ939C73PcgMuRzAZuIzZxE38drsmO5p6jD7ei+Zx/1oA/0l8ysE" crossorigin="anonymous">
+    
+<script src="https://npm.webcache.cn/pace-js@1.2.4/pace.min.js" integrity="sha384-k6YtvFUEIuEFBdrLKJ3YAUbBki333tj1CSUisai5Cswsg9wcLNaPzsTHDswp4Az8" crossorigin="anonymous"></script>
+
+    
+<link rel="stylesheet" href="https://npm.webcache.cn/@reimujs/aos@0.1.2/dist/aos.css" integrity="sha384-GMRP93c6Hkz9JVKGAuRR3nTS7M07RwPgTFenXiosjq2VbVgvdDNcz1g6Mkj8AONa" crossorigin="anonymous">
+
+    <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://npm.webcache.cn/aplayer@1.10.1/dist/APlayer.min.css" integrity="sha384-tLMkTWh2pfXNWGFlUS0w1TFtRG5xZ9lPWFOooj+vDDLIL+xBGQU/voDBY5XE2lVh" crossorigin="anonymous">
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+  <body>
+      <div id='loader'>
+    <div class="loading-left-bg loading-bg"></div>
+    <div class="loading-right-bg loading-bg"></div>
+    <div class="spinner-box">
+      <div class="loading-taichi rotate">
+          <svg width="150" height="150" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="https://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
+            <path d="M303.5 432A80 80 0 0 1 291.5 592A80 80 0 0 1 303.5 432z" fill="var(--red-1, #ff5252)" />
+            <path d="M512 65A447 447 0 0 1 512 959L512 929A417 417 0 0 0 512 95A417 417 0 0 0 512 929L512 959A447 447 0 0 1 512 65z 
+           M512 95A417 417 0 0 1 929 512A208.5 208.5 0 0 1 720.5 720.5L720.5 592A80 80 0 0 0 720.5 432A80 80 0 0 0 720.5 592L720.5 720.5A208.5 208.5 0 0 1 512 512A208.5 208.5 0 0 0 303.5 303.5A208.5 208.5 0 0 0 95 512A417 417 0 0 1 512 95z" fill="var(--red-1, #ff5252)" />
+          </svg>
+      </div>
+      <div class="loading-word">少女祈祷中...</div>
+    </div>
+  </div>
+  </div>
+  <script>
+    var time = null;
+    var loaderEl = document.getElementById('loader');
+    var startLoading = () => {
+      time = Date.now();
+      loaderEl.classList.remove("loading");
+    }
+    var hideLoader = () => {
+      document.body.style.overflow = 'auto';
+      loader.classList.add('loading');
+    };
+
+    var endLoading = () => {
+      if (!time) {
+        hideLoader();
+      } else {
+        if (Date.now() - time > 500) {
+          time = null;
+          hideLoader();
+        } else {
+          setTimeout(endLoading, 500 - (Date.now() - time));
+          time = null;
+        }
+      }
+    }
+    window.addEventListener('DOMContentLoaded', endLoading);
+    loaderEl.addEventListener('click', endLoading);
+  </script>
+<div id="copy-tooltip"></div>
+<div id="heatmap-tooltip"></div>
+
+
+    <div id="container">
+      <div id="wrap">
+        <div id="header-nav">
+  <nav id="main-nav" aria-label="Primary navigation">
+        <a class="main-nav-link-wrap" href="/">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">首页</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/archives">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">归档</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/about">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">关于</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/friend">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">友链</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/portfolio">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">作品集</span>
+        </span>
+    <a id="main-nav-toggle" class="nav-icon" aria-label="Toggle navigation" role="button"></a>
+  </nav>
+  <nav id="sub-nav" aria-label="Secondary navigation">
+  </nav>
+    <nav id="i18n-nav" aria-label="Language selection">
+      <div class="custom-dropdown">
+        <div class="select-selected" id="select-selected" role="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Language menu">
+          <span id="nav-language-btn" class="nav-icon" style="padding: 0 20px 0 0"></span>
+          <span id="selected-lang">简体中文</span>
+        </div>
+        <ul class="select-items" id="select-items" role="listbox" aria-label="Languages">
+            <li data-value="zh-CN" role="option" class="selected" aria-selected="true">简体中文</li>
+            <li data-value="en" role="option" aria-selected="false">English</li>
+        </ul>
+      </div>
+      <script>
+        var selectSelected = document.getElementById("select-selected");
+        var selectedLang = document.getElementById("selected-lang");
+        var selectItems = document.getElementById("select-items");
+        var selectOptions = selectItems.querySelectorAll("li");
+
+        selectSelected.addEventListener("click", () => {
+          selectItems.classList.toggle("show");
+          var expanded = selectSelected.getAttribute("aria-expanded") === "true";
+          selectSelected.setAttribute("aria-expanded", (!expanded).toString());
+        });
+
+        selectOptions.forEach((item) => {
+          item.addEventListener("click", () => {
+            const langMap = {};
+              langMap['zh-CN'] = '/2025/01/17/Note/PersonalArrange/Csharp相关/C sharp 类和接口的区别/';
+              langMap['en'] = '/en/2025/01/17/Note/PersonalArrange/Csharp相关/C sharp 类和接口的区别/';
+            selectedLang.textContent = item.textContent;
+            selectItems.classList.remove("show");
+            selectOptions.forEach((option) => {
+              option.classList.remove("selected");
+            });
+            item.classList.add("selected");
+            window.location = langMap[item.dataset.value];
+          });
+        });
+
+        document.addEventListener("click", (event) => {
+          if (!event.target.closest(".custom-dropdown")) {
+            selectItems.classList.remove("show");
+            selectSelected.setAttribute("aria-expanded", "false");
+          }
+        });
+      </script>
+    </nav>
+</div>
+<header id="header" aria-label="Site header">
+        <picture>
+        </picture>
+          <img  fetchpriority="high" src="/images/banner.webp" alt="**为什么还要有接口？**">
+  <div id="header-outer">
+    <div id="header-title">
+          <span id="logo">
+            <h1 data-aos="slide-up">**为什么还要有接口？**</h1>
+          </span>
+        <h2 id="subtitle-wrap" data-aos="slide-down">
+        </h2>
+    </div>
+  </div>
+</header>
+
+        <div id="content" aria-label="Page content"  class="sidebar-right" >
+          <aside id="sidebar" aria-label="Sidebar">
+  <div class="sidebar-wrapper-container sticky">
+  <div class="sidebar-wrapper">
+    <div class="sidebar-wrap" data-aos="fade-up">
+          <div class="sidebar-toc-sidebar"><h3 class="toc-title">文章目录</h3>
+<div class="sidebar-toc-wrapper toc-div-class" >
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E6%8E%A5%E5%8F%A3%E7%B1%BB%E4%BC%BC%E4%BA%8E%E7%B1%BB%EF%BC%8C%E4%BD%86%E6%8E%A5%E5%8F%A3%E7%9A%84%E6%88%90%E5%91%98%E9%83%BD%E6%B2%A1%E6%9C%89%E6%89%A7%E8%A1%8C%E6%96%B9%E5%BC%8F%EF%BC%8C%E5%AE%83%E5%8F%AA%E6%98%AF%E6%96%B9%E6%B3%95%E3%80%81%E5%B1%9E%E6%80%A7%E3%80%81%E4%BA%8B%E4%BB%B6%E5%92%8C%E7%B4%A2%E5%BC%95%E7%AC%A6%E7%9A%84%E7%BB%84%E5%90%88%E8%80%8C%E5%B7%B2%EF%BC%8C%E5%B9%B6%E4%B8%94%E4%B9%9F%E5%8F%AA%E8%83%BD%E5%8C%85%E5%90%AB%E8%BF%99%E5%9B%9B%E7%A7%8D%E6%88%90%E5%91%98%EF%BC%9B%E3%80%81%E3%80%81%E7%B1%BB%E9%99%A4%E4%BA%86%E8%BF%99%E5%9B%9B%E7%A7%8D%E6%88%90%E5%91%98%E4%B9%8B%E5%A4%96%E8%BF%98%E5%8F%AF%E4%BB%A5%E5%88%AB%E7%9A%84%E6%88%90%E5%91%98-%E5%A6%82%E5%AD%97%E6%AE%B5-%E3%80%82"><span class="toc-number">1.</span> <span class="toc-text">1、接口类似于类，但接口的成员都没有执行方式，它只是方法、属性、事件和索引符的组合而已，并且也只能包含这四种成员；、、类除了这四种成员之外还可以别的成员(如字段)。</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%98%E8%A6%81%E6%9C%89%E6%8E%A5%E5%8F%A3%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">为什么还要有接口？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E5%8E%9F%E5%9B%A0%E6%98%AF%E5%AE%83%E6%98%AF%E4%B8%80%E7%A7%8D%E6%9C%89%E6%95%88%E7%9A%84%E5%A5%91%E7%BA%A6%E3%80%82%E3%80%81%E3%80%81%E7%B1%BB%E6%9C%89%E4%B8%80%E4%BA%9B%E6%88%90%E5%91%98%EF%BC%8C%E4%B8%8D%E8%80%83%E8%99%91%E6%8A%8A%E8%BF%99%E4%BA%9B%E6%88%90%E5%91%98%E7%BB%84%E5%90%88%E5%9C%A8%E4%B8%80%E8%B5%B7%EF%BC%8C%E7%B1%BB%E5%8F%AA%E6%98%AF%E4%B8%80%E4%B8%AA%E6%8B%A5%E6%9C%89%E5%90%84%E7%A7%8D%E6%96%B9%E6%B3%95%E3%80%81%E5%AD%97%E6%AE%B5%E5%92%8C%E5%B1%9E%E6%80%A7%E7%9A%84%E5%88%97%E8%A1%A8%EF%BC%8C%E4%BD%86%E4%B8%BA%E4%BA%86%E8%83%BD%E4%BB%A5%E6%9F%90%E7%A7%8D%E6%96%B9%E5%BC%8F%E4%BD%BF%E7%94%A8%E7%B1%BB%EF%BC%8C%E5%BF%85%E9%A1%BB%E7%9F%A5%E9%81%93%E7%B1%BB%E8%83%BD%E6%89%A7%E8%A1%8C%E9%82%A3%E4%BA%9B%E5%8A%9F%E8%83%BD%EF%BC%8C%E5%85%B7%E4%BD%93%E7%9A%84%E6%93%8D%E4%BD%9C%E5%B0%B1%E6%98%AF%E5%A3%B0%E6%98%8E%E6%89%A7%E8%A1%8C%E4%B8%80%E4%B8%AA%E6%88%96%E5%A4%9A%E4%B8%AA%E6%8E%A5%E5%8F%A3%E7%9A%84%E7%B1%BB%EF%BC%8C%E7%B1%BB%E6%89%A7%E8%A1%8C%E6%8E%A5%E5%8F%A3%E7%9A%84%E6%96%B9%E5%BC%8F%E6%98%AF%E4%BB%8E%E6%8E%A5%E5%8F%A3%E4%B8%AD%E6%B4%BE%E7%94%9F%EF%BC%8C%E5%86%8D%E6%8F%90%E4%BE%9B%E8%BF%99%E4%B8%AA%E6%8E%A5%E5%8F%A3%E4%B8%AD%E5%AE%9A%E4%B9%89%E7%9A%84%E6%89%80%E6%9C%89%E6%88%90%E5%91%98%E7%9A%84%E6%89%A7%E8%A1%8C%E6%96%B9%E5%BC%8F%E3%80%82"><span class="toc-number">2.1.</span> <span class="toc-text">主要原因是它是一种有效的契约。、、类有一些成员，不考虑把这些成员组合在一起，类只是一个拥有各种方法、字段和属性的列表，但为了能以某种方式使用类，必须知道类能执行那些功能，具体的操作就是声明执行一个或多个接口的类，类执行接口的方式是从接口中派生，再提供这个接口中定义的所有成员的执行方式。</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%80%9A%E4%BF%97%E6%9D%A5%E8%AE%B2"><span class="toc-number">3.</span> <span class="toc-text">通俗来讲</span></a></li></ol>
+</div>
+</div>
+          <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/avatar.webp" data-sizes="auto" alt="OnricYF" class="lazyload">
+  <div class="sidebar-author-name">OnricYF</div>
+  <div class="sidebar-description">TRASH ARTIST</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>文章</div>
+    <div class="sidebar-state-number">144</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>分类</div>
+    <div class="sidebar-state-number">33</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>标签</div>
+    <div class="sidebar-state-number">82</div>
+  </div>
+</div>
+<div class="sidebar-social" >
+    <div class="icon-email sidebar-social-icon">
+      <a href=mailto:a1521070145@gmail.com itemprop="url" target="_blank" aria-label="email" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-github sidebar-social-icon">
+      <a href=https://github.com/Madoka9 itemprop="url" target="_blank" aria-label="github" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-bilibili sidebar-social-icon">
+      <a href=https://space.bilibili.com/5862963 itemprop="url" target="_blank" aria-label="bilibili" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-zhihu sidebar-social-icon">
+      <a href=https://www.zhihu.com/people/lan-mei-sheng-dai-77 itemprop="url" target="_blank" aria-label="zhihu" rel="noopener nofollow noreferrer"></a>
+    </div>
+</div>
+<div class="sidebar-menu">
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/" aria-label="首页"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">首页</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/archives" aria-label="归档"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">归档</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/about" aria-label="关于"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">关于</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/friend" aria-label="友链"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">友链</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/portfolio" aria-label="作品集"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">作品集</div>
+      </div>
+</div>
+</div>
+          <div class="sidebar-btn-wrapper" style="position:static">
+            <div class="sidebar-toc-btn current"></div>
+            <div class="sidebar-common-btn"></div>
+          </div>
+    </div>
+  </div>
+      <meting-js
+        theme="var(--color-link)"
+        id="385907592"
+        server="netease"
+        type="playlist"
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        class="aplayer-after-sidebar"
+      ></meting-js>
+  <div class="sidebar-widget">
+  </div>
+  </div>
+</aside>
+
+          <section id="main" aria-label="Main content"><article id="post-Note/PersonalArrange/Csharp相关/C sharp 类和接口的区别" class="h-entry article" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner" data-aos="fade-up">
+    <div class="article-meta">
+      <div class="article-date">
+  <span class="article-date-link icon-calendar" data-aos="zoom-in">
+    <time datetime="2025-01-17T14:04:10.000Z" itemprop="datePublished">2025-01-17</time>
+    <time style="display: none;" id="post-update-time">2026-07-16</time>
+  </span>
+</div>
+
+    </div>
+    
+    <div class="hr-line"></div>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+        <h3 id="1、接口类似于类，但接口的成员都没有执行方式，它只是方法、属性、事件和索引符的组合而已，并且也只能包含这四种成员；、、类除了这四种成员之外还可以别的成员-如字段-。"><a href="#1、接口类似于类，但接口的成员都没有执行方式，它只是方法、属性、事件和索引符的组合而已，并且也只能包含这四种成员；、、类除了这四种成员之外还可以别的成员-如字段-。" class="headerlink" title="1、接口类似于类，但接口的成员都没有执行方式，它只是方法、属性、事件和索引符的组合而已，并且也只能包含这四种成员；、、类除了这四种成员之外还可以别的成员(如字段)。"></a>1、接口类似于类，但接口的成员都没有执行方式，它只是方法、属性、事件和索引符的组合而已，并且也只能包含这四种成员；、、类除了这四种成员之外还可以别的成员(如字段)。</h3><p>2、不能实例化一个接口，接口只包括成员的签名；、、而类可以实例化(abstract抽象类除外)。<br>3、接口没有构造函数，、、类有构造函数。<br>4、接口不能进行运算符的重载，、、类可以进行运算符重载。<br>5、接口的成员没有任何修饰符，其成员总是公共的，、、而类的成员则可以有修饰符(如：虚拟或者静态)。<br>6、派生于接口的类必须实现接口中所有成员的执行方式，、、而从类派生则不然。</p>
+<h1 id="为什么还要有接口？"><a href="#为什么还要有接口？" class="headerlink" title="为什么还要有接口？"></a><strong>为什么还要有接口？</strong></h1><h3 id="主要原因是它是一种有效的契约。、、类有一些成员，不考虑把这些成员组合在一起，类只是一个拥有各种方法、字段和属性的列表，但为了能以某种方式使用类，必须知道类能执行那些功能，具体的操作就是声明执行一个或多个接口的类，类执行接口的方式是从接口中派生，再提供这个接口中定义的所有成员的执行方式。"><a href="#主要原因是它是一种有效的契约。、、类有一些成员，不考虑把这些成员组合在一起，类只是一个拥有各种方法、字段和属性的列表，但为了能以某种方式使用类，必须知道类能执行那些功能，具体的操作就是声明执行一个或多个接口的类，类执行接口的方式是从接口中派生，再提供这个接口中定义的所有成员的执行方式。" class="headerlink" title="主要原因是它是一种有效的契约。、、类有一些成员，不考虑把这些成员组合在一起，类只是一个拥有各种方法、字段和属性的列表，但为了能以某种方式使用类，必须知道类能执行那些功能，具体的操作就是声明执行一个或多个接口的类，类执行接口的方式是从接口中派生，再提供这个接口中定义的所有成员的执行方式。"></a>主要原因是它是一种有效的契约。、、类有一些成员，不考虑把这些成员组合在一起，类只是一个拥有各种方法、字段和属性的列表，但为了能以某种方式使用类，必须知道类能执行那些功能，具体的操作就是声明执行一个或多个接口的类，类执行接口的方式是从接口中派生，再提供这个接口中定义的所有成员的执行方式。</h3><h1 id="通俗来讲"><a href="#通俗来讲" class="headerlink" title="通俗来讲"></a>通俗来讲</h1><p>不同人物需要多个技能需要用到接口</p>
+<ul>
+<li>代码</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">using System;</span><br><span class="line"></span><br><span class="line">namespace Csharp</span><br><span class="line">&#123;</span><br><span class="line">    interface Skill_A</span><br><span class="line">    &#123;</span><br><span class="line">        void releaseSkill_A();</span><br><span class="line">    &#125;</span><br><span class="line">    interface Skill_B</span><br><span class="line">    &#123;</span><br><span class="line">        void releaseSkill_B();</span><br><span class="line">    &#125;</span><br><span class="line">    class Character: Skill_A,Skill_B</span><br><span class="line">    &#123;</span><br><span class="line">        static void Main(string[] args)</span><br><span class="line">        &#123;</span><br><span class="line">            Character chara = new Character();</span><br><span class="line">            chara.releaseSkill_A();</span><br><span class="line">            chara.releaseSkill_B();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public void releaseSkill_A()</span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine(&quot;Skill_A released!&quot;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public void releaseSkill_B()</span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine(&quot;Skill_B released!&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>运行结果：<br><img src="/images/blog/Pasted%20image%2020221212120715.png"></li>
+</ul>
+
+    </div>
+    <footer class="article-footer">
+        <a class="article-category-link" href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/" title="技术笔记" data-aos="zoom-in">技术笔记</a><a class="article-category-link" href="/categories/%E6%8A%80%E6%9C%AF%E7%AC%94%E8%AE%B0/C/" title="C#" data-aos="zoom-in">C#</a>
+
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/tags/C/" rel="tag" title="C#">C#</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/tags/Csharp/" rel="tag" title="Csharp">Csharp</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/tags/PersonalArrange/" rel="tag" title="PersonalArrange">PersonalArrange</a></li></ul>
+
+    </footer>
+  </div>
+    <nav id="article-nav" aria-label="Article navigation" data-aos="fade-up">
+      <div class="article-nav-link-wrap left">
+            <img data-src="/images/banner.webp" data-sizes="auto" alt="1.音程" class="lazyload">
+        <a href="/2025/01/17/Note/GuitarLearning/%E5%AD%A6%E4%B9%A0/2.%E5%9F%BA%E6%9C%AC%E4%B9%90%E7%90%86/" aria-label="前一篇: 1.音程" title="前一篇: 1.音程"></a>
+        <div class="article-nav-caption">前一篇</div>
+        <h3 class="article-nav-title">
+            1.音程
+        </h3>
+      </div>
+    <div class="article-nav-link-wrap right">
+          <img data-src="/images/banner.webp" data-sizes="auto" alt="VehicleAI-NavMesh" class="lazyload">
+      <a href="/2025/01/17/Note/PersonalArrange/UE%20C++/VehicleAI-NavMesh/" aria-label="后一篇: VehicleAI-NavMesh"  title="后一篇: VehicleAI-NavMesh"></a>
+      <div class="article-nav-caption">后一篇</div>
+      <h3 class="article-nav-title">
+          VehicleAI-NavMesh
+      </h3>
+    </div>
+  </nav>
+
+</article>
+
+
+</section>
+        </div>
+        <footer id="footer" aria-label="Site footer">
+  <div style="width: 100%; overflow: hidden">
+    <div class="footer-line"></div>
+  </div>
+  <div id="footer-info">
+    <div>
+      <span class="icon-copyright"></span>
+        2020-2026
+        <span class="footer-info-sep rotate"></span>
+      OnricYF
+    </div>
+      <div>
+        基于&nbsp;<a href="https://hexo.io/" rel="noopener nofollow noreferrer" target="_blank">Hexo</a>&nbsp;
+        Theme.<a href="https://github.com/D-Sketon/hexo-theme-reimu" rel="noopener nofollow noreferrer" target="_blank">Reimu</a>
+      </div>
+      <div>
+        <span class="icon-brush"></span>
+        87.2k
+        &nbsp;|&nbsp;
+        <span class="icon-coffee"></span>
+        07:26
+      </div>
+      <div>
+        <span class="icon-eye"></span>
+        <span id="busuanzi_container_site_pv">总访问量&nbsp;<span id="busuanzi_value_site_pv"></span></span>
+        &nbsp;|&nbsp;
+        <span class="icon-user"></span>
+        <span id="busuanzi_container_site_uv">总访客量&nbsp;<span id="busuanzi_value_site_uv"></span></span>
+      </div>
+  </div>
+</footer>
+
+          <div class="sidebar-top">
+            <div class="sidebar-top-taichi rotate"></div>
+            <div class="arrow-up"></div>
+          </div>
+        <div id="mask" class="hide"></div>
+      </div>
+      <nav id="mobile-nav" aria-label="Mobile navigation">
+  <div class="sidebar-wrap">
+        <div class="sidebar-toc-sidebar"><h3 class="toc-title">文章目录</h3>
+<div class="sidebar-toc-wrapper toc-div-class" >
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E6%8E%A5%E5%8F%A3%E7%B1%BB%E4%BC%BC%E4%BA%8E%E7%B1%BB%EF%BC%8C%E4%BD%86%E6%8E%A5%E5%8F%A3%E7%9A%84%E6%88%90%E5%91%98%E9%83%BD%E6%B2%A1%E6%9C%89%E6%89%A7%E8%A1%8C%E6%96%B9%E5%BC%8F%EF%BC%8C%E5%AE%83%E5%8F%AA%E6%98%AF%E6%96%B9%E6%B3%95%E3%80%81%E5%B1%9E%E6%80%A7%E3%80%81%E4%BA%8B%E4%BB%B6%E5%92%8C%E7%B4%A2%E5%BC%95%E7%AC%A6%E7%9A%84%E7%BB%84%E5%90%88%E8%80%8C%E5%B7%B2%EF%BC%8C%E5%B9%B6%E4%B8%94%E4%B9%9F%E5%8F%AA%E8%83%BD%E5%8C%85%E5%90%AB%E8%BF%99%E5%9B%9B%E7%A7%8D%E6%88%90%E5%91%98%EF%BC%9B%E3%80%81%E3%80%81%E7%B1%BB%E9%99%A4%E4%BA%86%E8%BF%99%E5%9B%9B%E7%A7%8D%E6%88%90%E5%91%98%E4%B9%8B%E5%A4%96%E8%BF%98%E5%8F%AF%E4%BB%A5%E5%88%AB%E7%9A%84%E6%88%90%E5%91%98-%E5%A6%82%E5%AD%97%E6%AE%B5-%E3%80%82"><span class="toc-number">1.</span> <span class="toc-text">1、接口类似于类，但接口的成员都没有执行方式，它只是方法、属性、事件和索引符的组合而已，并且也只能包含这四种成员；、、类除了这四种成员之外还可以别的成员(如字段)。</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%98%E8%A6%81%E6%9C%89%E6%8E%A5%E5%8F%A3%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">为什么还要有接口？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E5%8E%9F%E5%9B%A0%E6%98%AF%E5%AE%83%E6%98%AF%E4%B8%80%E7%A7%8D%E6%9C%89%E6%95%88%E7%9A%84%E5%A5%91%E7%BA%A6%E3%80%82%E3%80%81%E3%80%81%E7%B1%BB%E6%9C%89%E4%B8%80%E4%BA%9B%E6%88%90%E5%91%98%EF%BC%8C%E4%B8%8D%E8%80%83%E8%99%91%E6%8A%8A%E8%BF%99%E4%BA%9B%E6%88%90%E5%91%98%E7%BB%84%E5%90%88%E5%9C%A8%E4%B8%80%E8%B5%B7%EF%BC%8C%E7%B1%BB%E5%8F%AA%E6%98%AF%E4%B8%80%E4%B8%AA%E6%8B%A5%E6%9C%89%E5%90%84%E7%A7%8D%E6%96%B9%E6%B3%95%E3%80%81%E5%AD%97%E6%AE%B5%E5%92%8C%E5%B1%9E%E6%80%A7%E7%9A%84%E5%88%97%E8%A1%A8%EF%BC%8C%E4%BD%86%E4%B8%BA%E4%BA%86%E8%83%BD%E4%BB%A5%E6%9F%90%E7%A7%8D%E6%96%B9%E5%BC%8F%E4%BD%BF%E7%94%A8%E7%B1%BB%EF%BC%8C%E5%BF%85%E9%A1%BB%E7%9F%A5%E9%81%93%E7%B1%BB%E8%83%BD%E6%89%A7%E8%A1%8C%E9%82%A3%E4%BA%9B%E5%8A%9F%E8%83%BD%EF%BC%8C%E5%85%B7%E4%BD%93%E7%9A%84%E6%93%8D%E4%BD%9C%E5%B0%B1%E6%98%AF%E5%A3%B0%E6%98%8E%E6%89%A7%E8%A1%8C%E4%B8%80%E4%B8%AA%E6%88%96%E5%A4%9A%E4%B8%AA%E6%8E%A5%E5%8F%A3%E7%9A%84%E7%B1%BB%EF%BC%8C%E7%B1%BB%E6%89%A7%E8%A1%8C%E6%8E%A5%E5%8F%A3%E7%9A%84%E6%96%B9%E5%BC%8F%E6%98%AF%E4%BB%8E%E6%8E%A5%E5%8F%A3%E4%B8%AD%E6%B4%BE%E7%94%9F%EF%BC%8C%E5%86%8D%E6%8F%90%E4%BE%9B%E8%BF%99%E4%B8%AA%E6%8E%A5%E5%8F%A3%E4%B8%AD%E5%AE%9A%E4%B9%89%E7%9A%84%E6%89%80%E6%9C%89%E6%88%90%E5%91%98%E7%9A%84%E6%89%A7%E8%A1%8C%E6%96%B9%E5%BC%8F%E3%80%82"><span class="toc-number">2.1.</span> <span class="toc-text">主要原因是它是一种有效的契约。、、类有一些成员，不考虑把这些成员组合在一起，类只是一个拥有各种方法、字段和属性的列表，但为了能以某种方式使用类，必须知道类能执行那些功能，具体的操作就是声明执行一个或多个接口的类，类执行接口的方式是从接口中派生，再提供这个接口中定义的所有成员的执行方式。</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%80%9A%E4%BF%97%E6%9D%A5%E8%AE%B2"><span class="toc-number">3.</span> <span class="toc-text">通俗来讲</span></a></li></ol>
+</div>
+</div>
+        <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/avatar.webp" data-sizes="auto" alt="OnricYF" class="lazyload">
+  <div class="sidebar-author-name">OnricYF</div>
+  <div class="sidebar-description">TRASH ARTIST</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>文章</div>
+    <div class="sidebar-state-number">144</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>分类</div>
+    <div class="sidebar-state-number">33</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>标签</div>
+    <div class="sidebar-state-number">82</div>
+  </div>
+</div>
+<div class="sidebar-social" >
+    <div class="icon-email sidebar-social-icon">
+      <a href=mailto:a1521070145@gmail.com itemprop="url" target="_blank" aria-label="email" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-github sidebar-social-icon">
+      <a href=https://github.com/Madoka9 itemprop="url" target="_blank" aria-label="github" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-bilibili sidebar-social-icon">
+      <a href=https://space.bilibili.com/5862963 itemprop="url" target="_blank" aria-label="bilibili" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-zhihu sidebar-social-icon">
+      <a href=https://www.zhihu.com/people/lan-mei-sheng-dai-77 itemprop="url" target="_blank" aria-label="zhihu" rel="noopener nofollow noreferrer"></a>
+    </div>
+</div>
+<div class="sidebar-menu">
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/" aria-label="首页"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">首页</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/archives" aria-label="归档"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">归档</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/about" aria-label="关于"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">关于</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/friend" aria-label="友链"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">友链</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/portfolio" aria-label="作品集"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">作品集</div>
+      </div>
+</div>
+</div>
+  </div>
+      <div class="sidebar-btn-wrapper">
+        <div class="sidebar-toc-btn current"></div>
+        <div class="sidebar-common-btn"></div>
+      </div>
+</nav>
+
+    </div>
+    
+<script src="https://npm.webcache.cn/lazysizes@5.3.2/lazysizes.min.js" integrity="sha384-3gT&#x2F;vsepWkfz&#x2F;ff7PpWNUeMzeWoH3cDhm&#x2F;A8jM7ouoAK0&#x2F;fP&#x2F;9bcHHR5kHq2nf+e" crossorigin="anonymous"></script>
+
+
+<script src="https://npm.webcache.cn/clipboard@2.0.11/dist/clipboard.min.js" integrity="sha384-J08i8An&#x2F;QeARD9ExYpvphB8BsyOj3Gh2TSh1aLINKO3L0cMSH2dN3E22zFoXEi0Q" crossorigin="anonymous"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+  
+<script src="/js/aos.js"></script>
+
+  <script>
+    var aosInit = () => {
+      AOS.init({
+        duration: 1000,
+        easing: "ease",
+        once: true,
+        offset: 50,
+      });
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', aosInit);
+    } else {
+      aosInit();
+    }
+  </script>
+
+
+<script src="/js/pjax_script.js" data-pjax></script>
+
+
+
+
+  <script>
+    var setupFirework = () => {
+      if (!false || !window.matchMedia('(max-width: 768px)').matches) {
+        window.firework && window.firework(JSON.parse('{"excludeElements":["a","button"],"particles":[{"shape":"circle","move":["emit"],"easing":"easeOutExpo","colors":["var(--red-1)","var(--red-2)","var(--red-3)","var(--red-4)"],"number":20,"duration":[1200,1800],"shapeOptions":{"radius":[16,32],"alpha":[0.3,0.5]}},{"shape":"circle","move":["diffuse"],"easing":"easeOutExpo","colors":["var(--red-0)"],"number":1,"duration":[1200,1800],"shapeOptions":{"radius":20,"alpha":[0.2,0.5],"lineWidth":6}}]}'));
+      }
+    }
+  </script>
+  
+<script src="https://npm.webcache.cn/mouse-firework@0.2.0/dist/index.umd.js" integrity="sha384-qi9WggRt19tv8Vc7pCHW3ulMNLwrn515zaLEWZjl1px07vz8+pUoWX8n1rgq282T" crossorigin="anonymous" onload="setupFirework()" defer></script>
+
+
+  
+<script src="https://npm.webcache.cn/theme-shokax-pjax@0.0.3/dist/index.umd.js" integrity="sha384-xneY1WY8hOfUzswrE4CrYq35N4BdVcxqxwHPr9zawE&#x2F;jMSCxD+jAPU55x&#x2F;jj3wlf" crossorigin="anonymous"></script>
+
+  
+<script src="/js/pjax.js"></script>
+
+
+
+
+
+<div id="lazy-script">
+  <div>
+      
+      
+      <script data-pjax>
+        window.REIMU_POST = {
+          author: "OnricYF",
+          title: "**为什么还要有接口？**",
+          url: "http://example.com/2025/01/17/Note/PersonalArrange/Csharp%E7%9B%B8%E5%85%B3/C%20sharp%20%E7%B1%BB%E5%92%8C%E6%8E%A5%E5%8F%A3%E7%9A%84%E5%8C%BA%E5%88%AB/",
+          excerpt: "",
+          description: "",
+          stripContent: "1、接口类似于类，但接口的成员都没有执行方式，它只是方法、属性、事件和索引符的组合而已，并且也只能包含这四种成员；、、类除了这四种成员之外还可以别的成员(如字段)。2、不能实例化一个接口，接口只包括成员的签名；、、而类可以实例化(abstract抽象类除外)。3、接口没有构造函数，、、类有构造函数。4、接口不能进行运算符的重载，、、类可以进行运算符重载。5、接口的成员没有任何修饰符，其成员总是公共的，、、而类的成员则可以有修饰符(如：虚拟或者静态)。6、派生于接口的类必须实现接口中所有成员的执行",
+          date: "Fri Jan 17 2025 22:04:10 GMT+0800",
+          updated: "Thu Jul 16 2026 11:23:21 GMT+0800",
+          cover: "/images/banner.webp",
+        };
+      </script>
+        
+<script src="/js/insert_highlight.js" data-pjax></script>
+
+      
+<script src="/js/tabs.js" data-pjax defer></script>
+
+      <script type="module" data-pjax>
+        (async () => {
+          const PhotoSwipeLightbox = (await safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe-lightbox.esm.min.js", "sha384-DiL6M/gG+wmTxmCRZyD1zee6lIhawn5TGvED0FOh7fXcN9B0aZ9dexSF/N6lrZi/")).default;
+          const initPswp = (gallery, children) => {
+            if (_$$(`${gallery} ${children}`).length > 0) {
+              new PhotoSwipeLightbox({
+                gallery,
+                children,
+                pswpModule: () => safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.esm.min.js", "sha384-WkkO3GCmgkC3VQWpaV8DqhKJqpzpF9JoByxDmnV8+oTJ7m3DfYEWX1fu1scuS4+s")
+              }).init();
+            }
+          }
+          const pswp = () => {
+            initPswp('.article-entry', 'a.article-gallery-item');
+            initPswp('.article-gallery', 'a.article-gallery-item');
+          }
+          pswp();
+        })();
+      </script>
+  </div>
+</div>
+
+
+  <script>
+    console.log(String.raw`%c 
+ ______     ______     __     __    __     __  __    
+/\  == \   /\  ___\   /\ \   /\ "-./  \   /\ \/\ \   
+\ \  __<   \ \  __\   \ \ \  \ \ \-./\ \  \ \ \_\ \  
+ \ \_\ \_\  \ \_____\  \ \_\  \ \_\ \ \_\  \ \_____\ 
+  \/_/ /_/   \/_____/   \/_/   \/_/  \/_/   \/_____/ 
+                                                  
+`,'color: #ff5252;')
+    console.log('%c Theme.Reimu v' + '1.12.0' + ' %c https://github.com/D-Sketon/hexo-theme-reimu ', 'color: white; background: #ff5252; padding:5px 0;', 'padding:4px;border:1px solid #ff5252;')
+  </script>
+  
+
+
+  
+<script src="https://npm.webcache.cn/busuanzi@2.3.0/bsz.pure.mini.js" integrity="sha384-0M75wtSkhjIInv4coYlaJU83+OypaRCIq2SukQVQX04eGTCBXJDuWAbJet56id+S" crossorigin="anonymous" async></script>
+
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      for (let registration of registrations) {
+        registration.unregister();
+      }
+    });
+  }
+</script>
+
+
+    <script>
+      var setupAPlayer = () => {
+        if (!true || !window.matchMedia('(max-width: 768px)').matches) {
+          if (window.matchMedia('(max-width: 959px)').matches) {
+            const meting = _$('meting-js');
+            if (meting) {
+              meting.setAttribute('fixed', 'true');
+              const aside = meting.parentNode?.parentNode;
+              if (aside?.tagName === 'ASIDE') {
+                meting.parentNode.removeChild(meting);
+                document.body.appendChild(meting);
+              }
+            }
+          }
+        }
+      };
+    </script>
+  
+<script src="https://npm.webcache.cn/aplayer@1.10.1/dist/APlayer.min.js" integrity="sha384-gdGYZwHnfJM54evoZhpO0s6ZF5BQiybkiyW7VXr+h5UfruuRL&#x2F;aORyw+5+HZoU6e" crossorigin="anonymous" defer onload="setupAPlayer()"></script>
+
+    
+<script src="https://npm.webcache.cn/meting@2.0.1/dist/Meting.min.js" integrity="sha384-ASVlpKF80A22OXTK3tfEjZm1EL6uFMKIC4p8+0maanw1S&#x2F;IyB+Y4JG+ZDU7GpKE8" crossorigin="anonymous" defer></script>
+
+
+
+  </body>
+  </html>
