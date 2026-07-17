@@ -1,0 +1,729 @@
+  <!DOCTYPE html>
+  <html lang="en"  
+      data-theme-mode="auto"
+  >
+  <head>
+  <meta charset="utf-8">
+  
+  
+  
+  <script>window.REIMU_CONFIG = {};window.REIMU_CONFIG.icon_font = '4552607_4k4bc36ef96';window.REIMU_CONFIG.clipboard_tips = {"success":{"zh-CN":"复制成功 (*^▽^*)","en":"Copy successfully (*^▽^*)"},"fail":{"zh-CN":"复制失败 (ﾟ⊿ﾟ)ﾂ","en":"Copy failed (ﾟ⊿ﾟ)ﾂ"},"copyright":{"enable":false,"count":50,"license_type":"by-nc-sa"}};window.REIMU_CONFIG.clipboard_tips.copyright.content = '本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！';window.REIMU_CONFIG.code_block = {"expand":true};window.REIMU_CONFIG.base = 'http://example.com';window.REIMU_CONFIG.i18n_languages = ["en"];</script>
+  <title>
+    DX12Learning_01_引擎初始化 | YF&#39;s Blog
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic|Noto Serif SC:400,400italic,700,700italic&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic|Noto Serif SC:400,400italic,700,700italic&display=swap" media="print" onload="this.media='all'">
+    <link rel="preload" href="//at.alicdn.com/t/c/font_4552607_4k4bc36ef96.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+    
+<link rel="stylesheet" href="/css/loader.css">
+
+    <meta name="description" content="引擎预初始化(PreInit)注册窗口12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152bool FWindowsEngine::InitWindows(const FWinMainCommandParameters&amp; InParameters)  &amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DX12Learning_01_引擎初始化">
+<meta property="og:url" content="http://example.com/en/2026/07/16/DX12%E5%AD%A6%E4%B9%A0/DX12Learning_01_%E5%BC%95%E6%93%8E%E5%88%9D%E5%A7%8B%E5%8C%96/index.html">
+<meta property="og:site_name" content="YF&#39;s Blog">
+<meta property="og:description" content="引擎预初始化(PreInit)注册窗口12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152bool FWindowsEngine::InitWindows(const FWinMainCommandParameters&amp; InParameters)  &amp;">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-07-15T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-16T14:57:04.801Z">
+<meta property="article:author" content="OnricYF">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="DX12">
+<meta name="twitter:card" content="summary">
+    <link rel="alternate" href="/atom.xml" title="YF's Blog" type="application/atom+xml">
+    <link rel="shortcut icon" href="/images/favicon.ico">
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.css" integrity="sha384-IfxC36XL/toUyJ939C73PcgMuRzAZuIzZxE38drsmO5p6jD7ei+Zx/1oA/0l8ysE" crossorigin="anonymous">
+    
+<script src="https://npm.webcache.cn/pace-js@1.2.4/pace.min.js" integrity="sha384-k6YtvFUEIuEFBdrLKJ3YAUbBki333tj1CSUisai5Cswsg9wcLNaPzsTHDswp4Az8" crossorigin="anonymous"></script>
+
+    
+<link rel="stylesheet" href="https://npm.webcache.cn/@reimujs/aos@0.1.2/dist/aos.css" integrity="sha384-GMRP93c6Hkz9JVKGAuRR3nTS7M07RwPgTFenXiosjq2VbVgvdDNcz1g6Mkj8AONa" crossorigin="anonymous">
+
+    <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://npm.webcache.cn/aplayer@1.10.1/dist/APlayer.min.css" integrity="sha384-tLMkTWh2pfXNWGFlUS0w1TFtRG5xZ9lPWFOooj+vDDLIL+xBGQU/voDBY5XE2lVh" crossorigin="anonymous">
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+  <body>
+      <div id='loader'>
+    <div class="loading-left-bg loading-bg"></div>
+    <div class="loading-right-bg loading-bg"></div>
+    <div class="spinner-box">
+      <div class="loading-taichi rotate">
+          <svg width="150" height="150" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="https://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
+            <path d="M303.5 432A80 80 0 0 1 291.5 592A80 80 0 0 1 303.5 432z" fill="var(--red-1, #ff5252)" />
+            <path d="M512 65A447 447 0 0 1 512 959L512 929A417 417 0 0 0 512 95A417 417 0 0 0 512 929L512 959A447 447 0 0 1 512 65z 
+           M512 95A417 417 0 0 1 929 512A208.5 208.5 0 0 1 720.5 720.5L720.5 592A80 80 0 0 0 720.5 432A80 80 0 0 0 720.5 592L720.5 720.5A208.5 208.5 0 0 1 512 512A208.5 208.5 0 0 0 303.5 303.5A208.5 208.5 0 0 0 95 512A417 417 0 0 1 512 95z" fill="var(--red-1, #ff5252)" />
+          </svg>
+      </div>
+      <div class="loading-word">Loading...</div>
+    </div>
+  </div>
+  </div>
+  <script>
+    var time = null;
+    var loaderEl = document.getElementById('loader');
+    var startLoading = () => {
+      time = Date.now();
+      loaderEl.classList.remove("loading");
+    }
+    var hideLoader = () => {
+      document.body.style.overflow = 'auto';
+      loader.classList.add('loading');
+    };
+
+    var endLoading = () => {
+      if (!time) {
+        hideLoader();
+      } else {
+        if (Date.now() - time > 500) {
+          time = null;
+          hideLoader();
+        } else {
+          setTimeout(endLoading, 500 - (Date.now() - time));
+          time = null;
+        }
+      }
+    }
+    window.addEventListener('DOMContentLoaded', endLoading);
+    loaderEl.addEventListener('click', endLoading);
+  </script>
+<div id="copy-tooltip"></div>
+<div id="heatmap-tooltip"></div>
+
+
+    <div id="container">
+      <div id="wrap">
+        <div id="header-nav">
+  <nav id="main-nav" aria-label="Primary navigation">
+        <a class="main-nav-link-wrap" href="/en/">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Home</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/archives">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Archives</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/about">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">About</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/friend">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Friend</span>
+        </span>
+        <a class="main-nav-link-wrap" href="/en/portfolio">
+            <div class="main-nav-icon icon rotate">
+                &#xe62b;
+            </div>
+          <span class="main-nav-link">Portfolio</span>
+        </span>
+    <a id="main-nav-toggle" class="nav-icon" aria-label="Toggle navigation" role="button"></a>
+  </nav>
+  <nav id="sub-nav" aria-label="Secondary navigation">
+  </nav>
+    <nav id="i18n-nav" aria-label="Language selection">
+      <div class="custom-dropdown">
+        <div class="select-selected" id="select-selected" role="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Language menu">
+          <span id="nav-language-btn" class="nav-icon" style="padding: 0 20px 0 0"></span>
+          <span id="selected-lang">English</span>
+        </div>
+        <ul class="select-items" id="select-items" role="listbox" aria-label="Languages">
+            <li data-value="zh-CN" role="option" aria-selected="false">简体中文</li>
+            <li data-value="en" role="option" class="selected" aria-selected="true">English</li>
+        </ul>
+      </div>
+      <script>
+        var selectSelected = document.getElementById("select-selected");
+        var selectedLang = document.getElementById("selected-lang");
+        var selectItems = document.getElementById("select-items");
+        var selectOptions = selectItems.querySelectorAll("li");
+
+        selectSelected.addEventListener("click", () => {
+          selectItems.classList.toggle("show");
+          var expanded = selectSelected.getAttribute("aria-expanded") === "true";
+          selectSelected.setAttribute("aria-expanded", (!expanded).toString());
+        });
+
+        selectOptions.forEach((item) => {
+          item.addEventListener("click", () => {
+            const langMap = {};
+              langMap['zh-CN'] = '/2026/07/16/DX12学习/DX12Learning_01_引擎初始化/';
+              langMap['en'] = '/en/2026/07/16/DX12学习/DX12Learning_01_引擎初始化/';
+            selectedLang.textContent = item.textContent;
+            selectItems.classList.remove("show");
+            selectOptions.forEach((option) => {
+              option.classList.remove("selected");
+            });
+            item.classList.add("selected");
+            window.location = langMap[item.dataset.value];
+          });
+        });
+
+        document.addEventListener("click", (event) => {
+          if (!event.target.closest(".custom-dropdown")) {
+            selectItems.classList.remove("show");
+            selectSelected.setAttribute("aria-expanded", "false");
+          }
+        });
+      </script>
+    </nav>
+</div>
+<header id="header" aria-label="Site header">
+        <picture>
+        </picture>
+          <img  fetchpriority="high" src="/images/banner.webp" alt="DX12Learning_01_引擎初始化">
+  <div id="header-outer">
+    <div id="header-title">
+          <span id="logo">
+            <h1 data-aos="slide-up">DX12Learning_01_引擎初始化</h1>
+          </span>
+        <h2 id="subtitle-wrap" data-aos="slide-down">
+        </h2>
+    </div>
+  </div>
+</header>
+
+        <div id="content" aria-label="Page content"  class="sidebar-right" >
+          <aside id="sidebar" aria-label="Sidebar">
+  <div class="sidebar-wrapper-container sticky">
+  <div class="sidebar-wrapper">
+    <div class="sidebar-wrap" data-aos="fade-up">
+          <div class="sidebar-toc-sidebar"><h3 class="toc-title">Contents</h3>
+<div class="sidebar-toc-wrapper toc-div-class" >
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E6%93%8E%E9%A2%84%E5%88%9D%E5%A7%8B%E5%8C%96-PreInit"><span class="toc-number">1.</span> <span class="toc-text">引擎预初始化(PreInit)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E5%86%8C%E7%AA%97%E5%8F%A3"><span class="toc-number">1.1.</span> <span class="toc-text">注册窗口</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#WindowClass%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E"><span class="toc-number">1.1.1.</span> <span class="toc-text">WindowClass参数说明</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#cbSize"><span class="toc-number">1.1.1.1.</span> <span class="toc-text">cbSize</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#style"><span class="toc-number">1.1.1.2.</span> <span class="toc-text">style</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#lpfnWndProc"><span class="toc-number">1.1.1.3.</span> <span class="toc-text">lpfnWndProc</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#cbClsExtra-cbWndExtra"><span class="toc-number">1.1.1.4.</span> <span class="toc-text">cbClsExtra &#x2F; cbWndExtra</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#hInstance"><span class="toc-number">1.1.1.5.</span> <span class="toc-text">hInstance</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#hIcon-hIconSm"><span class="toc-number">1.1.1.6.</span> <span class="toc-text">hIcon &#x2F; hIconSm</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#hCursor"><span class="toc-number">1.1.1.7.</span> <span class="toc-text">hCursor</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#hbrBackground"><span class="toc-number">1.1.1.8.</span> <span class="toc-text">hbrBackground</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#lpszMenuName"><span class="toc-number">1.1.1.9.</span> <span class="toc-text">lpszMenuName</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#lpszClassName"><span class="toc-number">1.1.1.10.</span> <span class="toc-text">lpszClassName</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#WindowStyle"><span class="toc-number">1.1.2.</span> <span class="toc-text">WindowStyle</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%80%BC%E4%B8%8E%E5%90%AB%E4%B9%89"><span class="toc-number">1.1.2.1.</span> <span class="toc-text">值与含义</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%8D%95%E7%8B%AC%E7%94%A8%E6%98%AF%E4%BB%80%E4%B9%88%E6%95%88%E6%9E%9C"><span class="toc-number">1.1.2.2.</span> <span class="toc-text">单独用是什么效果</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%9C%80%E5%B8%B8%E7%94%A8%E7%9A%84%E7%BB%84%E5%90%88"><span class="toc-number">1.1.2.3.</span> <span class="toc-text">最常用的组合</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#WS-OVERLAPPEDWINDOW"><span class="toc-number">1.1.2.3.1.</span> <span class="toc-text">WS_OVERLAPPEDWINDOW</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#WS-POPUP%EF%BC%88%E6%97%A0%E8%BE%B9%E6%A1%86%E5%85%A8%E5%B1%8F%E7%AA%97%E5%8F%A3%EF%BC%89"><span class="toc-number">1.1.2.3.2.</span> <span class="toc-text">WS_POPUP（无边框全屏窗口）</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#WS-OVERLAPPED-WS-CAPTION-WS-SYSMENU-WS-MINIMIZEBOX"><span class="toc-number">1.1.2.3.3.</span> <span class="toc-text">WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DX12%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-number">1.2.</span> <span class="toc-text">DX12初始化</span></a></li></ol></li></ol>
+</div>
+</div>
+          <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/avatar.webp" data-sizes="auto" alt="OnricYF" class="lazyload">
+  <div class="sidebar-author-name">OnricYF</div>
+  <div class="sidebar-description">TRASH ARTIST</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>Post</div>
+    <div class="sidebar-state-number">146</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>Category</div>
+    <div class="sidebar-state-number">33</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>Tag</div>
+    <div class="sidebar-state-number">83</div>
+  </div>
+</div>
+<div class="sidebar-social" >
+    <div class="icon-email sidebar-social-icon">
+      <a href=mailto:a1521070145@gmail.com itemprop="url" target="_blank" aria-label="email" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-github sidebar-social-icon">
+      <a href=https://github.com/Madoka9 itemprop="url" target="_blank" aria-label="github" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-bilibili sidebar-social-icon">
+      <a href=https://space.bilibili.com/5862963 itemprop="url" target="_blank" aria-label="bilibili" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-zhihu sidebar-social-icon">
+      <a href=https://www.zhihu.com/people/lan-mei-sheng-dai-77 itemprop="url" target="_blank" aria-label="zhihu" rel="noopener nofollow noreferrer"></a>
+    </div>
+</div>
+<div class="sidebar-menu">
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/" aria-label="Home"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Home</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/archives" aria-label="Archives"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Archives</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/about" aria-label="About"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">About</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/friend" aria-label="Friend"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Friend</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/portfolio" aria-label="Portfolio"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Portfolio</div>
+      </div>
+</div>
+</div>
+          <div class="sidebar-btn-wrapper" style="position:static">
+            <div class="sidebar-toc-btn current"></div>
+            <div class="sidebar-common-btn"></div>
+          </div>
+    </div>
+  </div>
+      <meting-js
+        theme="var(--color-link)"
+        id="385907592"
+        server="netease"
+        type="playlist"
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        class="aplayer-after-sidebar"
+      ></meting-js>
+  <div class="sidebar-widget">
+  </div>
+  </div>
+</aside>
+
+          <section id="main" aria-label="Main content"><article id="post-DX12学习/DX12Learning_01_引擎初始化" class="h-entry article" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner" data-aos="fade-up">
+    <div class="article-meta">
+      <div class="article-date">
+  <span class="article-date-link icon-calendar" data-aos="zoom-in">
+    <time datetime="2026-07-15T16:00:00.000Z" itemprop="datePublished">2026-07-16</time>
+    <time style="display: none;" id="post-update-time">2026-07-16</time>
+  </span>
+</div>
+
+    </div>
+    
+    <div class="hr-line"></div>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+        <h2 id="引擎预初始化-PreInit"><a href="#引擎预初始化-PreInit" class="headerlink" title="引擎预初始化(PreInit)"></a>引擎预初始化(PreInit)</h2><h3 id="注册窗口"><a href="#注册窗口" class="headerlink" title="注册窗口"></a>注册窗口</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">bool FWindowsEngine::InitWindows(const FWinMainCommandParameters&amp; InParameters)  </span><br><span class="line">&#123;  </span><br><span class="line">    // --- 注册窗口类 ---    WNDCLASSEX WindowClass = &#123;&#125;;  </span><br><span class="line">    WindowClass.cbSize        = sizeof(WNDCLASSEX);  </span><br><span class="line">    WindowClass.style         = CS_VREDRAW | CS_HREDRAW;  </span><br><span class="line">    WindowClass.lpfnWndProc   = EngineWindowProcess;  </span><br><span class="line">    WindowClass.cbClsExtra    = 0;  </span><br><span class="line">    WindowClass.cbWndExtra    = 0;  </span><br><span class="line">    WindowClass.hInstance     = InParameters.Instance;  </span><br><span class="line">    WindowClass.hIcon         = LoadIcon(nullptr, IDI_APPLICATION);  </span><br><span class="line">    WindowClass.hIconSm       = LoadIcon(nullptr, IDI_APPLICATION);  </span><br><span class="line">    WindowClass.hCursor       = LoadCursor(nullptr, IDC_ARROW);  </span><br><span class="line">    WindowClass.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);  </span><br><span class="line">    WindowClass.lpszMenuName  = nullptr;  </span><br><span class="line">    WindowClass.lpszClassName = L&quot;YFEngineWindowClass&quot;;  </span><br><span class="line">  </span><br><span class="line">    ATOM RegisterAtom = RegisterClassEx(&amp;WindowClass);  </span><br><span class="line">    if(!RegisterAtom)  </span><br><span class="line">    &#123;        MessageBox(nullptr, L&quot;RegisterClassEx FWindowsEngine Failed&quot;, L&quot;Error&quot;, MB_OK);  </span><br><span class="line">        return false;  </span><br><span class="line">    &#125;  </span><br><span class="line">    RECT WindowsRect = &#123;0, 0, 1280, 720&#125;;  </span><br><span class="line">  </span><br><span class="line">    AdjustWindowRect(&amp;WindowsRect, WS_OVERLAPPED | WS_CAPTION, false);  </span><br><span class="line">  </span><br><span class="line">    int WindowsWidth  = WindowsRect.right - WindowsRect.left;  </span><br><span class="line">    int WindowsHeight = WindowsRect.bottom - WindowsRect.top;  </span><br><span class="line">  </span><br><span class="line">    HWND hWnd = CreateWindowEx  </span><br><span class="line">    (  </span><br><span class="line">        0,                          // 扩展样式  </span><br><span class="line">        L&quot;YFEngineWindowClass&quot;,     // 窗口类名（必须与注册时的 lpszClassName 一致）  </span><br><span class="line">        L&quot;YFEngine&quot;,                // 窗口标题  </span><br><span class="line">        WS_OVERLAPPEDWINDOW,        // 窗口样式  </span><br><span class="line">        CW_USEDEFAULT,              // x  </span><br><span class="line">        CW_USEDEFAULT,              // y  </span><br><span class="line">        WindowsWidth,               // 宽  </span><br><span class="line">        WindowsHeight,              // 高  </span><br><span class="line">        nullptr,                    // 父窗口  </span><br><span class="line">        nullptr,                    // 菜单  </span><br><span class="line">        InParameters.Instance,      // 实例句柄  </span><br><span class="line">        nullptr                     // 额外参数  </span><br><span class="line">    );  </span><br><span class="line">    if (!hWnd)  </span><br><span class="line">    &#123;        MessageBox(nullptr, L&quot;CreateWindowEx FWindowsEngine Failed&quot;, L&quot;Error&quot;, MB_OK);  </span><br><span class="line">        return false;  </span><br><span class="line">    &#125;  </span><br><span class="line">    ShowWindow(hWnd, SW_SHOW);  </span><br><span class="line">    UpdateWindow(hWnd);  </span><br><span class="line">    m_hWnd = hWnd;  </span><br><span class="line">    return true;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="WindowClass参数说明"><a href="#WindowClass参数说明" class="headerlink" title="WindowClass参数说明"></a>WindowClass参数说明</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">typedef struct tagWNDCLASSEXW &#123;</span><br><span class="line">    UINT      cbSize;        // 结构体自身大小（sizeof(WNDCLASSEX)）</span><br><span class="line">    UINT      style;         // 窗口类样式</span><br><span class="line">    WNDPROC   lpfnWndProc;   // 窗口过程函数（消息处理）</span><br><span class="line">    int       cbClsExtra;    // 类额外内存（一般填 0）</span><br><span class="line">    int       cbWndExtra;    // 窗口额外内存（一般填 0）</span><br><span class="line">    HINSTANCE hInstance;     // 实例句柄（WinMain 的 hInstance）</span><br><span class="line">    HICON     hIcon;         // 窗口大图标</span><br><span class="line">    HCURSOR   hCursor;       // 鼠标光标</span><br><span class="line">    HBRUSH    hbrBackground; // 背景画刷</span><br><span class="line">    LPCWSTR   lpszMenuName;  // 菜单名（没有菜单就填 nullptr）</span><br><span class="line">    LPCWSTR   lpszClassName; // 窗口类名（自己起一个唯一名字）</span><br><span class="line">    HICON     hIconSm;       // 窗口小图标（任务栏/标题栏）</span><br><span class="line">&#125; WNDCLASSEXW, *PWNDCLASSEXW, *NPWNDCLASSEXW, *LPWNDCLASSEXW;</span><br></pre></td></tr></table></figure>
+
+<h5 id="cbSize"><a href="#cbSize" class="headerlink" title="cbSize"></a><code>cbSize</code></h5><p>必须填 <code>sizeof(WNDCLASSEX)</code>。如果填小了一截，<code>RegisterClassEx</code> 会失败。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">WindowClass.cbSize = sizeof(WNDCLASSEX);</span><br></pre></td></tr></table></figure>
+
+<h5 id="style"><a href="#style" class="headerlink" title="style"></a><code>style</code></h5><p>窗口类的<strong>行为</strong>样式，不是窗口外观。常见的组合：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">WindowClass.style = CS_HREDRAW | CS_VREDRAW;</span><br><span class="line">// CS_HREDRAW  —— 窗口水平尺寸变化时重绘</span><br><span class="line">// CS_VREDRAW  —— 窗口垂直尺寸变化时重绘</span><br><span class="line">// CS_DBLCLKS  —— 允许窗口接收双击消息</span><br><span class="line">// CS_OWNDC   —— 每个窗口独立 DC（DX12 用不到）</span><br></pre></td></tr></table></figure>
+
+<p>DX12 窗口最常用 <code>CS_HREDRAW | CS_VREDRAW</code>。</p>
+<h5 id="lpfnWndProc"><a href="#lpfnWndProc" class="headerlink" title="lpfnWndProc"></a><code>lpfnWndProc</code></h5><p>最关键的参数。定义窗口收到消息（WM_PAINT、WM_SIZE、WM_DESTROY 等）时谁来处理。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">WindowClass.lpfnWndProc = DefWindowProc;    // 用系统默认处理（什么也不做）</span><br><span class="line">WindowClass.lpfnWndProc = MyWndProc;        // 自己写一个回调函数</span><br></pre></td></tr></table></figure>
+
+<p>函数签名固定：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LRESULT CALLBACK MyWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);</span><br></pre></td></tr></table></figure>
+
+<h5 id="cbClsExtra-cbWndExtra"><a href="#cbClsExtra-cbWndExtra" class="headerlink" title="cbClsExtra &#x2F; cbWndExtra"></a><code>cbClsExtra</code> &#x2F; <code>cbWndExtra</code></h5><p>预留额外内存空间，一般填 <code>0</code>。某些控件（比如编辑框）会用 <code>cbWndExtra</code> 存内部数据。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">WindowClass.cbClsExtra = 0;</span><br><span class="line">WindowClass.cbWndExtra = 0;</span><br></pre></td></tr></table></figure>
+
+<h5 id="hInstance"><a href="#hInstance" class="headerlink" title="hInstance"></a><code>hInstance</code></h5><p>WinMain 传进来的 <code>hInstance</code>，标识这个窗口属于哪个应用程序实例。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">WindowClass.hInstance = hInstance;   // 就是 WinMain 的第一个参数</span><br></pre></td></tr></table></figure>
+
+<h5 id="hIcon-hIconSm"><a href="#hIcon-hIconSm" class="headerlink" title="hIcon &#x2F; hIconSm"></a><code>hIcon</code> &#x2F; <code>hIconSm</code></h5><p>窗口的大图标（ALT+TAB 显示）和小图标（标题栏左侧）。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">WindowClass.hIcon   = LoadIcon(nullptr, IDI_APPLICATION);   // 系统默认</span><br><span class="line">WindowClass.hIconSm = LoadIcon(nullptr, IDI_APPLICATION);</span><br></pre></td></tr></table></figure>
+
+<p>如果想用自己的 .ico 资源：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">WindowClass.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MYICON));</span><br></pre></td></tr></table></figure>
+
+<h5 id="hCursor"><a href="#hCursor" class="headerlink" title="hCursor"></a><code>hCursor</code></h5><p>鼠标移到窗口上时的光标样式。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">WindowClass.hCursor = LoadCursor(nullptr, IDC_ARROW);   // 标准箭头</span><br></pre></td></tr></table></figure>
+
+<p>其他系统预设：<code>IDC_CROSS</code>、<code>IDC_HAND</code>、<code>IDC_IBEAM</code> 等。</p>
+<h5 id="hbrBackground"><a href="#hbrBackground" class="headerlink" title="hbrBackground"></a><code>hbrBackground</code></h5><p>窗口背景色画刷。窗口收到 <code>WM_ERASEBKGND</code> 时用这个清背景。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">WindowClass.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);  // 系统默认窗口底色</span><br><span class="line">WindowClass.hbrBackground = CreateSolidBrush(RGB(50, 50, 50));  // 自定义灰色</span><br></pre></td></tr></table></figure>
+
+<p>DX12 里每一帧都是你自己清 back buffer 的，所以背景画刷基本用不到，但必须填一个——最简单的就是系统预设：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">WindowClass.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);</span><br></pre></td></tr></table></figure>
+
+<p>或者直接给 <code>nullptr</code> 然后 <code>style</code> 里加 <code>CS_OWNDC</code> 也行，不过 DX12 窗口最省事还是用系统预设。</p>
+<h5 id="lpszMenuName"><a href="#lpszMenuName" class="headerlink" title="lpszMenuName"></a><code>lpszMenuName</code></h5><p>没有菜单栏就填 <code>nullptr</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">WindowClass.lpszMenuName = nullptr;</span><br></pre></td></tr></table></figure>
+
+<h5 id="lpszClassName"><a href="#lpszClassName" class="headerlink" title="lpszClassName"></a><code>lpszClassName</code></h5><p>给这组窗口配置起个唯一标识名，<code>CreateWindowEx</code> 时靠这个名字找到注册好的配置。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">WindowClass.lpszClassName = L&quot;YFEngineWindowClass&quot;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="WindowStyle"><a href="#WindowStyle" class="headerlink" title="WindowStyle"></a>WindowStyle</h4><p><code>WS_OVERLAPPED</code> 是 Win32 最基本的窗口样式，也是所有”普通窗口”的起点。</p>
+<h5 id="值与含义"><a href="#值与含义" class="headerlink" title="值与含义"></a>值与含义</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define WS_OVERLAPPED       0x00000000L</span><br></pre></td></tr></table></figure>
+
+<p>值为 <code>0</code>。这不是巧合——它表示”我没有额外样式”，是需要与其他样式组合的基础。</p>
+<h5 id="单独用是什么效果"><a href="#单独用是什么效果" class="headerlink" title="单独用是什么效果"></a>单独用是什么效果</h5><p><strong>有标题栏 + 可调整大小的边框 + 系统菜单（关闭&#x2F;最小化&#x2F;最大化），但没有”最小化&#x2F;最大化按钮”。</strong></p>
+<p>实际效果就是：拖动边框能调大小，但右上角只有关闭按钮，最小化和最大化按钮不出现。</p>
+<p>大多数情况下你不会单独用它，而是和另外两个一起用：</p>
+<hr>
+<h5 id="最常用的组合"><a href="#最常用的组合" class="headerlink" title="最常用的组合"></a>最常用的组合</h5><h6 id="WS-OVERLAPPEDWINDOW"><a href="#WS-OVERLAPPEDWINDOW" class="headerlink" title="WS_OVERLAPPEDWINDOW"></a><code>WS_OVERLAPPEDWINDOW</code></h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#define WS_OVERLAPPEDWINDOW (WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | \</span><br><span class="line">                             WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX)</span><br></pre></td></tr></table></figure>
+
+<p>展开就是：</p>
+<table>
+<thead>
+<tr>
+<th>标志</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>WS_OVERLAPPED</code></td>
+<td>基础重叠窗口</td>
+</tr>
+<tr>
+<td><code>WS_CAPTION</code></td>
+<td>标题栏</td>
+</tr>
+<tr>
+<td><code>WS_SYSMENU</code></td>
+<td>系统菜单（右键标题栏的菜单）</td>
+</tr>
+<tr>
+<td><code>WS_THICKFRAME</code></td>
+<td>可拖拽调整的粗边框</td>
+</tr>
+<tr>
+<td><code>WS_MINIMIZEBOX</code></td>
+<td>最小化按钮</td>
+</tr>
+<tr>
+<td><code>WS_MAXIMIZEBOX</code></td>
+<td>最大化按钮</td>
+</tr>
+</tbody></table>
+<p>游戏窗口的标准配置，基本上所有 DX 教程都用它。</p>
+<h6 id="WS-POPUP（无边框全屏窗口）"><a href="#WS-POPUP（无边框全屏窗口）" class="headerlink" title="WS_POPUP（无边框全屏窗口）"></a><code>WS_POPUP</code>（无边框全屏窗口）</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">WS_POPUP | WS_VISIBLE</span><br></pre></td></tr></table></figure>
+
+<p>没有标题栏、没有边框、没有任何装饰——全屏独占时用。切换全屏&#x2F;窗口模式时经常在 <code>WS_OVERLAPPEDWINDOW</code> 和 <code>WS_POPUP</code> 之间切换。</p>
+<h6 id="WS-OVERLAPPED-WS-CAPTION-WS-SYSMENU-WS-MINIMIZEBOX"><a href="#WS-OVERLAPPED-WS-CAPTION-WS-SYSMENU-WS-MINIMIZEBOX" class="headerlink" title="WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX"></a><code>WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX</code></h6><p>游戏启动时常用的”不可缩放”窗口模式——能移动、能最小化，但不能拖拽改变大小。</p>
+<h3 id="DX12初始化"><a href="#DX12初始化" class="headerlink" title="DX12初始化"></a>DX12初始化</h3>
+    </div>
+    <footer class="article-footer">
+        <a class="article-category-link" href="/en/categories/%E7%AC%94%E8%AE%B0/" title="笔记" data-aos="zoom-in">笔记</a>
+
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/en/tags/C/" rel="tag" title="C++">C++</a></li><li class="article-tag-list-item" data-aos="zoom-in"><a class="article-tag-list-link" href="/en/tags/DX12/" rel="tag" title="DX12">DX12</a></li></ul>
+
+    </footer>
+  </div>
+    <nav id="article-nav" aria-label="Article navigation" data-aos="fade-up">
+      <div class="article-nav-link-wrap left">
+            <img data-src="/images/banner.webp" data-sizes="auto" alt="ENQUEUE RENDER COMMAND" class="lazyload">
+        <a href="/en/2026/07/16/Note/UnrealEngine/RHI/ENQUEUE_RENDER_COMMAND/" aria-label="Prev: ENQUEUE RENDER COMMAND" title="Prev: ENQUEUE RENDER COMMAND"></a>
+        <div class="article-nav-caption">Prev</div>
+        <h3 class="article-nav-title">
+            ENQUEUE RENDER COMMAND
+        </h3>
+      </div>
+    <div class="article-nav-link-wrap right">
+          <img data-src="/images/banner.webp" data-sizes="auto" alt="DX12Learning_00_环境部署" class="lazyload">
+      <a href="/en/2026/07/16/DX12%E5%AD%A6%E4%B9%A0/DX12Learning_00_%E7%8E%AF%E5%A2%83%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" aria-label="Next: DX12Learning_00_环境部署"  title="Next: DX12Learning_00_环境部署"></a>
+      <div class="article-nav-caption">Next</div>
+      <h3 class="article-nav-title">
+          DX12Learning_00_环境部署
+      </h3>
+    </div>
+  </nav>
+
+</article>
+
+
+</section>
+        </div>
+        <footer id="footer" aria-label="Site footer">
+  <div style="width: 100%; overflow: hidden">
+    <div class="footer-line"></div>
+  </div>
+  <div id="footer-info">
+    <div>
+      <span class="icon-copyright"></span>
+        2020-2026
+        <span class="footer-info-sep rotate"></span>
+      OnricYF
+    </div>
+      <div>
+        Powered by&nbsp;<a href="https://hexo.io/" rel="noopener nofollow noreferrer" target="_blank">Hexo</a>&nbsp;
+        Theme.<a href="https://github.com/D-Sketon/hexo-theme-reimu" rel="noopener nofollow noreferrer" target="_blank">Reimu</a>
+      </div>
+      <div>
+        <span class="icon-brush"></span>
+        88.9k
+        &nbsp;|&nbsp;
+        <span class="icon-coffee"></span>
+        07:34
+      </div>
+      <div>
+        <span class="icon-eye"></span>
+        <span id="busuanzi_container_site_pv">Number of visits&nbsp;<span id="busuanzi_value_site_pv"></span></span>
+        &nbsp;|&nbsp;
+        <span class="icon-user"></span>
+        <span id="busuanzi_container_site_uv">Number of visitors&nbsp;<span id="busuanzi_value_site_uv"></span></span>
+      </div>
+  </div>
+</footer>
+
+          <div class="sidebar-top">
+            <div class="sidebar-top-taichi rotate"></div>
+            <div class="arrow-up"></div>
+          </div>
+        <div id="mask" class="hide"></div>
+      </div>
+      <nav id="mobile-nav" aria-label="Mobile navigation">
+  <div class="sidebar-wrap">
+        <div class="sidebar-toc-sidebar"><h3 class="toc-title">Contents</h3>
+<div class="sidebar-toc-wrapper toc-div-class" >
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E6%93%8E%E9%A2%84%E5%88%9D%E5%A7%8B%E5%8C%96-PreInit"><span class="toc-number">1.</span> <span class="toc-text">引擎预初始化(PreInit)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E5%86%8C%E7%AA%97%E5%8F%A3"><span class="toc-number">1.1.</span> <span class="toc-text">注册窗口</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#WindowClass%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E"><span class="toc-number">1.1.1.</span> <span class="toc-text">WindowClass参数说明</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#cbSize"><span class="toc-number">1.1.1.1.</span> <span class="toc-text">cbSize</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#style"><span class="toc-number">1.1.1.2.</span> <span class="toc-text">style</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#lpfnWndProc"><span class="toc-number">1.1.1.3.</span> <span class="toc-text">lpfnWndProc</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#cbClsExtra-cbWndExtra"><span class="toc-number">1.1.1.4.</span> <span class="toc-text">cbClsExtra &#x2F; cbWndExtra</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#hInstance"><span class="toc-number">1.1.1.5.</span> <span class="toc-text">hInstance</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#hIcon-hIconSm"><span class="toc-number">1.1.1.6.</span> <span class="toc-text">hIcon &#x2F; hIconSm</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#hCursor"><span class="toc-number">1.1.1.7.</span> <span class="toc-text">hCursor</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#hbrBackground"><span class="toc-number">1.1.1.8.</span> <span class="toc-text">hbrBackground</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#lpszMenuName"><span class="toc-number">1.1.1.9.</span> <span class="toc-text">lpszMenuName</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#lpszClassName"><span class="toc-number">1.1.1.10.</span> <span class="toc-text">lpszClassName</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#WindowStyle"><span class="toc-number">1.1.2.</span> <span class="toc-text">WindowStyle</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%80%BC%E4%B8%8E%E5%90%AB%E4%B9%89"><span class="toc-number">1.1.2.1.</span> <span class="toc-text">值与含义</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%8D%95%E7%8B%AC%E7%94%A8%E6%98%AF%E4%BB%80%E4%B9%88%E6%95%88%E6%9E%9C"><span class="toc-number">1.1.2.2.</span> <span class="toc-text">单独用是什么效果</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%9C%80%E5%B8%B8%E7%94%A8%E7%9A%84%E7%BB%84%E5%90%88"><span class="toc-number">1.1.2.3.</span> <span class="toc-text">最常用的组合</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#WS-OVERLAPPEDWINDOW"><span class="toc-number">1.1.2.3.1.</span> <span class="toc-text">WS_OVERLAPPEDWINDOW</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#WS-POPUP%EF%BC%88%E6%97%A0%E8%BE%B9%E6%A1%86%E5%85%A8%E5%B1%8F%E7%AA%97%E5%8F%A3%EF%BC%89"><span class="toc-number">1.1.2.3.2.</span> <span class="toc-text">WS_POPUP（无边框全屏窗口）</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#WS-OVERLAPPED-WS-CAPTION-WS-SYSMENU-WS-MINIMIZEBOX"><span class="toc-number">1.1.2.3.3.</span> <span class="toc-text">WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DX12%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-number">1.2.</span> <span class="toc-text">DX12初始化</span></a></li></ol></li></ol>
+</div>
+</div>
+        <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img data-src="/avatar/avatar.webp" data-sizes="auto" alt="OnricYF" class="lazyload">
+  <div class="sidebar-author-name">OnricYF</div>
+  <div class="sidebar-description">TRASH ARTIST</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>Post</div>
+    <div class="sidebar-state-number">146</div>
+  </div>
+  <div class="sidebar-state-category">
+    <div>Category</div>
+    <div class="sidebar-state-number">33</div>
+  </div>
+  <div class="sidebar-state-tag">
+    <div>Tag</div>
+    <div class="sidebar-state-number">83</div>
+  </div>
+</div>
+<div class="sidebar-social" >
+    <div class="icon-email sidebar-social-icon">
+      <a href=mailto:a1521070145@gmail.com itemprop="url" target="_blank" aria-label="email" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-github sidebar-social-icon">
+      <a href=https://github.com/Madoka9 itemprop="url" target="_blank" aria-label="github" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-bilibili sidebar-social-icon">
+      <a href=https://space.bilibili.com/5862963 itemprop="url" target="_blank" aria-label="bilibili" rel="noopener nofollow noreferrer"></a>
+    </div>
+    <div class="icon-zhihu sidebar-social-icon">
+      <a href=https://www.zhihu.com/people/lan-mei-sheng-dai-77 itemprop="url" target="_blank" aria-label="zhihu" rel="noopener nofollow noreferrer"></a>
+    </div>
+</div>
+<div class="sidebar-menu">
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/" aria-label="Home"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Home</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/archives" aria-label="Archives"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Archives</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/about" aria-label="About"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">About</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/friend" aria-label="Friend"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Friend</div>
+      </div>
+      <div class="sidebar-menu-link-wrap">
+        <a class="sidebar-menu-link-dummy" href="/en/portfolio" aria-label="Portfolio"></a>
+          <div class="sidebar-menu-icon icon rotate">
+              &#xe62b;
+          </div>
+        <div class="sidebar-menu-link">Portfolio</div>
+      </div>
+</div>
+</div>
+  </div>
+      <div class="sidebar-btn-wrapper">
+        <div class="sidebar-toc-btn current"></div>
+        <div class="sidebar-common-btn"></div>
+      </div>
+</nav>
+
+    </div>
+    
+<script src="https://npm.webcache.cn/lazysizes@5.3.2/lazysizes.min.js" integrity="sha384-3gT&#x2F;vsepWkfz&#x2F;ff7PpWNUeMzeWoH3cDhm&#x2F;A8jM7ouoAK0&#x2F;fP&#x2F;9bcHHR5kHq2nf+e" crossorigin="anonymous"></script>
+
+
+<script src="https://npm.webcache.cn/clipboard@2.0.11/dist/clipboard.min.js" integrity="sha384-J08i8An&#x2F;QeARD9ExYpvphB8BsyOj3Gh2TSh1aLINKO3L0cMSH2dN3E22zFoXEi0Q" crossorigin="anonymous"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+  
+<script src="/js/aos.js"></script>
+
+  <script>
+    var aosInit = () => {
+      AOS.init({
+        duration: 1000,
+        easing: "ease",
+        once: true,
+        offset: 50,
+      });
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', aosInit);
+    } else {
+      aosInit();
+    }
+  </script>
+
+
+<script src="/js/pjax_script.js" data-pjax></script>
+
+
+
+
+  <script>
+    var setupFirework = () => {
+      if (!false || !window.matchMedia('(max-width: 768px)').matches) {
+        window.firework && window.firework(JSON.parse('{"excludeElements":["a","button"],"particles":[{"shape":"circle","move":["emit"],"easing":"easeOutExpo","colors":["var(--red-1)","var(--red-2)","var(--red-3)","var(--red-4)"],"number":20,"duration":[1200,1800],"shapeOptions":{"radius":[16,32],"alpha":[0.3,0.5]}},{"shape":"circle","move":["diffuse"],"easing":"easeOutExpo","colors":["var(--red-0)"],"number":1,"duration":[1200,1800],"shapeOptions":{"radius":20,"alpha":[0.2,0.5],"lineWidth":6}}]}'));
+      }
+    }
+  </script>
+  
+<script src="https://npm.webcache.cn/mouse-firework@0.2.0/dist/index.umd.js" integrity="sha384-qi9WggRt19tv8Vc7pCHW3ulMNLwrn515zaLEWZjl1px07vz8+pUoWX8n1rgq282T" crossorigin="anonymous" onload="setupFirework()" defer></script>
+
+
+  
+<script src="https://npm.webcache.cn/theme-shokax-pjax@0.0.3/dist/index.umd.js" integrity="sha384-xneY1WY8hOfUzswrE4CrYq35N4BdVcxqxwHPr9zawE&#x2F;jMSCxD+jAPU55x&#x2F;jj3wlf" crossorigin="anonymous"></script>
+
+  
+<script src="/js/pjax.js"></script>
+
+
+
+
+
+<div id="lazy-script">
+  <div>
+      
+      
+      <script data-pjax>
+        window.REIMU_POST = {
+          author: "OnricYF",
+          title: "DX12Learning_01_引擎初始化",
+          url: "http://example.com/2026/07/16/DX12%E5%AD%A6%E4%B9%A0/DX12Learning_01_%E5%BC%95%E6%93%8E%E5%88%9D%E5%A7%8B%E5%8C%96/",
+          excerpt: "",
+          description: "",
+          stripContent: "引擎预初始化(PreInit)注册窗口12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152bool FWindowsEngine::InitWindows(const FWinMainCommandParameters&amp;amp; InParameters)  &amp;#123;      // --- 注册窗口类 ---    WNDCLASSEX WindowCl",
+          date: "Thu Jul 16 2026 00:00:00 GMT+0800",
+          updated: "Thu Jul 16 2026 22:57:04 GMT+0800",
+          cover: "/images/banner.webp",
+        };
+      </script>
+        
+<script src="/js/insert_highlight.js" data-pjax></script>
+
+      
+<script src="/js/tabs.js" data-pjax defer></script>
+
+      <script type="module" data-pjax>
+        (async () => {
+          const PhotoSwipeLightbox = (await safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe-lightbox.esm.min.js", "sha384-DiL6M/gG+wmTxmCRZyD1zee6lIhawn5TGvED0FOh7fXcN9B0aZ9dexSF/N6lrZi/")).default;
+          const initPswp = (gallery, children) => {
+            if (_$$(`${gallery} ${children}`).length > 0) {
+              new PhotoSwipeLightbox({
+                gallery,
+                children,
+                pswpModule: () => safeImport("https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.esm.min.js", "sha384-WkkO3GCmgkC3VQWpaV8DqhKJqpzpF9JoByxDmnV8+oTJ7m3DfYEWX1fu1scuS4+s")
+              }).init();
+            }
+          }
+          const pswp = () => {
+            initPswp('.article-entry', 'a.article-gallery-item');
+            initPswp('.article-gallery', 'a.article-gallery-item');
+          }
+          pswp();
+        })();
+      </script>
+  </div>
+</div>
+
+
+  <script>
+    console.log(String.raw`%c 
+ ______     ______     __     __    __     __  __    
+/\  == \   /\  ___\   /\ \   /\ "-./  \   /\ \/\ \   
+\ \  __<   \ \  __\   \ \ \  \ \ \-./\ \  \ \ \_\ \  
+ \ \_\ \_\  \ \_____\  \ \_\  \ \_\ \ \_\  \ \_____\ 
+  \/_/ /_/   \/_____/   \/_/   \/_/  \/_/   \/_____/ 
+                                                  
+`,'color: #ff5252;')
+    console.log('%c Theme.Reimu v' + '1.12.0' + ' %c https://github.com/D-Sketon/hexo-theme-reimu ', 'color: white; background: #ff5252; padding:5px 0;', 'padding:4px;border:1px solid #ff5252;')
+  </script>
+  
+
+
+  
+<script src="https://npm.webcache.cn/busuanzi@2.3.0/bsz.pure.mini.js" integrity="sha384-0M75wtSkhjIInv4coYlaJU83+OypaRCIq2SukQVQX04eGTCBXJDuWAbJet56id+S" crossorigin="anonymous" async></script>
+
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      for (let registration of registrations) {
+        registration.unregister();
+      }
+    });
+  }
+</script>
+
+
+    <script>
+      var setupAPlayer = () => {
+        if (!true || !window.matchMedia('(max-width: 768px)').matches) {
+          if (window.matchMedia('(max-width: 959px)').matches) {
+            const meting = _$('meting-js');
+            if (meting) {
+              meting.setAttribute('fixed', 'true');
+              const aside = meting.parentNode?.parentNode;
+              if (aside?.tagName === 'ASIDE') {
+                meting.parentNode.removeChild(meting);
+                document.body.appendChild(meting);
+              }
+            }
+          }
+        }
+      };
+    </script>
+  
+<script src="https://npm.webcache.cn/aplayer@1.10.1/dist/APlayer.min.js" integrity="sha384-gdGYZwHnfJM54evoZhpO0s6ZF5BQiybkiyW7VXr+h5UfruuRL&#x2F;aORyw+5+HZoU6e" crossorigin="anonymous" defer onload="setupAPlayer()"></script>
+
+    
+<script src="https://npm.webcache.cn/meting@2.0.1/dist/Meting.min.js" integrity="sha384-ASVlpKF80A22OXTK3tfEjZm1EL6uFMKIC4p8+0maanw1S&#x2F;IyB+Y4JG+ZDU7GpKE8" crossorigin="anonymous" defer></script>
+
+
+
+  </body>
+  </html>
